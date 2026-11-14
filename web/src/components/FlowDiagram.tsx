@@ -1,18 +1,20 @@
 import type { CSSProperties } from 'react'
 import {
-  DETAILS,
-  DIAGRAM,
   FLOW_COLOR,
   isFlowActive,
+  type DiagramRow,
   type FlowId,
-  type NodeId,
+  type PartDetail,
 } from '../content/lesson01.ts'
 
 type Props = {
   active: ReadonlySet<FlowId>
   playing: boolean
-  selected: NodeId | null
-  onSelect: (id: NodeId) => void
+  selected: string | null
+  onSelect: (id: string) => void
+  diagram: DiagramRow[]
+  details: Record<string, PartDetail>
+  partFlows: Record<string, FlowId[]>
 }
 
 function flowStyle(flow: FlowId): CSSProperties {
@@ -24,14 +26,18 @@ function NodeButton({
   active,
   selected,
   onSelect,
+  details,
+  partFlows,
 }: {
-  id: NodeId
+  id: string
   active: ReadonlySet<FlowId>
-  selected: NodeId | null
-  onSelect: (id: NodeId) => void
+  selected: string | null
+  onSelect: (id: string) => void
+  details: Record<string, PartDetail>
+  partFlows: Record<string, FlowId[]>
 }) {
-  const detail = DETAILS[id]
-  const on = isFlowActive(id, active)
+  const detail = details[id]
+  const on = isFlowActive(id, active, partFlows)
   const className = ['node', on ? '' : 'is-dim', selected === id ? 'is-selected' : ''].filter(Boolean).join(' ')
   return (
     <button type="button" className={className} onClick={() => onSelect(id)} aria-pressed={selected === id}>
@@ -61,14 +67,14 @@ function VLinks({ flows, active, playing }: { flows: FlowId[]; active: ReadonlyS
   )
 }
 
-export function FlowDiagram({ active, playing, selected, onSelect }: Props) {
+export function FlowDiagram({ active, playing, selected, onSelect, diagram, details, partFlows }: Props) {
   return (
     <div className="diagram">
-      {DIAGRAM.map((row, index) => {
+      {diagram.map((row, index) => {
         if (row.kind === 'spine') {
           return (
             <div key={row.id}>
-              <NodeButton id={row.id} active={active} selected={selected} onSelect={onSelect} />
+              <NodeButton id={row.id} active={active} selected={selected} onSelect={onSelect} details={details} partFlows={partFlows} />
               <VLinks flows={row.below} active={active} playing={playing} />
             </div>
           )
@@ -77,9 +83,9 @@ export function FlowDiagram({ active, playing, selected, onSelect }: Props) {
           return (
             <div key={`${row.to}-${index}`}>
               <div className="row-side">
-                <NodeButton id={row.from} active={active} selected={selected} onSelect={onSelect} />
+                <NodeButton id={row.from} active={active} selected={selected} onSelect={onSelect} details={details} partFlows={partFlows} />
                 <HLink flow={row.flow} on={active.has(row.flow)} playing={playing} />
-                <NodeButton id={row.to} active={active} selected={selected} onSelect={onSelect} />
+                <NodeButton id={row.to} active={active} selected={selected} onSelect={onSelect} details={details} partFlows={partFlows} />
               </div>
               <VLinks flows={row.below} active={active} playing={playing} />
             </div>
@@ -88,11 +94,11 @@ export function FlowDiagram({ active, playing, selected, onSelect }: Props) {
         return (
           <div key={row.center}>
             <div className="row-side">
-              <NodeButton id={row.left} active={active} selected={selected} onSelect={onSelect} />
+              <NodeButton id={row.left} active={active} selected={selected} onSelect={onSelect} details={details} partFlows={partFlows} />
               <HLink flow={row.leftFlow} on={active.has(row.leftFlow)} playing={playing} />
-              <NodeButton id={row.center} active={active} selected={selected} onSelect={onSelect} />
+              <NodeButton id={row.center} active={active} selected={selected} onSelect={onSelect} details={details} partFlows={partFlows} />
               <HLink flow={row.rightFlow} on={active.has(row.rightFlow)} playing={playing} />
-              <NodeButton id={row.right} active={active} selected={selected} onSelect={onSelect} />
+              <NodeButton id={row.right} active={active} selected={selected} onSelect={onSelect} details={details} partFlows={partFlows} />
             </div>
             <VLinks flows={row.below} active={active} playing={playing} />
           </div>
@@ -102,8 +108,9 @@ export function FlowDiagram({ active, playing, selected, onSelect }: Props) {
   )
 }
 
-export function Inspector({ id }: { id: NodeId }) {
-  const detail = DETAILS[id]
+export function Inspector({ id, details }: { id: string; details: Record<string, PartDetail> }) {
+  const detail = details[id]
+  if (!detail) return null
   return (
     <article className="inspector">
       <h3>{detail.title}</h3>

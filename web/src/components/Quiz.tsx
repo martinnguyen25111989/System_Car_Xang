@@ -1,18 +1,28 @@
 import { useState } from 'react'
-import { ESSAYS, QUIZ } from '../content/lesson01.ts'
+import type { Essay, Mcq } from '../content/lesson01.ts'
 
 const PASS = 4
 
-export function Quiz({ completed, onPass }: { completed: boolean; onPass: () => void }) {
+export function Quiz({
+  completed,
+  onPass,
+  quiz,
+  essays,
+}: {
+  completed: boolean
+  onPass: () => void
+  quiz: Mcq[]
+  essays: Essay[]
+}) {
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
   const [score, setScore] = useState<number | null>(null)
   const [openGuides, setOpenGuides] = useState<Record<string, boolean>>({})
 
-  const allAnswered = QUIZ.every((item) => answers[item.id])
+  const allAnswered = quiz.every((item) => answers[item.id])
 
   function submit() {
-    const next = QUIZ.filter((item) => answers[item.id] === item.answer).length
+    const next = quiz.filter((item) => answers[item.id] === item.answer).length
     setScore(next)
     setSubmitted(true)
     if (next >= PASS) onPass()
@@ -25,7 +35,7 @@ export function Quiz({ completed, onPass }: { completed: boolean; onPass: () => 
         Năm câu trắc nghiệm chấm ngay trên trang. Ba câu tự luận để bạn kể lại chuỗi, rồi mới mở gợi ý.
         {completed ? ' Bài này đã được đánh dấu đã học.' : ''}
       </p>
-      {QUIZ.map((item, index) => (
+      {quiz.map((item, index) => (
         <fieldset className="mcq" key={item.id}>
           <p>
             {index + 1}. {item.prompt}
@@ -59,13 +69,13 @@ export function Quiz({ completed, onPass }: { completed: boolean; onPass: () => 
       </div>
       {score !== null ? (
         <p className="score">
-          {score}/5.
+          {score}/{quiz.length}.
           {score >= PASS
             ? ' Đủ để ghi nhận bạn đã nắm chuỗi chính. Bài được đánh dấu đã học trên bản đồ.'
             : ' Chưa đủ 4/5. Đọc lại đoạn chuỗi bị sai rồi chấm lại.'}
         </p>
       ) : null}
-      {ESSAYS.map((item, index) => (
+      {essays.map((item, index) => (
         <article className="essay" key={item.id}>
           <p>
             Tự luận {index + 1}. {item.prompt}

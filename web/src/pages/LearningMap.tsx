@@ -16,9 +16,9 @@ export function LearningMap() {
       <p className="kicker">Level 1 → Level 8</p>
       <h1>Các bước để đọc một chiếc xe xăng</h1>
       <p className="lede">
-        Bắt đầu bằng cách xe biến xăng thành chuyển động. Các bài sau đang khóa cho đến khi bạn học tới.
-        Màu dưới đây là ngôn ngữ của mọi sơ đồ trong khóa: mỗi màu là một luồng, không phải một bước thời gian.
-        Khí nạp và khí xả sẽ thêm hai màu khi vào bài máy.
+        Ba mươi hai bài đều mở, từ cách xe biến xăng thành chuyển động đến lúc ghép cả xe để chẩn đoán.
+        Màu dưới đây là ngôn ngữ của mọi sơ đồ: mỗi màu là một luồng, không phải một bước thời gian.
+        Khí nạp và khí xả xuất hiện khi bài nói về máy.
       </p>
       <Legend />
       <div className="timeline">

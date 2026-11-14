@@ -1,32 +1,45 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import lessonSource from '../../../curriculum/level-01/lesson-01.md?raw'
 import { FlowDiagram, Inspector } from '../components/FlowDiagram.tsx'
 import { MarkdownBody } from '../components/MarkdownBody.tsx'
 import { Quiz } from '../components/Quiz.tsx'
 import { SiteHeader } from '../components/SiteHeader.tsx'
 import { findLesson } from '../content/curriculum.ts'
-import { FLOWS, FLOW_COLOR, type FlowId, type NodeId } from '../content/lesson01.ts'
+import { FLOW_COLOR, type FlowId } from '../content/lesson01.ts'
+import { lessonMarkdown } from '../content/markdown.ts'
+import { getPack } from '../content/catalog.ts'
 import { useProgress } from '../lib/progress.ts'
 
 const GhostCar = lazy(() =>
   import('../scenes/GhostCar.tsx').then((module) => ({ default: module.GhostCar })),
 )
+const BlockScene = lazy(() =>
+  import('../scenes/BlockScene.tsx').then((module) => ({ default: module.BlockScene })),
+)
+const EngineScene = lazy(() =>
+  import('../scenes/EngineScene.tsx').then((module) => ({ default: module.EngineScene })),
+)
 
 export function LessonPage() {
   const { id = '' } = useParams()
+  return <LessonView key={id} id={id} />
+}
+
+function LessonView({ id }: { id: string }) {
   const found = findLesson(id)
+  const pack = getPack(id)
+  const source = lessonMarkdown(id)
   const { progress, markCurrent, markCompleted } = useProgress()
   const [tab, setTab] = useState<'diagram' | 'model'>('diagram')
-  const [flows, setFlows] = useState<FlowId[]>(FLOWS.map((flow) => flow.id))
-  const [selected, setSelected] = useState<NodeId>('engine')
+  const [flows, setFlows] = useState<FlowId[]>(() => (pack ? pack.flows.map((flow) => flow.id) : []))
+  const [selected, setSelected] = useState(pack?.defaultNode ?? '')
   const [playing, setPlaying] = useState(false)
   const [yaw, setYaw] = useState(0.15)
   const active = useMemo(() => new Set(flows), [flows])
 
   useEffect(() => {
-    if (found?.lesson.available) markCurrent(found.lesson.id)
-  }, [found?.lesson.available, found?.lesson.id, markCurrent])
+    if (found?.lesson.available && pack) markCurrent(found.lesson.id)
+  }, [found?.lesson.available, found?.lesson.id, markCurrent, pack])
 
   if (!found) {
     return (
@@ -42,7 +55,7 @@ export function LessonPage() {
     )
   }
 
-  if (!found.lesson.available || found.lesson.id !== 'L01') {
+  if (!found.lesson.available || !pack || !source) {
     return (
       <div className="shell">
         <SiteHeader meta={`${found.lesson.id} · chưa mở`} />
@@ -50,7 +63,7 @@ export function LessonPage() {
           <p className="kicker">Level {found.level.id}</p>
           <h1>{found.lesson.title}</h1>
           <p>{found.lesson.question}</p>
-          <p>Bài này nằm trên lộ trình. Nội dung và hình sẽ mở khi bạn học tới, sau Lesson 01.</p>
+          <p>Bài này nằm trên lộ trình nhưng nội dung chưa được gắn vào app.</p>
           <p>
             <Link to="/">Về bản đồ các bước</Link>
           </p>
@@ -59,10 +72,10 @@ export function LessonPage() {
     )
   }
 
-  const activeFlows = FLOWS.filter((flow) => active.has(flow.id))
+  const activeFlows = pack.flows.filter((flow) => active.has(flow.id))
   const hints =
-    activeFlows.length === FLOWS.length
-      ? 'Cả năm luồng đang bật. Tắt một màu để nhìn riêng đường đó.'
+    activeFlows.length === pack.flows.length
+      ? 'Mọi luồng của bài này đang bật. Tắt một màu để nhìn riêng đường đó.'
       : activeFlows.map((flow) => flow.hint).join(' · ')
 
   function toggle(flow: FlowId) {
@@ -79,7 +92,7 @@ export function LessonPage() {
           <p className="kicker">
             {found.level.title} · {found.lesson.id}
           </p>
-          <MarkdownBody source={lessonSource} />
+          <MarkdownBody source={source} />
         </article>
         <aside className="stage-col">
           <div className="panel">
@@ -97,7 +110,7 @@ export function LessonPage() {
               </button>
             </div>
             <div className="toggles" role="group" aria-label="Bật tắt luồng">
-              {FLOWS.map((flow) => {
+              {pack.flows.map((flow) => {
                 const on = active.has(flow.id)
                 return (
                   <button
@@ -116,7 +129,15 @@ export function LessonPage() {
             </div>
             <p className="flow-hints">{hints || 'Hãy bật ít nhất một luồng để thấy đường đi.'}</p>
             {tab === 'diagram' ? (
-              <FlowDiagram active={active} playing={playing} selected={selected} onSelect={setSelected} />
+              <FlowDiagram
+                active={active}
+                playing={playing}
+                selected={selected}
+                onSelect={setSelected}
+                diagram={pack.diagram}
+                details={pack.details}
+                partFlows={pack.partFlows}
+              />
             ) : (
               <>
                 <div className="model-bar">
@@ -129,26 +150,49 @@ export function LessonPage() {
                 </div>
                 <Suspense fallback={<p className="model-note">Đang mở mô hình 3D…</p>}>
                   <div className="canvas-wrap">
-                    <GhostCar
-                      active={active}
-                      playing={playing}
-                      selected={selected}
-                      onSelect={setSelected}
-                      yaw={yaw}
-                    />
+                    {pack.scene === 'ghost' ? (
+                      <GhostCar
+                        active={active}
+                        playing={playing}
+                        selected={selected}
+                        onSelect={setSelected}
+                        yaw={yaw}
+                      />
+                    ) : pack.scene === 'engine' ? (
+                      <EngineScene
+                        details={pack.details}
+                        playing={playing}
+                        selected={selected}
+                        onSelect={setSelected}
+                        yaw={yaw}
+                      />
+                    ) : (
+                      <BlockScene
+                        diagram={pack.diagram}
+                        details={pack.details}
+                        partFlows={pack.partFlows}
+                        active={active}
+                        playing={playing}
+                        selected={selected}
+                        onSelect={setSelected}
+                        yaw={yaw}
+                      />
+                    )}
                   </div>
                 </Suspense>
-                <p className="model-note">
-                  Kéo trên hình để xoay, lăn để phóng to. Khối trong suốt là sơ đồ bố trí cầu trước, không phải CAD của
-                  Honda City. Piston chỉ báo nhịp máy. Mặt cắt 4 thì nằm ở Lesson 05.
-                </p>
+                <p className="model-note">{pack.sceneNote}</p>
               </>
             )}
-            <Inspector id={selected} />
+            <Inspector id={selected} details={pack.details} />
           </div>
         </aside>
       </div>
-      <Quiz completed={progress.completed.includes('L01')} onPass={() => markCompleted('L01')} />
+      <Quiz
+        quiz={pack.quiz}
+        essays={pack.essays}
+        completed={progress.completed.includes(id)}
+        onPass={() => markCompleted(id)}
+      />
     </div>
   )
 }

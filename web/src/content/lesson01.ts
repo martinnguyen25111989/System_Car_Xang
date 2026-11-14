@@ -26,30 +26,32 @@ export const FLOWS = [
   },
 ] as const
 
-export type FlowId = (typeof FLOWS)[number]['id']
+export const AIR_FLOWS = [
+  {
+    id: 'intake',
+    label: 'Khí nạp',
+    hint: 'Không khí đi từ lọc gió vào xy-lanh',
+  },
+  {
+    id: 'exhaust',
+    label: 'Khí xả',
+    hint: 'Khí đã cháy đi ra ống xả',
+  },
+] as const
 
-export const FLOW_COLOR: Record<FlowId, string> = {
+export const FLOW_COLOR = {
   energy: '#e3a008',
   mechanical: '#7ea0c4',
   electrical: '#e15b64',
   data: '#3dbe7a',
   thermal: '#f07a3a',
-}
+  intake: '#3ec6d6',
+  exhaust: '#8b939e',
+} as const
 
-export type NodeId =
-  | 'driver'
-  | 'pedal'
-  | 'battery'
-  | 'ecu'
-  | 'tank'
-  | 'engine'
-  | 'radiator'
-  | 'trans'
-  | 'diff'
-  | 'wheels'
-  | 'road'
-  | 'cabin'
-  | 'exhaust'
+export type FlowId = keyof typeof FLOW_COLOR
+
+export type NodeId = string
 
 export type PartDetail = {
   id: NodeId
@@ -78,8 +80,12 @@ export const PART_FLOWS: Record<NodeId, FlowId[]> = {
   exhaust: ['thermal'],
 }
 
-export function isFlowActive(id: NodeId, flows: ReadonlySet<FlowId>): boolean {
-  return PART_FLOWS[id].some((flow) => flows.has(flow))
+export function isFlowActive(
+  id: NodeId,
+  flows: ReadonlySet<FlowId>,
+  partFlows: Record<string, FlowId[]> = PART_FLOWS,
+): boolean {
+  return (partFlows[id] ?? []).some((flow) => flows.has(flow))
 }
 
 export const DETAILS: Record<NodeId, PartDetail> = {
@@ -315,7 +321,9 @@ export const QUIZ: Mcq[] = [
   },
 ]
 
-export const ESSAYS: { id: string; prompt: string; guide: string }[] = [
+export type Essay = { id: string; prompt: string; guide: string }
+
+export const ESSAYS: Essay[] = [
   {
     id: 'e1',
     prompt:
