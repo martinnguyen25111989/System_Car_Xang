@@ -9,3 +9,5 @@ npm run dev
 ```
 
 Mở `http://127.0.0.1:5173`. Lesson 01 đang mở. Các bài sau mở khi học tới.
+
+Bản công khai: https://martinnguyen25111989.github.io/System_Car_Xang/
