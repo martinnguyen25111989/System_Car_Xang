@@ -34,6 +34,10 @@ jobs:
         env:
           GITHUB_PAGES: 'true'
         run: npm run build
+      - name: Add Details page
+        run: |
+          mkdir -p web/dist/details
+          cp Details/index.html web/dist/details/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

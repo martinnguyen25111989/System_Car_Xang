@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honda City 2024 Vận hành &amp; Chẩn đoán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Bàn làm việc kỹ thuật viên: nền graphite xanh, đỏ Honda làm điểm nhấn, xanh tín hiệu cho dòng dữ liệu.
+     Layout: sơ đồ kiến trúc full-width ở trên, bảng điều khiển & dữ liệu ở dưới. */
+  --bg:#0a1018; --panel:#101924; --panel-2:#152131; --line:#22324a; --ink:#e8eef6; --muted:#8ea2ba;
+  --accent:#ff3b4e; --sig:#4cc3ff; --ok:#3fd6a0; --warn:#ffb020; --crit:#ff5468;
+  --bp:#ff4d4d; --ig:#ff9f1c; --ana:#3ddc84; --dig:#4c9dff; --pwm:#c77dff;
+  --canh:#ff5c6c; --canl:#ffb3ba; --bcanh:#ff9f43; --bcanl:#ffd29b; --lin:#2ed3b7;
+  --fuel:#e9b949; --cool:#36c5f0; --air:#9ad7ff; --exh:#a3acb9;
+  --fd:'Barlow Condensed','Arial Narrow',sans-serif; --fb:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif; --fm:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--fb);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--fd);text-wrap:balance;margin:0;letter-spacing:.01em}
+.muted{color:var(--muted)}
+.mono{font-family:var(--fm);font-size:12.5px}
+
+/* header */
+.top{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0f1823,#0a1018)}
+.top-in{max-width:1480px;margin:0 auto;padding:18px 20px 0;display:flex;flex-direction:column;gap:10px}
+.eyebrow{font:700 12px var(--fd);letter-spacing:.18em;color:var(--accent)}
+h1{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.1}
+h1 span{color:var(--muted);font-weight:600}
+.specline{font:500 12px var(--fm);color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 14px}
+.specline b{color:var(--ink);font-weight:600}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px 9px;font:700 15px var(--fd);letter-spacing:.06em;color:var(--muted)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs button:hover{color:var(--ink)}
+.tabs .tn{font-family:var(--fm);font-size:11px;color:var(--accent);margin-right:6px}
+main{max-width:1480px;margin:0 auto;padding:16px 20px 40px}
+.tab{display:flex;flex-direction:column;gap:14px}
+.tab[hidden]{display:none}
+
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.ctrl{display:flex;gap:6px}
+.btn{background:var(--panel-2);border:1px solid #2c4060;border-radius:8px;padding:8px 14px;font:600 13px var(--fb)}
+.btn:hover{border-color:var(--sig)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.btn.ghost{background:transparent}
+.btn.ok{border-color:var(--ok);color:var(--ok)} .btn.ok:hover{background:rgba(63,214,160,.12)}
+.btn.bad{border-color:var(--crit);color:var(--crit)} .btn.bad:hover{background:rgba(255,84,104,.12)}
+.slow{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.slow input{accent-color:var(--accent);width:130px}
+.slow output{font:600 12px var(--fm);color:var(--ink);min-width:44px}
+.layers{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.layer-t{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;font:600 12.5px var(--fb);display:flex;align-items:center;gap:6px;color:var(--muted)}
+.layer-t::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.layer-t[aria-pressed="true"]{color:var(--ink);border-color:var(--c)}
+.l-meca{--c:#9aa9bd}.l-elec{--c:var(--bp)}.l-elex{--c:var(--sig)}.l-comm{--c:var(--bcanh)}
+
+/* timeline */
+.timeline{display:flex;flex-wrap:wrap;gap:10px 16px}
+.tg{display:flex;flex-direction:column;gap:5px}
+.tgh{font:700 11px var(--fd);letter-spacing:.14em;color:var(--muted)}
+.tgh span{color:#5f7594;margin-left:4px}
+.tgc{display:flex;gap:4px;flex-wrap:wrap}
+.chip-step{position:relative;width:32px;height:34px;border-radius:7px;border:1px solid var(--line);background:var(--panel);overflow:hidden;padding:0}
+.chip-step b{font:700 15px var(--fd);position:relative;z-index:1}
+.chip-step i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent)}
+.chip-step.done{border-color:#2f4566;color:#9fb2c9;background:#122033}
+.chip-step.act{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip-step.act i{background:#fff}
+.chip-step:hover{border-color:var(--sig)}
+
+/* stage */
+.stage{background:radial-gradient(1200px 500px at 50% 40%,#0f1a28,#0a1119);border:1px solid var(--line);border-radius:14px;overflow-x:auto;padding:6px}
+#arch{display:block;width:100%;min-width:980px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{width:26px;height:8px}
+.legend .ln{stroke-width:3}
+
+/* run grid */
+.run-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel h3{font-size:15px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.sc-head{display:flex;gap:14px;align-items:center;margin-bottom:10px}
+.sc-k{flex:none;width:56px;height:56px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font:700 34px var(--fd);color:#fff}
+.sc-ph{font:700 11px var(--fd);letter-spacing:.16em;color:var(--accent)}
+.sc-head h2{font-size:24px;line-height:1.15}
+.sc-d{margin:0 0 12px;max-width:72ch}
+.sc-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.sc-lab{font:700 11px var(--fd);letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-right:4px}
+.lchip,.cchip{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--c,#2c4060);background:rgba(255,255,255,.03)}
+.cchip::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:1px}
+.sc-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.sc-cols h4{font-size:14px;letter-spacing:.06em;color:var(--ink);margin-bottom:6px}
+.sc-cols ul{margin:0 0 10px;padding-left:18px;font-size:13.5px}
+.sc-cols li{margin:3px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:8px 10px}
+.tl{font-size:11.5px;color:var(--muted)}
+.tv{display:flex;align-items:baseline;gap:5px}
+.tv span{font:600 18px var(--fm);font-variant-numeric:tabular-nums}
+.tv small{font-size:11px;color:var(--muted)}
+.tb{height:3px;background:#1e2d43;border-radius:2px;margin-top:4px;overflow:hidden}
+.tb i{display:block;height:100%;width:0;background:var(--sig);transition:width .2s}
+.lamps{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.lamp{font:700 11px var(--fd);letter-spacing:.08em;padding:3px 8px;border-radius:5px;border:1px solid #2a3b52;color:#566b88;background:#0d151f}
+.lamp.lit.warn{color:#1a1205;background:var(--warn);border-color:var(--warn);box-shadow:0 0 10px rgba(255,176,32,.5)}
+.lamp.lit.crit{color:#fff;background:var(--crit);border-color:var(--crit);box-shadow:0 0 10px rgba(255,84,104,.5)}
+#scope{width:100%;height:230px;display:block;background:#070c12;border:1px solid #1b293c;border-radius:10px}
+.canlog{list-style:none;margin:0;padding:0;font-size:12px;display:flex;flex-direction:column;gap:4px;min-height:120px}
+.canlog li{display:grid;grid-template-columns:52px 74px 1fr;gap:6px;align-items:start;padding:4px 6px;background:var(--panel-2);border-radius:6px}
+.lt{font:500 11px var(--fm);color:var(--muted)}
+.lb{font:700 10.5px var(--fd);letter-spacing:.06em;padding:1px 6px;border-radius:4px;text-align:center;color:#111}
+.b-f{background:var(--canh)}.b-b{background:var(--bcanh)}.b-x{background:var(--sig)}.b-lin{background:var(--lin)}
+.lm b{font-weight:600}
+.note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+
+/* diag */
+.wf{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.wf li{display:flex;gap:10px;align-items:flex-start;background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:9px 10px}
+.wn{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font:700 14px var(--fd);color:#fff}
+.wf b{display:block;font-size:13.5px}
+.wf small{display:block;font-size:12px;color:var(--muted);line-height:1.4}
+.diag-grid{display:grid;grid-template-columns:290px minmax(0,1fr);gap:14px;align-items:start}
+.sym-side{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto}
+.search{width:100%;background:var(--panel-2);border:1px solid #2c4060;border-radius:8px;padding:8px 10px;color:var(--ink);font:400 14px var(--fb);margin-bottom:10px}
+.sg{margin-bottom:12px}
+.sgh{font:700 11px var(--fd);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.symb{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-left:3px solid #22324a;border-radius:6px;padding:7px 10px;margin-bottom:3px}
+.symb span{display:block;font-size:13.5px;font-weight:500;line-height:1.35}
+.symb small{color:var(--muted);font-size:11.5px}
+.symb:hover{background:var(--panel-2)}
+.symb.act{background:var(--panel-2);border-color:#2c4060;border-left-color:var(--warn)}
+.dx-head{margin-top:14px}
+.dx-head h2{font-size:26px;margin:2px 0 4px}
+.dx-head p{margin:0 0 6px;max-width:80ch}
+.kbtn{width:30px;height:30px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);font:700 15px var(--fd)}
+.kbtn:hover{background:var(--accent);color:#fff}
+.dx-cols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;margin-top:12px;align-items:start}
+.tree-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.tree h3,.dx-side h3{font-size:15px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.dx-side h3{margin:4px 0 8px}
+.dx-side h3:not(:first-child){margin-top:16px}
+.cklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ck{display:flex;gap:10px;background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:10px}
+.ck-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 14px var(--fd);background:#22324a}
+.ck-b{flex:1;min-width:0}
+.ck-t{font-weight:600}
+.ck-how{font-size:13.5px;color:#c4d1e0;margin-top:2px}
+.ck-spec{font-size:13px;margin-top:6px;display:flex;gap:8px;align-items:baseline}
+.ck-spec span{font:700 10.5px var(--fd);letter-spacing:.1em;color:#111;background:var(--sig);padding:1px 6px;border-radius:4px;flex:none}
+.ck-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.ck.active{border-color:var(--sig);box-shadow:0 0 0 1px var(--sig) inset}
+.ck.active .ck-n{background:var(--sig);color:#06121d}
+.ck.pass .ck-n,.ck.done .ck-n{background:var(--ok);color:#06121d}
+.ck.fail{border-color:var(--crit)}
+.ck.fail .ck-n{background:var(--crit)}
+.ck.fixed .ck-n{background:var(--warn);color:#1a1205}
+.ck.wait{opacity:.5}
+.ck.info .ck-t::after{content:"Thao tác";font:700 10px var(--fd);letter-spacing:.1em;color:var(--muted);border:1px solid #2c4060;border-radius:4px;padding:0 5px;margin-left:8px;vertical-align:2px}
+.ck-res{margin-top:10px;border-radius:8px;padding:10px 12px;border:1px solid var(--crit);background:rgba(255,84,104,.07)}
+.ck-res.fixed{border-color:var(--warn);background:rgba(255,176,32,.07)}
+.ck-res.end{border-color:var(--ok);background:rgba(63,214,160,.07);margin-top:10px}
+.cr-h{font:700 12px var(--fd);letter-spacing:.14em;text-transform:uppercase;color:var(--crit)}
+.ck-res.fixed .cr-h{color:var(--warn)} .ck-res.end .cr-h{color:var(--ok)}
+.ck-res p{margin:4px 0;font-size:13.5px}
+.cr-p{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:6px 0;font-size:12.5px}
+.cr-p>span:first-child{color:var(--muted)}
+.pchip{background:#2a1b22;border:1px solid var(--crit);border-radius:999px;padding:2px 9px;font-size:12.5px}
+.ck-res.fixed .pchip{background:#2a2312;border-color:var(--warn)}
+.cr-fix{color:#c4d1e0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font:700 11px var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding:6px 8px}
+.tbl td{border-bottom:1px solid #1a283b;padding:7px 8px;vertical-align:top}
+.lv{font:700 11px var(--fd);letter-spacing:.06em;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.lv3{background:var(--crit);color:#fff}.lv2{background:var(--warn);color:#1a1205}.lv1{background:#2c4060;color:var(--ink)}
+#arch.diag .cmp{opacity:.3;transition:opacity .3s}
+#arch.diag .cmp.sus{opacity:1}
+#arch.diag .cmp.hot .body{filter:none}
+#arch.diag .cmp.sus .body{stroke:var(--warn);stroke-width:2.8;filter:drop-shadow(0 0 6px rgba(255,176,32,.8));animation:sus 1.1s ease-in-out infinite}
+#arch.diag .wire,#arch.diag .bus{opacity:.08}
+#arch.diag .flowp{opacity:.12}
+@keyframes sus{50%{stroke-opacity:.3}}
+
+/* catalog */
+.cat-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fchip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font-size:12.5px}
+.fchip b{font:600 11px var(--fm);color:var(--muted);margin-left:4px}
+.fchip.act{border-color:var(--accent);background:rgba(255,59,78,.12)}
+.cat-search{display:flex;gap:10px;align-items:center}
+.cat-search .search{margin:0;max-width:360px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.cat{min-width:1100px}
+.cat td{font-size:13px}
+.cat td:first-child{min-width:210px}
+.cat .sys{display:block;font:700 10.5px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.cat td b{display:block;font-size:13.5px}
+.cat td small{display:block;color:var(--muted);font-size:12px}
+.spec{font-family:var(--fm);font-size:12.5px;color:var(--sig)}
+.maint-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.disclaimer{border:1px solid #3a2f17;background:rgba(255,176,32,.06);border-radius:10px;padding:10px 14px;font-size:13px;color:#e8d7b2}
+footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color:var(--muted)}
+
+/* SVG */
+.zl{font:700 10px var(--fd);letter-spacing:.16em;fill:#5f7594}
+.lbl,.ns{font:500 10px var(--fd);fill:var(--muted)}
+.ns2{font:600 9.5px var(--fd);fill:var(--ink)}
+.nt{font:700 11px var(--fd);fill:var(--ink);letter-spacing:.04em}
+.hb{font-weight:700;letter-spacing:.1em;fill:#7d93b1}
+.rl{font:600 10px var(--fd);fill:var(--ink)}
+.val{font:600 13px var(--fm);fill:var(--sig)} .val.sm{font-size:11px}
+.pcmt{font:700 20px var(--fd);fill:var(--ink);letter-spacing:.14em}
+.gwt{fill:var(--bcanh)}
+.body{fill:var(--panel-2);stroke:#2f4566;stroke-width:1.2;transition:stroke .3s}
+.node{fill:#132034}
+.gwb{fill:#1a2335;stroke:#46597a}
+.boxc{fill:#0e1722}
+.pcmb{fill:#13223a;stroke:#3d6aa0;stroke-width:1.6}
+.cmp.on .body{stroke:#4f7fb0}
+.cmp.hot .body{stroke:var(--sig);stroke-width:2.2;filter:drop-shadow(0 0 5px rgba(76,195,255,.7))}
+.led{fill:#24324a;stroke:#3a4d6b}
+.cmp.on .led{fill:var(--ok);filter:drop-shadow(0 0 4px var(--ok))}
+.term{fill:#55606f}.term.p{fill:var(--bp)}
+.fuse{fill:#22324a;stroke:#3a4d6b}
+.gnd{stroke:var(--muted);fill:none;stroke-width:1.5}
+.pin{fill:#3a4d6b}
+.wire{fill:none;stroke-width:1.5;opacity:.15;stroke-linejoin:round;transition:opacity .3s}
+.t-bp{stroke:var(--bp)}.t-ig{stroke:var(--ig)}.t-big{stroke:var(--bp);stroke-width:3.2}.t-ana{stroke:var(--ana)}.t-dig{stroke:var(--dig)}.t-pwm{stroke:var(--pwm)}
+.wire.on{opacity:.55;stroke-dasharray:7 5;animation:flow 1s linear infinite}
+.wire.hot{opacity:1;stroke-width:2.4;filter:drop-shadow(0 0 3px rgba(255,255,255,.35))}
+.t-big.hot{stroke-width:4}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.bus{fill:none;stroke-width:2;opacity:.3;transition:opacity .3s}
+.canh{stroke:var(--canh)}.canl{stroke:var(--canl)}.bcanh{stroke:var(--bcanh)}.bcanl{stroke:var(--bcanl)}.lin{stroke:var(--lin);stroke-dasharray:3 3}
+.bus.on{opacity:.9}
+.flowp{fill:none;opacity:.16;stroke-linecap:round;stroke-linejoin:round}
+.f-air{stroke:var(--air);stroke-width:5;stroke-dasharray:3 11}
+.f-exh{stroke:var(--exh);stroke-width:5;stroke-dasharray:3 11}
+.f-fuel{stroke:var(--fuel);stroke-width:2.5;stroke-dasharray:6 6}
+.f-cool{stroke:var(--cool);stroke-width:4;stroke-dasharray:6 6}
+.f-chain{stroke:#8a99ae;stroke-width:2;stroke-dasharray:3 3}
+.flowp.run{opacity:.9;animation:flow .9s linear infinite}
+.f-chain.run{animation:none}
+.belt{fill:none;stroke:#5d6b80;stroke-width:3;stroke-dasharray:8 5;opacity:.6}
+.belt.run{opacity:1}
+.belt.hot{stroke:var(--sig)}
+.case{fill:#111a27;stroke:#2b3b52}
+.blockm{fill:#152131;stroke:#2b3b52}
+.headm{fill:#1a2738;stroke:#33465f}
+.bore{fill:#0a1119;stroke:#2b3b52}
+.shaft{stroke:#6c7c92;stroke-width:6;stroke-linecap:round;fill:none}
+.cw{fill:#273447;stroke:#3e506a}
+.throw{stroke:#8494aa;stroke-width:8;stroke-linecap:round}
+.rod{stroke:#9aa9bd;stroke-width:9;stroke-linecap:round}
+.cpin{fill:#c6d1df}
+.piston{fill:#aab7c7;stroke:#d5dde7}
+.ring{stroke:#6b7a8f;stroke-width:1.5}
+.wpin{fill:#5a687c}
+.pnum{font:700 9px var(--fd);fill:#1a2738}
+.vstem{stroke:#9aa9bd;stroke-width:2.5}
+.vhead.in{fill:var(--air)}.vhead.ex{fill:#d1925c}
+.cam{fill:#6f8098;stroke:#a6b4c6}
+.sparkG{fill:rgba(255,215,90,.4)}.sparkS{fill:#ffe27a}
+.spray{fill:rgba(233,185,73,.8)}
+.stk{font:700 10px var(--fd);fill:#9fb2c9;letter-spacing:.12em}
+.exhp{fill:#353d4c;stroke:#4c5668}
+.runner{fill:#1d3850;stroke:#2b5677}
+.plen{fill:#1a3247;stroke:#2b5677}
+.railb{fill:#5d4f27;stroke:var(--fuel)}
+.catb{fill:#3a2e29;stroke:#7a5a43}
+.duct{fill:#1a3247;stroke:#2b5677}
+.plate{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.sens{fill:#20314a;stroke:#4a6a92}
+.coilb{fill:#36294f;stroke:#7d5bb5}.injb{fill:#4a3f1f;stroke:#b08b2e}
+.plug{stroke:#c9d2de;stroke-width:2}
+.sprk{fill:#26364d}
+.pulley{fill:#273447}.tooth{stroke:#9aa9bd;stroke-width:2}.mark{stroke:var(--accent);stroke-width:2}
+.fly{fill:#1d2939}.pinion{fill:#8494aa}
+.altb,.compb{fill:#22304a}
+.spoke{stroke:#9aa9bd;stroke-width:3;stroke-linecap:round}
+.rad{fill:#112334}.fin{stroke:#2f5b80}.shroud{fill:#0e1722}.blade{fill:#5e7391}.hub{fill:#9aa9bd}
+.cvtc{fill:#101926}.pul{fill:none;stroke:#9aa9bd;stroke-width:5}.cbelt{stroke:#c6d1df;stroke-width:2.5}
+.gear{fill:#2a3a52;stroke:#6c7c92}
+.tire{fill:#10151c;stroke:#2f3b4b;stroke-width:8}.rim{fill:#1d2939;stroke:#6c7c92}.disc{fill:none;stroke:#56657a;stroke-width:5}
+.caliper{fill:var(--accent)}.spokeW{stroke:#8494aa;stroke-width:4;stroke-linecap:round}
+.tank{fill:#18222f}.pumpb{fill:#3a3320;stroke:var(--fuel)}
+.panelbox{fill:#0e1722;stroke:#2b3b52;stroke-dasharray:4 3}
+.btnc{fill:#2a1a20;stroke:var(--accent)}
+.pk circle{fill:#fff;stroke-width:3}
+.pk-f circle{stroke:var(--canh)}.pk-b circle{stroke:var(--bcanh)}.pk-x circle{stroke:#fff;fill:var(--sig)}.pk-lin circle{stroke:var(--lin)}
+.pkt{font:600 10.5px var(--fd);fill:var(--ink);paint-order:stroke;stroke:#0a1018;stroke-width:3.5px}
+[data-layer].off{opacity:.05}
+[data-layer]{transition:opacity .3s}
+
+@media (max-width:1180px){.run-grid{grid-template-columns:1fr 1fr}.run-grid>.panel:first-child{grid-column:1/-1}.wf{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.diag-grid{grid-template-columns:1fr}.sym-side{position:static;max-height:none}.dx-cols{grid-template-columns:1fr}.maint-grid{grid-template-columns:1fr}.layers{margin-left:0}}
+@media (max-width:700px){.run-grid{grid-template-columns:1fr}.sc-cols{grid-template-columns:1fr}.wf{grid-template-columns:1fr}main,.top-in{padding-left:14px;padding-right:14px}}
+@media (prefers-reduced-motion:reduce){.wire.on,.flowp.run,#arch.diag .cmp.sus .body{animation:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="eyebrow">COMPLETE VEHICLE ELECTRICAL &amp; ELECTRONIC ARCHITECTURE · ADVANCED LEVEL</div>
+  <h1>Honda City 2024 <span>· Mô phỏng luồng vận hành động cơ A→Z &amp; mô hình chẩn đoán</span></h1>
+  <div class="specline"><span><b>1.5L DOHC i-VTEC</b> · 1.498 cc · 16 xu-páp</span><span><b>119 hp</b>/6.600 · <b>145 Nm</b>/4.300 vòng/phút</span><span>PGM-FI · CVT</span><span>F-CAN ~500 kbps · B-CAN ~125 kbps · LIN</span></div>
+  <nav class="tabs" role="tablist" aria-label="Nội dung">
+    <button type="button" role="tab" data-tab="van-hanh" aria-selected="true"><span class="tn">01</span>VẬN HÀNH A→Z</button>
+    <button type="button" role="tab" data-tab="chan-doan" aria-selected="false"><span class="tn">02</span>MÔ HÌNH CHẨN ĐOÁN</button>
+    <button type="button" role="tab" data-tab="danh-muc" aria-selected="false"><span class="tn">03</span>DANH MỤC CHI TIẾT &amp; MÃ LỖI</button>
+    <button type="button" role="tab" data-tab="bao-duong" aria-selected="false"><span class="tn">04</span>BẢO DƯỠNG · THÔNG SỐ · CÀI ĐẶT</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- ============ TAB 1 ============ -->
+<section class="tab" id="tab-van-hanh" role="tabpanel">
+  <div class="toolbar">
+    <div class="ctrl">
+      <button type="button" class="btn" id="bPrev">◀ Bước trước</button>
+      <button type="button" class="btn primary" id="bPlay" aria-pressed="true">❚❚ Tạm dừng</button>
+      <button type="button" class="btn" id="bNext">Bước sau ▶</button>
+    </div>
+    <label class="slow" for="slow">Chuyển động chậm <input type="range" id="slow" min="2" max="20" value="8"><output id="slowv">×0,08</output></label>
+    <div class="layers" aria-label="Bật/tắt lớp">
+      <button type="button" class="layer-t l-meca" data-l="meca" aria-pressed="true">L1 Cơ khí</button>
+      <button type="button" class="layer-t l-elec" data-l="elec" aria-pressed="true">L2 Điện</button>
+      <button type="button" class="layer-t l-elex" data-l="elex" aria-pressed="true">L3 Điện tử</button>
+      <button type="button" class="layer-t l-comm" data-l="comm" aria-pressed="true">L4 Truyền thông</button>
+    </div>
+  </div>
+  <div class="timeline" id="timeline"></div>
+  <div class="stage" id="stageRun">
+    <svg id="arch" viewBox="0 0 1280 770" role="img" aria-label="Sơ đồ kiến trúc điện – điện tử Honda City 2024: nguồn, PCM, cảm biến, cơ cấu chấp hành, mạng F-CAN/B-CAN/LIN và động cơ 4 xi-lanh chuyển động theo từng bước vận hành"></svg>
+  </div>
+  <div class="legend" aria-label="Chú giải">
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#ff4d4d"/></svg>B+ 12 V</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#ff9f1c"/></svg>IG (sau khóa)</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#3ddc84"/></svg>Tín hiệu tương tự 0–5 V</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#4c9dff"/></svg>Tín hiệu số / xung</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#c77dff"/></svg>Điều khiển PWM / low-side</span>
+    <span><svg viewBox="0 0 26 8"><line x1="0" y1="2" x2="26" y2="2" stroke="#ff5c6c" stroke-width="2"/><line x1="0" y1="6" x2="26" y2="6" stroke="#ffb3ba" stroke-width="2"/></svg>F-CAN H/L</span>
+    <span><svg viewBox="0 0 26 8"><line x1="0" y1="2" x2="26" y2="2" stroke="#ff9f43" stroke-width="2"/><line x1="0" y1="6" x2="26" y2="6" stroke="#ffd29b" stroke-width="2"/></svg>B-CAN H/L</span>
+    <span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ed3b7" stroke-width="2" stroke-dasharray="3 3"/></svg>LIN</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#e9b949" stroke-dasharray="6 4"/></svg>Nhiên liệu</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#36c5f0" stroke-dasharray="6 4"/></svg>Nước làm mát</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#9ad7ff" stroke-dasharray="3 5"/></svg>Khí nạp</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#a3acb9" stroke-dasharray="3 5"/></svg>Khí xả</span>
+    <span>Viền xanh sáng = thành phần đang xử lý ở bước hiện tại · đèn xanh trên rơ-le = rơ-le đóng</span>
+  </div>
+  <div class="run-grid">
+    <article class="panel" id="stepCard" aria-live="polite"></article>
+    <div class="panel">
+      <h3>Dữ liệu trực tiếp (data list PCM)</h3>
+      <div class="tiles" id="tiles"></div>
+      <h3 style="margin-top:14px">Đèn cảnh báo cụm đồng hồ</h3>
+      <div class="lamps" id="lamps"></div>
+    </div>
+    <div class="panel">
+      <h3>Oscilloscope · xi-lanh #1</h3>
+      <canvas id="scope" aria-label="Dạng sóng CKP, CMP, xung kim phun và tín hiệu đánh lửa của xi-lanh 1 trong một chu trình 720 độ"></canvas>
+      <p class="note">Dạng sóng minh họa theo góc trục khuỷu; con trỏ trắng là vị trí hiện tại của xi-lanh #1.</p>
+      <h3 style="margin-top:14px">Bản tin mạng (bus trace)</h3>
+      <ol class="canlog" id="canlog"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="tab-chan-doan" role="tabpanel" hidden>
+  <div class="panel">
+    <h3>Quy trình chẩn đoán chuyên nghiệp – 8 bước</h3>
+    <ol class="wf" id="workflow"></ol>
+  </div>
+  <div class="diag-grid">
+    <aside class="panel sym-side">
+      <h3>Chọn triệu chứng</h3>
+      <input class="search" id="symSearch" type="search" placeholder="Tìm: không đề, P0335, quạt, CVT…" aria-label="Tìm triệu chứng">
+      <div id="symList"></div>
+    </aside>
+    <div class="panel">
+      <div class="stage" id="stageDiag"></div>
+      <div id="dxMain"></div>
+    </div>
+  </div>
+  <p class="disclaimer">Giá trị trong mô hình mang tính tham khảo cho đào tạo kỹ thuật. Luôn đối chiếu Honda Service Manual theo số VIN của xe trước khi kết luận và thay thế. Với hệ thống túi khí SRS: ngắt cọc âm ắc quy, chờ ít nhất 3 phút trước khi làm việc, không đo điện trở túi khí bằng đồng hồ VOM.</p>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="tab-danh-muc" role="tabpanel" hidden>
+  <div class="panel">
+    <h3>Danh mục toàn bộ chi tiết chẩn đoán</h3>
+    <div class="cat-search"><input class="search" id="catSearch" type="search" placeholder="Tìm chi tiết, mã lỗi, triệu chứng…" aria-label="Tìm trong danh mục"><span class="muted" id="catCount"></span></div>
+    <div class="cat-tools" id="catChips" style="margin-top:10px"></div>
+  </div>
+  <div class="tblwrap">
+    <table class="tbl cat">
+      <thead><tr><th>Chi tiết · vị trí</th><th>Chức năng / tín hiệu</th><th>Cách kiểm tra</th><th>Giá trị tham khảo</th><th>Mã lỗi</th><th>Triệu chứng khi hỏng</th><th>Lưu ý khi thay</th></tr></thead>
+      <tbody id="catBody"></tbody>
+    </table>
+  </div>
+  <p class="disclaimer">Mã P/U/C là mã chuẩn SAE dùng chung OBD-II. Mã riêng của Honda (SRS, VSA, EPS, Keyless, MICU…) đọc bằng Honda i-HDS. Các trị số có ghi “tham khảo” cần xác nhận theo Service Manual.</p>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="tab-bao-duong" role="tabpanel" hidden>
+  <div class="maint-grid">
+    <div class="panel"><h3>Phụ tùng hao mòn & chu kỳ thay (tham khảo)</h3>
+      <table class="tbl"><thead><tr><th>Hạng mục</th><th>Chu kỳ</th><th>Ghi chú</th></tr></thead><tbody id="maintBody"></tbody></table>
+      <p class="note">Theo sổ bảo hành và lịch bảo dưỡng Honda Việt Nam cho xe của bạn; điều kiện khắc nghiệt (kẹt xe, bụi, ngập nước) cần rút ngắn chu kỳ.</p></div>
+    <div class="panel"><h3>Thông số đo nhanh</h3>
+      <table class="tbl"><thead><tr><th>Thông số</th><th>Giá trị</th></tr></thead><tbody id="specBody"></tbody></table></div>
+    <div class="panel"><h3>Cài đặt bắt buộc sau khi thay/sửa</h3>
+      <table class="tbl"><thead><tr><th>Sau khi</th><th>Cần thực hiện</th></tr></thead><tbody id="procBody"></tbody></table></div>
+    <div class="panel"><h3>Công cụ chẩn đoán</h3>
+      <table class="tbl"><thead><tr><th>Công cụ</th><th>Dùng để</th></tr></thead><tbody id="toolBody"></tbody></table></div>
+  </div>
+</section>
+</main>
+<footer>Mô hình đào tạo minh họa kiến trúc điện – điện tử Honda City 2024 (thế hệ GN, thị trường Việt Nam). Chuyển động động cơ được làm chậm để quan sát; trị số chỉ mang tính tham khảo.</footer>
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>

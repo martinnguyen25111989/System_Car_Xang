@@ -1,0 +1,1978 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Honda City 2024 Vận hành &amp; Chẩn đoán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Bàn làm việc kỹ thuật viên: nền graphite xanh, đỏ Honda làm điểm nhấn, xanh tín hiệu cho dòng dữ liệu.
+     Layout: sơ đồ kiến trúc full-width ở trên, bảng điều khiển & dữ liệu ở dưới. */
+  --bg:#0a1018; --panel:#101924; --panel-2:#152131; --line:#22324a; --ink:#e8eef6; --muted:#8ea2ba;
+  --accent:#ff3b4e; --sig:#4cc3ff; --ok:#3fd6a0; --warn:#ffb020; --crit:#ff5468;
+  --bp:#ff4d4d; --ig:#ff9f1c; --ana:#3ddc84; --dig:#4c9dff; --pwm:#c77dff;
+  --canh:#ff5c6c; --canl:#ffb3ba; --bcanh:#ff9f43; --bcanl:#ffd29b; --lin:#2ed3b7;
+  --fuel:#e9b949; --cool:#36c5f0; --air:#9ad7ff; --exh:#a3acb9;
+  --fd:'Barlow Condensed','Arial Narrow',sans-serif; --fb:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',sans-serif; --fm:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.55 var(--fb);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--sig);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--fd);text-wrap:balance;margin:0;letter-spacing:.01em}
+.muted{color:var(--muted)}
+.mono{font-family:var(--fm);font-size:12.5px}
+
+/* header */
+.top{border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0f1823,#0a1018)}
+.top-in{max-width:1480px;margin:0 auto;padding:18px 20px 0;display:flex;flex-direction:column;gap:10px}
+.eyebrow{font:700 12px var(--fd);letter-spacing:.18em;color:var(--accent)}
+h1{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.1}
+h1 span{color:var(--muted);font-weight:600}
+.specline{font:500 12px var(--fm);color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 14px}
+.specline b{color:var(--ink);font-weight:600}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px 9px;font:700 15px var(--fd);letter-spacing:.06em;color:var(--muted)}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs button:hover{color:var(--ink)}
+.tabs .tn{font-family:var(--fm);font-size:11px;color:var(--accent);margin-right:6px}
+main{max-width:1480px;margin:0 auto;padding:16px 20px 40px}
+.tab{display:flex;flex-direction:column;gap:14px}
+.tab[hidden]{display:none}
+
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.ctrl{display:flex;gap:6px}
+.btn{background:var(--panel-2);border:1px solid #2c4060;border-radius:8px;padding:8px 14px;font:600 13px var(--fb)}
+.btn:hover{border-color:var(--sig)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.btn.ghost{background:transparent}
+.btn.ok{border-color:var(--ok);color:var(--ok)} .btn.ok:hover{background:rgba(63,214,160,.12)}
+.btn.bad{border-color:var(--crit);color:var(--crit)} .btn.bad:hover{background:rgba(255,84,104,.12)}
+.slow{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.slow input{accent-color:var(--accent);width:130px}
+.slow output{font:600 12px var(--fm);color:var(--ink);min-width:44px}
+.layers{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.layer-t{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 12px;font:600 12.5px var(--fb);display:flex;align-items:center;gap:6px;color:var(--muted)}
+.layer-t::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.layer-t[aria-pressed="true"]{color:var(--ink);border-color:var(--c)}
+.l-meca{--c:#9aa9bd}.l-elec{--c:var(--bp)}.l-elex{--c:var(--sig)}.l-comm{--c:var(--bcanh)}
+
+/* timeline */
+.timeline{display:flex;flex-wrap:wrap;gap:10px 16px}
+.tg{display:flex;flex-direction:column;gap:5px}
+.tgh{font:700 11px var(--fd);letter-spacing:.14em;color:var(--muted)}
+.tgh span{color:#5f7594;margin-left:4px}
+.tgc{display:flex;gap:4px;flex-wrap:wrap}
+.chip-step{position:relative;width:32px;height:34px;border-radius:7px;border:1px solid var(--line);background:var(--panel);overflow:hidden;padding:0}
+.chip-step b{font:700 15px var(--fd);position:relative;z-index:1}
+.chip-step i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent)}
+.chip-step.done{border-color:#2f4566;color:#9fb2c9;background:#122033}
+.chip-step.act{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip-step.act i{background:#fff}
+.chip-step:hover{border-color:var(--sig)}
+
+/* stage */
+.stage{background:radial-gradient(1200px 500px at 50% 40%,#0f1a28,#0a1119);border:1px solid var(--line);border-radius:14px;overflow-x:auto;padding:6px}
+#arch{display:block;width:100%;min-width:980px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend svg{width:26px;height:8px}
+.legend .ln{stroke-width:3}
+
+/* run grid */
+.run-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.panel h3{font-size:15px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.sc-head{display:flex;gap:14px;align-items:center;margin-bottom:10px}
+.sc-k{flex:none;width:56px;height:56px;border-radius:12px;background:var(--accent);display:grid;place-items:center;font:700 34px var(--fd);color:#fff}
+.sc-ph{font:700 11px var(--fd);letter-spacing:.16em;color:var(--accent)}
+.sc-head h2{font-size:24px;line-height:1.15}
+.sc-d{margin:0 0 12px;max-width:72ch}
+.sc-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.sc-lab{font:700 11px var(--fd);letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-right:4px}
+.lchip,.cchip{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--c,#2c4060);background:rgba(255,255,255,.03)}
+.cchip::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:1px}
+.sc-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.sc-cols h4{font-size:14px;letter-spacing:.06em;color:var(--ink);margin-bottom:6px}
+.sc-cols ul{margin:0 0 10px;padding-left:18px;font-size:13.5px}
+.sc-cols li{margin:3px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:8px 10px}
+.tl{font-size:11.5px;color:var(--muted)}
+.tv{display:flex;align-items:baseline;gap:5px}
+.tv span{font:600 18px var(--fm);font-variant-numeric:tabular-nums}
+.tv small{font-size:11px;color:var(--muted)}
+.tb{height:3px;background:#1e2d43;border-radius:2px;margin-top:4px;overflow:hidden}
+.tb i{display:block;height:100%;width:0;background:var(--sig);transition:width .2s}
+.lamps{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.lamp{font:700 11px var(--fd);letter-spacing:.08em;padding:3px 8px;border-radius:5px;border:1px solid #2a3b52;color:#566b88;background:#0d151f}
+.lamp.lit.warn{color:#1a1205;background:var(--warn);border-color:var(--warn);box-shadow:0 0 10px rgba(255,176,32,.5)}
+.lamp.lit.crit{color:#fff;background:var(--crit);border-color:var(--crit);box-shadow:0 0 10px rgba(255,84,104,.5)}
+#scope{width:100%;height:230px;display:block;background:#070c12;border:1px solid #1b293c;border-radius:10px}
+.canlog{list-style:none;margin:0;padding:0;font-size:12px;display:flex;flex-direction:column;gap:4px;min-height:120px}
+.canlog li{display:grid;grid-template-columns:52px 74px 1fr;gap:6px;align-items:start;padding:4px 6px;background:var(--panel-2);border-radius:6px}
+.lt{font:500 11px var(--fm);color:var(--muted)}
+.lb{font:700 10.5px var(--fd);letter-spacing:.06em;padding:1px 6px;border-radius:4px;text-align:center;color:#111}
+.b-f{background:var(--canh)}.b-b{background:var(--bcanh)}.b-x{background:var(--sig)}.b-lin{background:var(--lin)}
+.lm b{font-weight:600}
+.note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+
+/* diag */
+.wf{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.wf li{display:flex;gap:10px;align-items:flex-start;background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:9px 10px}
+.wn{flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font:700 14px var(--fd);color:#fff}
+.wf b{display:block;font-size:13.5px}
+.wf small{display:block;font-size:12px;color:var(--muted);line-height:1.4}
+.diag-grid{display:grid;grid-template-columns:290px minmax(0,1fr);gap:14px;align-items:start}
+.sym-side{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto}
+.search{width:100%;background:var(--panel-2);border:1px solid #2c4060;border-radius:8px;padding:8px 10px;color:var(--ink);font:400 14px var(--fb);margin-bottom:10px}
+.sg{margin-bottom:12px}
+.sgh{font:700 11px var(--fd);letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.symb{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-left:3px solid #22324a;border-radius:6px;padding:7px 10px;margin-bottom:3px}
+.symb span{display:block;font-size:13.5px;font-weight:500;line-height:1.35}
+.symb small{color:var(--muted);font-size:11.5px}
+.symb:hover{background:var(--panel-2)}
+.symb.act{background:var(--panel-2);border-color:#2c4060;border-left-color:var(--warn)}
+.dx-head{margin-top:14px}
+.dx-head h2{font-size:26px;margin:2px 0 4px}
+.dx-head p{margin:0 0 6px;max-width:80ch}
+.kbtn{width:30px;height:30px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);font:700 15px var(--fd)}
+.kbtn:hover{background:var(--accent);color:#fff}
+.dx-cols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;margin-top:12px;align-items:start}
+.tree-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.tree h3,.dx-side h3{font-size:15px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.dx-side h3{margin:4px 0 8px}
+.dx-side h3:not(:first-child){margin-top:16px}
+.cklist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ck{display:flex;gap:10px;background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:10px}
+.ck-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 14px var(--fd);background:#22324a}
+.ck-b{flex:1;min-width:0}
+.ck-t{font-weight:600}
+.ck-how{font-size:13.5px;color:#c4d1e0;margin-top:2px}
+.ck-spec{font-size:13px;margin-top:6px;display:flex;gap:8px;align-items:baseline}
+.ck-spec span{font:700 10.5px var(--fd);letter-spacing:.1em;color:#111;background:var(--sig);padding:1px 6px;border-radius:4px;flex:none}
+.ck-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.ck.active{border-color:var(--sig);box-shadow:0 0 0 1px var(--sig) inset}
+.ck.active .ck-n{background:var(--sig);color:#06121d}
+.ck.pass .ck-n,.ck.done .ck-n{background:var(--ok);color:#06121d}
+.ck.fail{border-color:var(--crit)}
+.ck.fail .ck-n{background:var(--crit)}
+.ck.fixed .ck-n{background:var(--warn);color:#1a1205}
+.ck.wait{opacity:.5}
+.ck.info .ck-t::after{content:"Thao tác";font:700 10px var(--fd);letter-spacing:.1em;color:var(--muted);border:1px solid #2c4060;border-radius:4px;padding:0 5px;margin-left:8px;vertical-align:2px}
+.ck-res{margin-top:10px;border-radius:8px;padding:10px 12px;border:1px solid var(--crit);background:rgba(255,84,104,.07)}
+.ck-res.fixed{border-color:var(--warn);background:rgba(255,176,32,.07)}
+.ck-res.end{border-color:var(--ok);background:rgba(63,214,160,.07);margin-top:10px}
+.cr-h{font:700 12px var(--fd);letter-spacing:.14em;text-transform:uppercase;color:var(--crit)}
+.ck-res.fixed .cr-h{color:var(--warn)} .ck-res.end .cr-h{color:var(--ok)}
+.ck-res p{margin:4px 0;font-size:13.5px}
+.cr-p{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:6px 0;font-size:12.5px}
+.cr-p>span:first-child{color:var(--muted)}
+.pchip{background:#2a1b22;border:1px solid var(--crit);border-radius:999px;padding:2px 9px;font-size:12.5px}
+.ck-res.fixed .pchip{background:#2a2312;border-color:var(--warn)}
+.cr-fix{color:#c4d1e0}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font:700 11px var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding:6px 8px}
+.tbl td{border-bottom:1px solid #1a283b;padding:7px 8px;vertical-align:top}
+.lv{font:700 11px var(--fd);letter-spacing:.06em;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.lv3{background:var(--crit);color:#fff}.lv2{background:var(--warn);color:#1a1205}.lv1{background:#2c4060;color:var(--ink)}
+#arch.diag .cmp{opacity:.3;transition:opacity .3s}
+#arch.diag .cmp.sus{opacity:1}
+#arch.diag .cmp.hot .body{filter:none}
+#arch.diag .cmp.sus .body{stroke:var(--warn);stroke-width:2.8;filter:drop-shadow(0 0 6px rgba(255,176,32,.8));animation:sus 1.1s ease-in-out infinite}
+#arch.diag .wire,#arch.diag .bus{opacity:.08}
+#arch.diag .flowp{opacity:.12}
+@keyframes sus{50%{stroke-opacity:.3}}
+
+/* catalog */
+.cat-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fchip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font-size:12.5px}
+.fchip b{font:600 11px var(--fm);color:var(--muted);margin-left:4px}
+.fchip.act{border-color:var(--accent);background:rgba(255,59,78,.12)}
+.cat-search{display:flex;gap:10px;align-items:center}
+.cat-search .search{margin:0;max-width:360px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.cat{min-width:1100px}
+.cat td{font-size:13px}
+.cat td:first-child{min-width:210px}
+.cat .sys{display:block;font:700 10.5px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.cat td b{display:block;font-size:13.5px}
+.cat td small{display:block;color:var(--muted);font-size:12px}
+.spec{font-family:var(--fm);font-size:12.5px;color:var(--sig)}
+.maint-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.disclaimer{border:1px solid #3a2f17;background:rgba(255,176,32,.06);border-radius:10px;padding:10px 14px;font-size:13px;color:#e8d7b2}
+footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color:var(--muted)}
+
+/* SVG */
+.zl{font:700 10px var(--fd);letter-spacing:.16em;fill:#5f7594}
+.lbl,.ns{font:500 10px var(--fd);fill:var(--muted)}
+.ns2{font:600 9.5px var(--fd);fill:var(--ink)}
+.nt{font:700 11px var(--fd);fill:var(--ink);letter-spacing:.04em}
+.hb{font-weight:700;letter-spacing:.1em;fill:#7d93b1}
+.rl{font:600 10px var(--fd);fill:var(--ink)}
+.val{font:600 13px var(--fm);fill:var(--sig)} .val.sm{font-size:11px}
+.pcmt{font:700 20px var(--fd);fill:var(--ink);letter-spacing:.14em}
+.gwt{fill:var(--bcanh)}
+.body{fill:var(--panel-2);stroke:#2f4566;stroke-width:1.2;transition:stroke .3s}
+.node{fill:#132034}
+.gwb{fill:#1a2335;stroke:#46597a}
+.boxc{fill:#0e1722}
+.pcmb{fill:#13223a;stroke:#3d6aa0;stroke-width:1.6}
+.cmp.on .body{stroke:#4f7fb0}
+.cmp.hot .body{stroke:var(--sig);stroke-width:2.2;filter:drop-shadow(0 0 5px rgba(76,195,255,.7))}
+.led{fill:#24324a;stroke:#3a4d6b}
+.cmp.on .led{fill:var(--ok);filter:drop-shadow(0 0 4px var(--ok))}
+.term{fill:#55606f}.term.p{fill:var(--bp)}
+.fuse{fill:#22324a;stroke:#3a4d6b}
+.gnd{stroke:var(--muted);fill:none;stroke-width:1.5}
+.pin{fill:#3a4d6b}
+.wire{fill:none;stroke-width:1.5;opacity:.15;stroke-linejoin:round;transition:opacity .3s}
+.t-bp{stroke:var(--bp)}.t-ig{stroke:var(--ig)}.t-big{stroke:var(--bp);stroke-width:3.2}.t-ana{stroke:var(--ana)}.t-dig{stroke:var(--dig)}.t-pwm{stroke:var(--pwm)}
+.wire.on{opacity:.55;stroke-dasharray:7 5;animation:flow 1s linear infinite}
+.wire.hot{opacity:1;stroke-width:2.4;filter:drop-shadow(0 0 3px rgba(255,255,255,.35))}
+.t-big.hot{stroke-width:4}
+@keyframes flow{to{stroke-dashoffset:-24}}
+.bus{fill:none;stroke-width:2;opacity:.3;transition:opacity .3s}
+.canh{stroke:var(--canh)}.canl{stroke:var(--canl)}.bcanh{stroke:var(--bcanh)}.bcanl{stroke:var(--bcanl)}.lin{stroke:var(--lin);stroke-dasharray:3 3}
+.bus.on{opacity:.9}
+.flowp{fill:none;opacity:.16;stroke-linecap:round;stroke-linejoin:round}
+.f-air{stroke:var(--air);stroke-width:5;stroke-dasharray:3 11}
+.f-exh{stroke:var(--exh);stroke-width:5;stroke-dasharray:3 11}
+.f-fuel{stroke:var(--fuel);stroke-width:2.5;stroke-dasharray:6 6}
+.f-cool{stroke:var(--cool);stroke-width:4;stroke-dasharray:6 6}
+.f-chain{stroke:#8a99ae;stroke-width:2;stroke-dasharray:3 3}
+.flowp.run{opacity:.9;animation:flow .9s linear infinite}
+.f-chain.run{animation:none}
+.belt{fill:none;stroke:#5d6b80;stroke-width:3;stroke-dasharray:8 5;opacity:.6}
+.belt.run{opacity:1}
+.belt.hot{stroke:var(--sig)}
+.case{fill:#111a27;stroke:#2b3b52}
+.blockm{fill:#152131;stroke:#2b3b52}
+.headm{fill:#1a2738;stroke:#33465f}
+.bore{fill:#0a1119;stroke:#2b3b52}
+.shaft{stroke:#6c7c92;stroke-width:6;stroke-linecap:round;fill:none}
+.cw{fill:#273447;stroke:#3e506a}
+.throw{stroke:#8494aa;stroke-width:8;stroke-linecap:round}
+.rod{stroke:#9aa9bd;stroke-width:9;stroke-linecap:round}
+.cpin{fill:#c6d1df}
+.piston{fill:#aab7c7;stroke:#d5dde7}
+.ring{stroke:#6b7a8f;stroke-width:1.5}
+.wpin{fill:#5a687c}
+.pnum{font:700 9px var(--fd);fill:#1a2738}
+.vstem{stroke:#9aa9bd;stroke-width:2.5}
+.vhead.in{fill:var(--air)}.vhead.ex{fill:#d1925c}
+.cam{fill:#6f8098;stroke:#a6b4c6}
+.sparkG{fill:rgba(255,215,90,.4)}.sparkS{fill:#ffe27a}
+.spray{fill:rgba(233,185,73,.8)}
+.stk{font:700 10px var(--fd);fill:#9fb2c9;letter-spacing:.12em}
+.exhp{fill:#353d4c;stroke:#4c5668}
+.runner{fill:#1d3850;stroke:#2b5677}
+.plen{fill:#1a3247;stroke:#2b5677}
+.railb{fill:#5d4f27;stroke:var(--fuel)}
+.catb{fill:#3a2e29;stroke:#7a5a43}
+.duct{fill:#1a3247;stroke:#2b5677}
+.plate{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.sens{fill:#20314a;stroke:#4a6a92}
+.coilb{fill:#36294f;stroke:#7d5bb5}.injb{fill:#4a3f1f;stroke:#b08b2e}
+.plug{stroke:#c9d2de;stroke-width:2}
+.sprk{fill:#26364d}
+.pulley{fill:#273447}.tooth{stroke:#9aa9bd;stroke-width:2}.mark{stroke:var(--accent);stroke-width:2}
+.fly{fill:#1d2939}.pinion{fill:#8494aa}
+.altb,.compb{fill:#22304a}
+.spoke{stroke:#9aa9bd;stroke-width:3;stroke-linecap:round}
+.rad{fill:#112334}.fin{stroke:#2f5b80}.shroud{fill:#0e1722}.blade{fill:#5e7391}.hub{fill:#9aa9bd}
+.cvtc{fill:#101926}.pul{fill:none;stroke:#9aa9bd;stroke-width:5}.cbelt{stroke:#c6d1df;stroke-width:2.5}
+.gear{fill:#2a3a52;stroke:#6c7c92}
+.tire{fill:#10151c;stroke:#2f3b4b;stroke-width:8}.rim{fill:#1d2939;stroke:#6c7c92}.disc{fill:none;stroke:#56657a;stroke-width:5}
+.caliper{fill:var(--accent)}.spokeW{stroke:#8494aa;stroke-width:4;stroke-linecap:round}
+.tank{fill:#18222f}.pumpb{fill:#3a3320;stroke:var(--fuel)}
+.panelbox{fill:#0e1722;stroke:#2b3b52;stroke-dasharray:4 3}
+.btnc{fill:#2a1a20;stroke:var(--accent)}
+.pk circle{fill:#fff;stroke-width:3}
+.pk-f circle{stroke:var(--canh)}.pk-b circle{stroke:var(--bcanh)}.pk-x circle{stroke:#fff;fill:var(--sig)}.pk-lin circle{stroke:var(--lin)}
+.pkt{font:600 10.5px var(--fd);fill:var(--ink);paint-order:stroke;stroke:#0a1018;stroke-width:3.5px}
+[data-layer].off{opacity:.05}
+[data-layer]{transition:opacity .3s}
+
+@media (max-width:1180px){.run-grid{grid-template-columns:1fr 1fr}.run-grid>.panel:first-child{grid-column:1/-1}.wf{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.diag-grid{grid-template-columns:1fr}.sym-side{position:static;max-height:none}.dx-cols{grid-template-columns:1fr}.maint-grid{grid-template-columns:1fr}.layers{margin-left:0}}
+@media (max-width:700px){.run-grid{grid-template-columns:1fr}.sc-cols{grid-template-columns:1fr}.wf{grid-template-columns:1fr}main,.top-in{padding-left:14px;padding-right:14px}}
+@media (prefers-reduced-motion:reduce){.wire.on,.flowp.run,#arch.diag .cmp.sus .body{animation:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="eyebrow">COMPLETE VEHICLE ELECTRICAL &amp; ELECTRONIC ARCHITECTURE · ADVANCED LEVEL</div>
+  <h1>Honda City 2024 <span>· Mô phỏng luồng vận hành động cơ A→Z &amp; mô hình chẩn đoán</span></h1>
+  <div class="specline"><span><b>1.5L DOHC i-VTEC</b> · 1.498 cc · 16 xu-páp</span><span><b>119 hp</b>/6.600 · <b>145 Nm</b>/4.300 vòng/phút</span><span>PGM-FI · CVT</span><span>F-CAN ~500 kbps · B-CAN ~125 kbps · LIN</span></div>
+  <nav class="tabs" role="tablist" aria-label="Nội dung">
+    <button type="button" role="tab" data-tab="van-hanh" aria-selected="true"><span class="tn">01</span>VẬN HÀNH A→Z</button>
+    <button type="button" role="tab" data-tab="chan-doan" aria-selected="false"><span class="tn">02</span>MÔ HÌNH CHẨN ĐOÁN</button>
+    <button type="button" role="tab" data-tab="danh-muc" aria-selected="false"><span class="tn">03</span>DANH MỤC CHI TIẾT &amp; MÃ LỖI</button>
+    <button type="button" role="tab" data-tab="bao-duong" aria-selected="false"><span class="tn">04</span>BẢO DƯỠNG · THÔNG SỐ · CÀI ĐẶT</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- ============ TAB 1 ============ -->
+<section class="tab" id="tab-van-hanh" role="tabpanel">
+  <div class="toolbar">
+    <div class="ctrl">
+      <button type="button" class="btn" id="bPrev">◀ Bước trước</button>
+      <button type="button" class="btn primary" id="bPlay" aria-pressed="true">❚❚ Tạm dừng</button>
+      <button type="button" class="btn" id="bNext">Bước sau ▶</button>
+    </div>
+    <label class="slow" for="slow">Chuyển động chậm <input type="range" id="slow" min="2" max="20" value="8"><output id="slowv">×0,08</output></label>
+    <div class="layers" aria-label="Bật/tắt lớp">
+      <button type="button" class="layer-t l-meca" data-l="meca" aria-pressed="true">L1 Cơ khí</button>
+      <button type="button" class="layer-t l-elec" data-l="elec" aria-pressed="true">L2 Điện</button>
+      <button type="button" class="layer-t l-elex" data-l="elex" aria-pressed="true">L3 Điện tử</button>
+      <button type="button" class="layer-t l-comm" data-l="comm" aria-pressed="true">L4 Truyền thông</button>
+    </div>
+  </div>
+  <div class="timeline" id="timeline"></div>
+  <div class="stage" id="stageRun">
+    <svg id="arch" viewBox="0 0 1280 770" role="img" aria-label="Sơ đồ kiến trúc điện – điện tử Honda City 2024: nguồn, PCM, cảm biến, cơ cấu chấp hành, mạng F-CAN/B-CAN/LIN và động cơ 4 xi-lanh chuyển động theo từng bước vận hành"></svg>
+  </div>
+  <div class="legend" aria-label="Chú giải">
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#ff4d4d"/></svg>B+ 12 V</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#ff9f1c"/></svg>IG (sau khóa)</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#3ddc84"/></svg>Tín hiệu tương tự 0–5 V</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#4c9dff"/></svg>Tín hiệu số / xung</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#c77dff"/></svg>Điều khiển PWM / low-side</span>
+    <span><svg viewBox="0 0 26 8"><line x1="0" y1="2" x2="26" y2="2" stroke="#ff5c6c" stroke-width="2"/><line x1="0" y1="6" x2="26" y2="6" stroke="#ffb3ba" stroke-width="2"/></svg>F-CAN H/L</span>
+    <span><svg viewBox="0 0 26 8"><line x1="0" y1="2" x2="26" y2="2" stroke="#ff9f43" stroke-width="2"/><line x1="0" y1="6" x2="26" y2="6" stroke="#ffd29b" stroke-width="2"/></svg>B-CAN H/L</span>
+    <span><svg viewBox="0 0 26 8"><line x1="0" y1="4" x2="26" y2="4" stroke="#2ed3b7" stroke-width="2" stroke-dasharray="3 3"/></svg>LIN</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#e9b949" stroke-dasharray="6 4"/></svg>Nhiên liệu</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#36c5f0" stroke-dasharray="6 4"/></svg>Nước làm mát</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#9ad7ff" stroke-dasharray="3 5"/></svg>Khí nạp</span>
+    <span><svg viewBox="0 0 26 8"><line class="ln" x1="0" y1="4" x2="26" y2="4" stroke="#a3acb9" stroke-dasharray="3 5"/></svg>Khí xả</span>
+    <span>Viền xanh sáng = thành phần đang xử lý ở bước hiện tại · đèn xanh trên rơ-le = rơ-le đóng</span>
+  </div>
+  <div class="run-grid">
+    <article class="panel" id="stepCard" aria-live="polite"></article>
+    <div class="panel">
+      <h3>Dữ liệu trực tiếp (data list PCM)</h3>
+      <div class="tiles" id="tiles"></div>
+      <h3 style="margin-top:14px">Đèn cảnh báo cụm đồng hồ</h3>
+      <div class="lamps" id="lamps"></div>
+    </div>
+    <div class="panel">
+      <h3>Oscilloscope · xi-lanh #1</h3>
+      <canvas id="scope" aria-label="Dạng sóng CKP, CMP, xung kim phun và tín hiệu đánh lửa của xi-lanh 1 trong một chu trình 720 độ"></canvas>
+      <p class="note">Dạng sóng minh họa theo góc trục khuỷu; con trỏ trắng là vị trí hiện tại của xi-lanh #1.</p>
+      <h3 style="margin-top:14px">Bản tin mạng (bus trace)</h3>
+      <ol class="canlog" id="canlog"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="tab" id="tab-chan-doan" role="tabpanel" hidden>
+  <div class="panel">
+    <h3>Quy trình chẩn đoán chuyên nghiệp – 8 bước</h3>
+    <ol class="wf" id="workflow"></ol>
+  </div>
+  <div class="diag-grid">
+    <aside class="panel sym-side">
+      <h3>Chọn triệu chứng</h3>
+      <input class="search" id="symSearch" type="search" placeholder="Tìm: không đề, P0335, quạt, CVT…" aria-label="Tìm triệu chứng">
+      <div id="symList"></div>
+    </aside>
+    <div class="panel">
+      <div class="stage" id="stageDiag"></div>
+      <div id="dxMain"></div>
+    </div>
+  </div>
+  <p class="disclaimer">Giá trị trong mô hình mang tính tham khảo cho đào tạo kỹ thuật. Luôn đối chiếu Honda Service Manual theo số VIN của xe trước khi kết luận và thay thế. Với hệ thống túi khí SRS: ngắt cọc âm ắc quy, chờ ít nhất 3 phút trước khi làm việc, không đo điện trở túi khí bằng đồng hồ VOM.</p>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="tab" id="tab-danh-muc" role="tabpanel" hidden>
+  <div class="panel">
+    <h3>Danh mục toàn bộ chi tiết chẩn đoán</h3>
+    <div class="cat-search"><input class="search" id="catSearch" type="search" placeholder="Tìm chi tiết, mã lỗi, triệu chứng…" aria-label="Tìm trong danh mục"><span class="muted" id="catCount"></span></div>
+    <div class="cat-tools" id="catChips" style="margin-top:10px"></div>
+  </div>
+  <div class="tblwrap">
+    <table class="tbl cat">
+      <thead><tr><th>Chi tiết · vị trí</th><th>Chức năng / tín hiệu</th><th>Cách kiểm tra</th><th>Giá trị tham khảo</th><th>Mã lỗi</th><th>Triệu chứng khi hỏng</th><th>Lưu ý khi thay</th></tr></thead>
+      <tbody id="catBody"></tbody>
+    </table>
+  </div>
+  <p class="disclaimer">Mã P/U/C là mã chuẩn SAE dùng chung OBD-II. Mã riêng của Honda (SRS, VSA, EPS, Keyless, MICU…) đọc bằng Honda i-HDS. Các trị số có ghi “tham khảo” cần xác nhận theo Service Manual.</p>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="tab" id="tab-bao-duong" role="tabpanel" hidden>
+  <div class="maint-grid">
+    <div class="panel"><h3>Phụ tùng hao mòn & chu kỳ thay (tham khảo)</h3>
+      <table class="tbl"><thead><tr><th>Hạng mục</th><th>Chu kỳ</th><th>Ghi chú</th></tr></thead><tbody id="maintBody"></tbody></table>
+      <p class="note">Theo sổ bảo hành và lịch bảo dưỡng Honda Việt Nam cho xe của bạn; điều kiện khắc nghiệt (kẹt xe, bụi, ngập nước) cần rút ngắn chu kỳ.</p></div>
+    <div class="panel"><h3>Thông số đo nhanh</h3>
+      <table class="tbl"><thead><tr><th>Thông số</th><th>Giá trị</th></tr></thead><tbody id="specBody"></tbody></table></div>
+    <div class="panel"><h3>Cài đặt bắt buộc sau khi thay/sửa</h3>
+      <table class="tbl"><thead><tr><th>Sau khi</th><th>Cần thực hiện</th></tr></thead><tbody id="procBody"></tbody></table></div>
+    <div class="panel"><h3>Công cụ chẩn đoán</h3>
+      <table class="tbl"><thead><tr><th>Công cụ</th><th>Dùng để</th></tr></thead><tbody id="toolBody"></tbody></table></div>
+  </div>
+</section>
+</main>
+<footer>Mô hình đào tạo minh họa kiến trúc điện – điện tử Honda City 2024 (thế hệ GN, thị trường Việt Nam). Chuyển động động cơ được làm chậm để quan sát; trị số chỉ mang tính tham khảo.</footer>
+<script>
+(function(){
+/* ===== 26 BƯỚC VẬN HÀNH A → Z ===== */
+const PHASES = [
+  { n: 'CHUẨN BỊ & XÁC THỰC', r: 'A–L' },
+  { n: 'KHỞI ĐỘNG', r: 'M–Q' },
+  { n: 'VẬN HÀNH', r: 'R–Y' },
+  { n: 'TẮT MÁY', r: 'Z' }
+];
+
+const V = (rpm, vb, ist, ect, fp, map, thr, pw, adv, lam, loop, ratio, gear, pm) =>
+  ({ rpm, vb, ist, ect, fp, map, thr, pw, adv, lam, loop, ratio, gear, pm });
+
+const STEPS = [
+{ k:'A', ph:0, t:'Trạng thái ngủ – xe đỗ, cửa khóa',
+  d:'Ắc quy cấp B+ thường trực qua cầu chì chính tới hộp cầu chì khoang máy và hộp cầu chì dưới táp-lô, nuôi bộ nhớ PCM, đồng hồ, MICU và bộ Keyless ở chế độ chờ. Mạng F-CAN/B-CAN ngủ, không có bản tin. Động cơ đứng yên, áp suất nhiên liệu dư được giữ trong ống bởi van một chiều của bơm.',
+  L:['elec'], v:V(0,12.6,0,30,250,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['battery','w-bat','mainfuse','w-main','uhbox','w-ud','udbox'],
+  can:[],
+  sig:['Ắc quy nghỉ: 12,4–12,7 V','Dòng rò sau khi mạng ngủ: < ~50 mA','Bus CAN ngủ: không có lưu lượng'],
+  chk:['Hết điện sau khi đỗ lâu → đo dòng rò, rút lần lượt cầu chì để tìm mạch không ngủ','Ắc quy < 12,2 V → sạc và thử tải (CCA)'], dx:'charge' },
+
+{ k:'B', ph:0, t:'Tiếp cận & mở khóa bằng Smart Key',
+  d:'Chạm cảm biến tay nắm cửa → bộ Keyless phát sóng tần số thấp LF (thường ~125 kHz, tầm ngắn) qua anten ở tay nắm. Chìa thông minh thức dậy và trả lời bằng sóng RF (UHF) kèm mã nhận dạng mã hóa. Xác thực đúng → Keyless gửi lệnh qua B-CAN tới MICU → MICU cấp điện mô-tơ khóa các cửa (qua dây/LIN), nháy xi-nhan xác nhận.',
+  L:['elex','comm','elec'], v:V(0,12.5,0,30,250,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['key','micu','door','lin','bcan'],
+  can:[['key','micu','Lệnh mở khóa'],['micu','door','Mở khóa cửa ×4'],['micu','lamp','Nháy xi-nhan']],
+  sig:['LF ~125 kHz: anten → chìa','RF UHF: chìa → bộ thu (tần số tùy thị trường)','Mô-tơ khóa cửa: xung 12 V ngắn'],
+  chk:['Không mở được → pin chìa CR2032, cảm biến tay nắm, anten LF','Chỉ một cửa không mở → mô-tơ khóa của cửa đó'], dx:'lock' },
+
+{ k:'C', ph:0, t:'Mở cửa – đánh thức mạng',
+  d:'Công tắc cửa báo về MICU: đèn trần sáng, MICU đánh thức B-CAN. Cụm đồng hồ (đóng vai trò gateway F-CAN ↔ B-CAN trong kiến trúc Honda điển hình) thức dậy và đánh thức F-CAN. Các ECU bắt đầu gửi bản tin quản lý mạng (network management); đồng hồ hiển thị chào và cảnh báo cửa mở.',
+  L:['comm','elex'], v:V(0,12.45,0,30,250,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['micu','gw','fcan','bcan','lamp'],
+  can:[['micu','gw','Cửa mở – wake-up'],['gw','pcm','NM wake-up'],['micu','lamp','Bật đèn trần'],['gw','vsa','NM wake-up']],
+  sig:['Bus nghỉ (recessive): CAN-H ≈ CAN-L ≈ 2,5 V','Khi truyền (dominant): CAN-H ≈ 3,5 V, CAN-L ≈ 1,5 V','Điện trở bus tại DLC chân 6–14: ≈ 60 Ω'],
+  chk:['Đồng hồ không sáng hoặc nhiều đèn lỗi → kiểm tra mạng CAN (60 Ω), nguồn và mass các module'], dx:'can' },
+
+{ k:'D', ph:0, t:'Đạp phanh',
+  d:'Công tắc vị trí bàn đạp phanh (hai tiếp điểm) gửi tín hiệu tới PCM (điều kiện khởi động, cắt ga khi phanh) và hệ thống Keyless; đèn phanh sáng. Đèn trên nút ENGINE START/STOP đổi màu báo sẵn sàng khởi động.',
+  L:['elex','elec'], v:V(0,12.4,0,30,250,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['brake','s-brake','pcm','btn','key'],
+  can:[['pcm','key','Phanh: ON']],
+  sig:['Công tắc phanh: 0 V ↔ 12 V (tín hiệu số)','Đèn phanh: 12 V'],
+  chk:['Nút START không đổi màu, không đề → công tắc phanh, cầu chì đèn phanh'], dx:'nocrank' },
+
+{ k:'E', ph:0, t:'Nhấn nút ENGINE START/STOP',
+  d:'Tín hiệu nút (hai mạch dự phòng) vào bộ Keyless. Keyless kích hoạt các anten LF trong khoang xe để tìm chìa – chìa phải nằm trong xe. Nếu pin chìa yếu, chạm mặt có logo H của chìa vào nút START để xác thực ở chế độ dự phòng.',
+  L:['elex','comm'], v:V(0,12.4,0,30,250,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['btn','s-btn','key'],
+  can:[['key','gw','Tìm chìa trong xe']],
+  sig:['Nút START: 2 mạch tín hiệu độc lập','Anten LF trong xe: quét vùng cabin'],
+  chk:['Báo “không phát hiện chìa” → pin chìa, nhiễu sóng, anten trong xe'], dx:'nocrank' },
+
+{ k:'F', ph:0, t:'Xác thực Immobilizer',
+  d:'Bộ Keyless/Immobilizer đọc mã chìa rồi trao đổi mã hóa kiểu thách thức–phản hồi (challenge–response) với PCM qua mạng (đi qua gateway). Đúng mã → PCM cho phép phun nhiên liệu và đánh lửa, đèn immobilizer tắt. Sai mã → PCM cấm phun/đánh lửa: đề vẫn quay nhưng máy không nổ.',
+  L:['elex','comm'], v:V(0,12.4,0,30,250,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['key','pcm','gw','fcan','bcan'],
+  can:[['key','pcm','Immo: challenge'],['pcm','key','Immo: response OK'],['pcm','gw','Immo hợp lệ']],
+  sig:['Mã chìa mã hóa, thay đổi mỗi lần','Đèn IMMO nháy = bị từ chối'],
+  chk:['Đèn chìa nháy, máy không nổ → chìa chưa đăng ký, lỗi Keyless/PCM → đọc bằng HDS'], dx:'nostart' },
+
+{ k:'G', ph:0, t:'Bật nguồn ACC → ON (IG1/IG2)',
+  d:'Keyless ra lệnh, hộp cầu chì dưới táp-lô (tích hợp MICU) đóng lần lượt rơ-le ACC, IG1, IG2. IG1 cấp cho PCM, đồng hồ và các ECU; IG2 cấp cho tải lớn (quạt gió, sấy kính…). Cụm đồng hồ bật sáng, bắt đầu kiểm tra đèn.',
+  L:['elec','elex','comm'], v:V(0,12.2,0,30,250,101,0,0,0,null,'—',2.5,'P','ON'),
+  act:['udbox','r-acc','r-ig1','r-ig2','w-ig1','micu','key','audio'],
+  can:[['key','micu','Power mode: ON'],['micu','gw','Power mode: ON'],['micu','audio','ACC ON']],
+  sig:['IG1/IG2 ≈ điện áp ắc quy','Sụt áp qua mỗi cầu chì < ~0,1 V'],
+  chk:['Không lên nguồn ON → rơ-le IG, cầu chì, Keyless/MICU'], dx:'nocrank' },
+
+{ k:'H', ph:0, t:'PCM khởi động & đọc cảm biến',
+  d:'PCM nhận IG1 → đóng rơ-le PGM-FI Main 1 để tự cấp nguồn chính. Vi xử lý tự kiểm tra bộ nhớ, cấp điện áp tham chiếu 5 V và mass cho cảm biến, rồi đọc giá trị ban đầu: ECT, IAT, MAP (bằng áp suất khí quyển khi máy chưa chạy), TP, APP, điện áp ắc quy và vị trí cần số.',
+  L:['elex','elec','comm'], v:V(0,12.2,0,30,250,101,0,0,0,null,'—',2.5,'P','ON'),
+  act:['pcm','r-main1','w-m1','s-ect','s-iat','s-map','s-tp','s-app','s-range','ect','iat','map','tb','app','range'],
+  can:[['pcm','gw','ECT, điện áp, PCM sẵn sàng'],['pcm','vsa','PCM ready']],
+  sig:['Tham chiếu 5,0 V ± 0,1 V','Mass cảm biến < 0,1 V','MAP (máy chưa chạy) ≈ 100 kPa','ECT ≈ IAT ≈ nhiệt độ môi trường khi máy nguội'],
+  chk:['Không giao tiếp được PCM (U0100) → nguồn, mass, rơ-le Main 1, dây CAN'], dx:'can' },
+
+{ k:'I', ph:0, t:'Kiểm tra đèn & tự chẩn đoán các ECU',
+  d:'Cụm đồng hồ bật toàn bộ đèn cảnh báo để kiểm tra bóng. SRS, ABS/VSA, EPS, camera Honda Sensing tự chẩn đoán vài giây rồi báo trạng thái qua CAN; hệ thống không lỗi sẽ tắt đèn. MIL, đèn sạc và đèn áp suất dầu vẫn sáng vì động cơ chưa chạy.',
+  L:['comm','elex'], v:V(0,12.1,0,30,250,101,0,0,0,null,'—',2.5,'P','ON'),
+  act:['gw','srs','vsa','eps','cam'],
+  can:[['srs','gw','SRS tự kiểm tra: OK'],['vsa','gw','VSA tự kiểm tra: OK'],['eps','gw','EPS: OK'],['cam','gw','Honda Sensing: OK']],
+  sig:['Mỗi ECU tự kiểm tra ~vài giây','Đèn hệ thống lỗi giữ sáng'],
+  chk:['Đèn không tắt sau tự kiểm tra → đọc mã hệ thống tương ứng bằng HDS','Đèn không sáng khi kiểm tra bóng → lỗi đồng hồ/đèn'], dx:'mil' },
+
+{ k:'J', ph:0, t:'Mồi bơm xăng',
+  d:'PCM đóng rơ-le PGM-FI Main 2 khoảng 2 giây → bơm xăng trong bình chạy, nạp áp suất cho ống phân phối. Hệ thống không hồi: lọc và bộ điều áp nằm trong cụm bơm. Nếu sau đó không có tín hiệu vòng tua, PCM tắt bơm để an toàn khi va chạm.',
+  L:['elec','meca','elex'], v:V(0,12.0,0,30,340,101,0,0,0,null,'—',2.5,'P','ON'),
+  act:['r-main2','w-pump','pump','rail'],
+  can:[],
+  sig:['Áp suất nhiên liệu ~320–370 kPa (tham khảo)','Bơm chạy ~2 s khi bật ON'],
+  chk:['Không nghe tiếng bơm → rơ-le Main 2, cầu chì, giắc, bơm (P0230)'], dx:'nostart' },
+
+{ k:'K', ph:0, t:'Khởi tạo bướm ga điện tử (DBW)',
+  d:'PCM kiểm tra mô-tơ bướm ga và hai cảm biến vị trí TP-A/TP-B, đối chiếu với hai kênh APP của bàn đạp ga. Bướm ga ở vị trí mặc định do lò xo. Hai kênh không tương quan → PCM vào chế độ an toàn, giới hạn ga.',
+  L:['elex'], v:V(0,12.1,0,30,340,101,6,0,0,null,'—',2.5,'P','ON'),
+  act:['tb','a-dbw','s-tp','app','s-app','pcm'],
+  can:[],
+  sig:['TP-A, TP-B: hai đường 0–5 V tương quan','APP-A, APP-B: hai kênh độc lập','Mô-tơ bướm ga: PWM cầu H'],
+  chk:['P2135/P2138, P2101 → giắc bướm ga, vệ sinh, học lại'], dx:'rough' },
+
+{ k:'L', ph:0, t:'Kiểm tra điều kiện đề',
+  d:'PCM và Keyless cùng xác nhận: cần số ở P hoặc N (công tắc dải số), đang đạp phanh, immobilizer hợp lệ, điện áp đủ. Đủ điều kiện → Keyless gửi yêu cầu đề, PCM cho phép đóng rơ-le starter cut.',
+  L:['elex','comm'], v:V(0,12.2,0,30,340,101,3,0,0,null,'—',2.5,'P','ON'),
+  act:['range','s-range','brake','s-brake','pcm','key'],
+  can:[['key','pcm','Yêu cầu đề'],['pcm','key','P/N + phanh OK → cho phép']],
+  sig:['Range: P hoặc N','Brake: ON','Immobilizer: OK'],
+  chk:['Không đề ở P → thử ở N; kiểm tra công tắc dải số (P0705)'], dx:'nocrank' },
+
+{ k:'M', ph:1, t:'Cắt tải & đề (cranking)',
+  d:'MICU tạm ngắt tải ACC (màn hình, quạt gió) để dồn điện cho máy đề. Rơ-le starter cut đóng → điện vào chân S của công-tắc từ → bánh răng bendix ăn khớp vành răng bánh đà, máy đề kéo trục khuỷu quay khoảng 200–300 vòng/phút. Điện áp ắc quy tụt còn khoảng 10 V.',
+  L:['elec','meca'], v:V(220,10.2,180,30,330,92,4,0,0,null,'—',2.5,'P','START'),
+  act:['r-st','w-st','w-stb','starter','flywheel','battery'],
+  can:[['micu','audio','Ngắt tải ACC khi đề'],['micu','hvac','Ngắt quạt gió khi đề']],
+  sig:['Dòng đề ~100–200 A (tham khảo)','Điện áp khi đề ≥ 9,6 V','Sụt áp cáp B+ máy đề < 0,5 V'],
+  chk:['Đề chậm → ắc quy, cọc, mass G1, máy đề','Chỉ nghe tiếng “tạch” → công-tắc từ máy đề, cáp'], dx:'nocrank' },
+
+{ k:'N', ph:1, t:'Đồng bộ CKP + CMP',
+  d:'Cảm biến CKP đọc răng bánh tín hiệu trên trục khuỷu (có khoảng răng khuyết làm mốc); CMP đọc vấu trên trục cam. Kết hợp hai tín hiệu, PCM biết chính xác góc trục khuỷu và xi-lanh nào ở cuối kỳ nén → đồng bộ chỉ sau khoảng 1–2 vòng quay.',
+  L:['elex','meca'], v:V(250,10.0,170,30,330,90,4,0,0,null,'—',2.5,'P','START'),
+  act:['ckp','s-ckp','cmp','s-cmp','pcm'],
+  can:[['pcm','gw','RPM']],
+  sig:['CKP/CMP: xung vuông 0–5 V','Răng khuyết = mốc tham chiếu (minh họa)'],
+  chk:['Đồng hồ vòng tua = 0 khi đề → CKP (P0335)','P0016 → lệch pha cam/khuỷu, xích cam'], dx:'nostart' },
+
+{ k:'O', ph:1, t:'Phun nhiên liệu khởi động',
+  d:'PCM tính lượng nhiên liệu khởi động theo ECT (máy lạnh cần giàu xăng hơn), rồi phun tuần tự từng xi-lanh theo thứ tự nổ 1-3-4-2. Mỗi kim phun được mở bằng cách PCM nối mass (điều khiển low-side). Xăng phun vào cổ hút trước xu-páp nạp (PFI).',
+  L:['elex','meca'], v:V(260,10.0,165,30,340,88,4,12,0,null,'—',2.5,'P','START'),
+  act:['inj','a-inj','pcm','rail','ect','s-ect'],
+  can:[],
+  sig:['Xung phun khi đề lạnh ~8–15 ms (tham khảo)','Ngắt kim → xung cảm ứng vài chục V'],
+  chk:['Không có xung kim (đèn noid) → mạch kim, PCM (P0201–P0204)'], dx:'nostart' },
+
+{ k:'P', ph:1, t:'Đánh lửa',
+  d:'PCM điều khiển IC đánh lửa trong từng bô-bin đặt trên bugi (COP): ngậm điện (dwell) để tích từ, rồi ngắt → điện áp thứ cấp hàng chục kV phóng tia lửa ở bugi gần điểm chết trên cuối kỳ nén.',
+  L:['elex','meca'], v:V(270,10.1,160,30,340,88,4,12,8,null,'—',2.5,'P','START'),
+  act:['coil','a-ign','pcm'],
+  can:[],
+  sig:['Dwell ~2–3 ms (tham khảo)','Góc đánh lửa khi đề ~5–10° trước ĐCT','Thứ tự nổ 1-3-4-2'],
+  chk:['Không có tia lửa → nguồn IG1 bô-bin, bô-bin, bugi (P0351–P0354)'], dx:'nostart' },
+
+{ k:'Q', ph:1, t:'Nổ máy & nhả đề',
+  d:'Hỗn hợp cháy, vòng tua vượt ngưỡng (~500–600 vòng/phút): PCM/Keyless ngắt rơ-le starter cut, bendix nhả khỏi bánh đà. MICU khôi phục tải ACC. Áp suất dầu lên → đèn dầu tắt; PCM phát bản tin “động cơ đang chạy” lên mạng.',
+  L:['elex','comm','meca'], v:V(950,13.0,0,30,340,45,6,6,10,null,'—',2.5,'P','ON'),
+  act:['pcm','key','micu','gw'],
+  can:[['pcm','key','Động cơ chạy → ngắt đề'],['pcm','gw','RPM, động cơ chạy'],['micu','audio','Khôi phục ACC']],
+  sig:['Ngắt đề khi vòng tua > ~500 vòng/phút','Áp suất dầu lên → đèn dầu tắt'],
+  chk:['Nổ rồi tắt ngay → immobilizer, áp suất xăng, bướm ga bẩn, rò chân không'], dx:'nostart' },
+
+{ k:'R', ph:2, t:'Không tải nhanh & sấy bầu xúc tác',
+  d:'Máy lạnh: PCM mở bướm ga thêm để giữ không tải nhanh ~1.200–1.500 vòng/phút và làm trễ góc đánh lửa để khí xả nóng hơn, giúp bầu xúc tác 3 chiều nhanh đạt nhiệt độ làm việc. Hỗn hợp hơi giàu, điều khiển vòng hở (chưa dùng phản hồi A/F).',
+  L:['elex','meca'], v:V(1350,14.3,0,40,340,38,6,4.2,-2,0.9,'Hở',2.5,'P','ON'),
+  act:['tb','a-dbw','cat','pcm','ect','s-ect'],
+  can:[['pcm','gw','RPM, ECT 40 °C']],
+  sig:['λ ≈ 0,85–0,95 khi máy lạnh','Góc đánh lửa trễ (có thể sau ĐCT)'],
+  chk:['Không tải dao động/chết máy khi lạnh → bướm ga bẩn, ECT sai (P0128/P0117)'], dx:'rough' },
+
+{ k:'S', ph:2, t:'Máy phát nạp điện',
+  d:'Máy phát quay nhờ dây cu-roa từ puli trục khuỷu. PCM điều khiển dòng kích từ (chân C) theo tải điện và trạng thái động cơ, đọc phản hồi tải (chân FR) → điện áp hệ thống 13,5–14,8 V. Đèn sạc tắt, ắc quy được nạp bù sau lần đề.',
+  L:['elec','elex','meca'], v:V(1250,14.4,0,48,340,36,5.5,3.8,2,0.92,'Hở',2.5,'P','ON'),
+  act:['alt','w-alt','a-altc','belt','battery','mainfuse'],
+  can:[['pcm','gw','Trạng thái sạc: OK']],
+  sig:['Điện áp nạp 13,5–14,8 V','Gợn sóng AC < ~0,5 V (diode tốt)'],
+  chk:['Đèn sạc sáng/điện áp < 13 V → cu-roa, máy phát, mạch C/FR (P0620–P0626)'], dx:'charge' },
+
+{ k:'T', ph:2, t:'Vòng kín A/F (closed loop)',
+  d:'Cảm biến A/F (dải rộng, có sấy) trước bầu xúc tác đạt nhiệt độ làm việc. PCM chuyển sang vòng kín: liên tục hiệu chỉnh nhiên liệu ngắn hạn (STFT) và dài hạn (LTFT) để giữ λ ≈ 1,00. Cảm biến O2 sau bầu xúc tác giám sát hiệu suất xúc tác.',
+  L:['elex','meca'], v:V(900,14.2,0,65,340,33,4,3.0,8,1.0,'Kín',2.5,'P','ON'),
+  act:['af','s-af','o2','s-o2','cat','pcm','inj'],
+  can:[],
+  sig:['λ ≈ 1,00','STFT + LTFT trong ±10%','O2 sau xúc tác ổn định ~0,6–0,8 V'],
+  chk:['Fuel trim > +10% → rò khí, áp suất xăng thấp','P0420 → bầu xúc tác','P2195/P2196 → cảm biến A/F'], dx:'fuel' },
+
+{ k:'U', ph:2, t:'Làm mát, quạt két nước & điều hòa',
+  d:'Nước làm mát nóng lên, van hằng nhiệt mở cho nước qua két. PCM bật rơ-le quạt khi ECT cao hoặc khi bật A/C. Người lái bật A/C: HVAC gửi yêu cầu qua B-CAN → gateway → F-CAN → PCM; PCM tăng nhẹ không tải để bù tải rồi đóng rơ-le ly hợp máy nén.',
+  L:['elec','elex','comm','meca'], v:V(750,13.9,0,90,340,32,3.5,2.6,10,1.0,'Kín',2.5,'P','ON'),
+  act:['ect','s-ect','thermo','radiator','fan','r-fan','w-fan','hvac','r-ac','w-ac','comp','pcm'],
+  can:[['hvac','pcm','Yêu cầu A/C'],['pcm','hvac','Cho phép A/C'],['pcm','gw','ECT 90 °C']],
+  sig:['ECT làm việc ~80–95 °C','Van hằng nhiệt bắt đầu mở ~76–80 °C (tham khảo)','Không tải máy nóng ~700 ± 50 vòng/phút'],
+  chk:['Quá nhiệt → nước làm mát, quạt, van hằng nhiệt, bơm nước','A/C không mát → ga lạnh, rơ-le ly hợp, cảm biến áp suất'], dx:'overheat' },
+
+{ k:'V', ph:2, t:'Tăng tốc (drive-by-wire)',
+  d:'Người lái đạp ga: hai kênh APP gửi yêu cầu → PCM tính mô-men mục tiêu → điều khiển mô-tơ bướm ga (PWM) mở theo góc tính toán, TP phản hồi vị trí. Lượng khí nạp (từ MAP/IAT/vòng tua) quyết định độ rộng xung phun; góc đánh lửa tra bản đồ theo tải & vòng tua, cảm biến kích nổ hiệu chỉnh khi có kích nổ.',
+  L:['elex','meca','comm'], v:V(2600,14.0,0,90,340,82,45,8.5,18,1.0,'Kín',2.0,'D','ON'),
+  act:['app','s-app','tb','a-dbw','s-tp','s-map','map','inj','coil','knock','s-knock','pcm'],
+  can:[['pcm','vsa','Mô-men, vòng tua, vị trí ga'],['vsa','pcm','Tốc độ bánh xe'],['pcm','eps','Vòng tua']],
+  sig:['MAP khi tăng tốc 70–95 kPa','Xung phun tăng theo tải','Kích nổ → trễ góc đánh lửa vài độ'],
+  chk:['Ì máy → bugi, bô-bin, lọc gió, bướm ga, áp suất xăng','Giới hạn ga + MIL → lỗi APP/TP'], dx:'rough' },
+
+{ k:'W', ph:2, t:'i-VTEC: VTC + VTEC (tải lớn)',
+  d:'PCM điều khiển van dầu OCV (PWM) để xoay pha trục cam nạp sớm/muộn liên tục theo tải và vòng tua. Ở dải phù hợp, van điện từ VTEC mở đường dầu chuyển cấu hình cò mổ (thay đổi hành trình/thời gian mở xu-páp); công tắc áp suất dầu VTEC xác nhận đã chuyển. Đạp ga hết: PCM tạm ngắt máy nén A/C để dồn công suất.',
+  L:['elex','meca'], v:V(4500,14.0,0,92,340,98,88,13,26,0.88,'Hở (tải lớn)',1.4,'D','ON'),
+  act:['vtc','a-vtc','vtec','a-vtec','cmp','s-cmp','pcm'],
+  can:[['pcm','hvac','Ngắt A/C tạm thời (WOT)'],['pcm','gw','RPM 4.500']],
+  sig:['Góc VTC mục tiêu ≈ thực tế','Áp suất dầu đủ, dầu đúng chuẩn 0W-20','λ ≈ 0,88 khi đạp hết ga (làm giàu)'],
+  chk:['P0011/P0012 → dầu bẩn/thiếu, van OCV','P2646–P2649 → van/công tắc áp suất dầu VTEC'], dx:'oil' },
+
+{ k:'X', ph:2, t:'Truyền lực qua hộp số CVT',
+  d:'PCM (tích hợp điều khiển hộp số) đọc cảm biến tốc độ puli sơ cấp/thứ cấp và nhiệt độ dầu CVT, điều khiển các van điện từ tuyến tính thay đổi áp suất thủy lực: đường kính hai puli thay đổi liên tục nên tỉ số truyền biến thiên vô cấp. Ly hợp khóa biến mô đóng khi chạy đều để giảm hao phí.',
+  L:['elex','meca','comm'], v:V(2000,13.9,0,90,340,45,18,3.6,30,1.0,'Kín',0.6,'D','ON'),
+  act:['cvt','cvtsens','cvtsol','s-cvt','a-cvt','tc','wheel','pcm'],
+  can:[['pcm','gw','Số D, tỉ số truyền'],['vsa','pcm','Tốc độ xe']],
+  sig:['Tỉ số ~2,5 (thấp) ↔ ~0,4 (cao) – minh họa','Dầu CVT làm việc ~70–90 °C'],
+  chk:['Giật/trượt/rú ga → mức & chất lượng dầu CVT, mã P07xx, học lại CVT'], dx:'cvt' },
+
+{ k:'Y', ph:2, t:'Phối hợp toàn xe & giám sát OBD',
+  d:'Khi xe chạy, PCM chia sẻ dữ liệu liên tục: VSA yêu cầu giảm mô-men khi bánh trượt; EPS dùng tốc độ xe để điều chỉnh trợ lực; camera Honda Sensing gửi yêu cầu tăng/giảm tốc cho ACC/CMBS; đồng hồ hiển thị vòng tua, tốc độ, nhiệt độ, nhiên liệu. Song song, PCM chạy các bài giám sát OBD-II (bỏ máy, xúc tác, A/F, EVAP, sấy cảm biến); lỗi lặp lại → lưu mã và bật MIL.',
+  L:['comm','elex','meca'], v:V(2000,13.9,0,90,340,45,18,3.6,30,1.0,'Kín',0.6,'D','ON'),
+  act:['vsa','eps','cam','gw','pcm','wss','s-wss','purge','a-purge','dlc'],
+  can:[['vsa','pcm','Yêu cầu giảm mô-men'],['cam','pcm','ACC: yêu cầu mô-men'],['pcm','eps','Tốc độ xe'],['pcm','gw','MIL: không lỗi'],['gw','dlc','Sẵn sàng chẩn đoán']],
+  sig:['Bỏ máy phát hiện qua dao động tốc độ CKP','Readiness hoàn tất sau chu trình lái'],
+  chk:['Nhiều đèn cùng sáng → mạng CAN, ắc quy yếu','ABS/VSA sáng → cảm biến tốc độ bánh'], dx:'abs' },
+
+{ k:'Z', ph:3, t:'Tắt máy & trở về trạng thái ngủ',
+  d:'Về P, nhấn nút START/STOP: Keyless cắt IG1/IG2 → PCM ngừng phun và đánh lửa, động cơ dừng. PCM giữ rơ-le Main 1 thêm một lúc (post-run) để lưu giá trị học (fuel trim, không tải, CVT). Các ECU gửi bản tin chuẩn bị ngủ, mạng CAN ngủ → quay lại trạng thái A.',
+  L:['elex','comm','elec'], v:V(0,12.6,0,88,280,101,0,0,0,null,'—',2.5,'P','OFF'),
+  act:['key','pcm','r-main1','w-m1','micu','gw'],
+  can:[['key','micu','Power mode: OFF'],['pcm','gw','Lưu dữ liệu học'],['micu','gw','NM: chuẩn bị ngủ']],
+  sig:['Áp suất xăng dư được giữ','Dòng rò về < ~50 mA sau vài phút'],
+  chk:['Không tắt máy được → cần số phải ở P, kiểm tra công tắc dải số, Keyless'], dx:'nocrank' }
+];
+
+/* tên hiển thị */
+const NAME = {
+  battery:'Ắc quy 12 V', mainfuse:'Cầu chì chính', uhbox:'Hộp cầu chì khoang máy', udbox:'Hộp cầu chì dưới táp-lô',
+  'r-main1':'Rơ-le PGM-FI Main 1', 'r-main2':'Rơ-le PGM-FI Main 2', 'r-st':'Rơ-le starter cut', 'r-fan':'Rơ-le quạt két nước',
+  'r-ac':'Rơ-le ly hợp A/C', fbig:'Cầu chì lớn ABS/EPS', 'r-acc':'Rơ-le ACC', 'r-ig1':'Rơ-le IG1', 'r-ig2':'Rơ-le IG2', g1:'Mass G1',
+  alt:'Máy phát', comp:'Máy nén A/C', belt:'Dây cu-roa', pcm:'PCM', airf:'Lọc gió', iat:'Cảm biến IAT', tb:'Bướm ga điện tử',
+  plenum:'Cổ hút', map:'Cảm biến MAP', purge:'Van EVAP purge', rail:'Ống phân phối', inj:'Kim phun ×4', coil:'Bô-bin COP ×4',
+  ckp:'Cảm biến CKP', cmp:'Cảm biến CMP', vtc:'VTC + van OCV', ect:'Cảm biến ECT', vtec:'Van VTEC', knock:'Cảm biến kích nổ',
+  af:'Cảm biến A/F', o2:'Cảm biến O2 sau', cat:'Bầu xúc tác', thermo:'Van hằng nhiệt', radiator:'Két nước', fan:'Quạt két nước',
+  flywheel:'Bánh đà', starter:'Máy đề', tc:'Biến mô', cvt:'Hộp số CVT', cvtsens:'Cảm biến tốc độ CVT', cvtsol:'Van điện từ CVT',
+  wheel:'Bánh xe', wss:'Cảm biến tốc độ bánh', pump:'Bơm xăng', btn:'Nút START/STOP', brake:'Công tắc phanh', app:'Bàn đạp ga APP',
+  range:'Công tắc dải số', dlc:'Giắc DLC', vsa:'ABS/VSA', eps:'EPS', srs:'SRS', cam:'Camera Honda Sensing', gw:'Cụm đồng hồ / gateway',
+  micu:'MICU (BCM)', key:'Keyless/Immobilizer', hvac:'HVAC', audio:'Màn hình/Audio', park:'Camera lùi/cảm biến đỗ',
+  door:'Cửa ×4 (LIN)', lamp:'Đèn/gạt mưa (LIN)', fcan:'F-CAN', bcan:'B-CAN', lin:'LIN', crank:'Trục khuỷu'
+};
+const LAYER_OF = id => {
+  if (/^(battery|mainfuse|uhbox|udbox|r-|fbig|g1|alt|starter)/.test(id)) return 'elec';
+  if (/^(belt|crank|flywheel|tc|cvt$|wheel|cat|thermo|radiator|plenum|airf|rail|comp|fan)$/.test(id)) return 'meca';
+  if (/^(fcan|bcan|lin|gw)$/.test(id)) return 'comm';
+  return 'elex';
+};
+const LAYER_NAME = { meca:'Lớp 1 · Cơ khí', elec:'Lớp 2 · Điện', elex:'Lớp 3 · Điện tử', comm:'Lớp 4 · Truyền thông' };
+
+/* ===== MÔ HÌNH CHẨN ĐOÁN THEO TRIỆU CHỨNG ===== */
+const WORKFLOW = [
+  ['Tiếp nhận & xác nhận triệu chứng','Khi nào, điều kiện nào (nóng/lạnh, tốc độ, thời tiết), có tái hiện được không'],
+  ['Kiểm tra sơ bộ','Ắc quy, cầu chì, mass, mức dầu/nước, giắc ẩm; tra khuyến cáo kỹ thuật/triệu hồi'],
+  ['Quét toàn bộ module','Honda i-HDS hoặc máy OBD-II: lưu mã, trạng thái mã, freeze frame'],
+  ['Phân tích dữ liệu trực tiếp','So sánh data list với giá trị chuẩn, chạy thử chức năng (active test)'],
+  ['Đo kiểm mạch','5 V tham chiếu, mass, tín hiệu, sụt áp, dạng sóng oscilloscope'],
+  ['Xác định nguyên nhân gốc & sửa','Sửa dây/giắc hoặc thay chi tiết – chỉ thay khi đã chứng minh hỏng'],
+  ['Cài đặt sau khi thay','Đăng ký, học lại, hiệu chỉnh bằng HDS (xem tab Bảo dưỡng)'],
+  ['Xóa lỗi & xác nhận','Chạy chu trình lái, kiểm tra readiness, không tái lập mã, bàn giao']
+];
+
+const LV = { 3:'Thường gặp', 2:'Có thể', 1:'Hiếm' };
+
+const SYMPTOMS = [
+/* ---------- ĐỘNG CƠ & KHỞI ĐỘNG ---------- */
+{ id:'nocrank', grp:'Động cơ & khởi động', t:'Bấm START, máy đề không quay',
+  sym:'Nhấn ENGINE START/STOP (đã đạp phanh) nhưng máy đề không quay, hoặc chỉ nghe tiếng “tạch”.',
+  sys:['Nguồn & khởi động','Smart Key/Immobilizer','CVT (dải số)'],
+  sus:['battery','mainfuse','r-st','starter','key','btn','brake','range','pcm','g1'], steps:['D','E','F','L','M'],
+  checks:[
+    {t:'Đồng hồ & nút START có sáng? Có báo không tìm thấy chìa?', how:'Quan sát đồng hồ khi bấm nút; thử chạm logo H của chìa vào nút START (chế độ dự phòng).', spec:'Đồng hồ sáng, không cảnh báo chìa',
+     fail:{c:'Pin chìa yếu, nhiễu sóng hoặc anten LF trong xe lỗi', parts:['Pin chìa CR2032','Anten LF trong xe','Bộ Keyless (hiếm)'], fix:'Thay pin chìa. Nếu chế độ dự phòng đề được → lỗi pin/anten.'}},
+    {t:'Điện áp ắc quy', how:'Đo tại cọc khi nghỉ và khi bấm đề (VOM hoặc máy test ắc quy).', spec:'Nghỉ 12,4–12,7 V; khi đề ≥ 9,6 V',
+     fail:{c:'Ắc quy yếu/hết điện, cọc lỏng hoặc oxy hóa, cáp mass G1 kém', parts:['Ắc quy 12 V','Kẹp cọc, cáp mass'], fix:'Sạc và thử tải CCA; vệ sinh, siết cọc; sụt áp mass < 0,2 V khi đề.'}},
+    {t:'Điều kiện đề: phanh & cần số', how:'Đèn phanh có sáng khi đạp? Thử đề ở N. HDS: xem “Brake switch”, “Range P/N”.', spec:'Brake = ON; Range = P hoặc N',
+     fail:{c:'Công tắc phanh hoặc công tắc dải số CVT hỏng/lệch', parts:['Công tắc vị trí bàn đạp phanh','Công tắc dải số'], fix:'Thay hoặc chỉnh công tắc; kiểm tra cáp cần số.'}},
+    {t:'Immobilizer/Keyless cho phép đề', how:'Quan sát đèn chìa trên đồng hồ; đọc mã mục Immobilizer/Keyless bằng HDS.', spec:'Đèn không nháy, không có mã',
+     fail:{c:'Chìa chưa đăng ký, lỗi Keyless/PCM hoặc mất giao tiếp CAN', parts:['Chìa (đăng ký lại)','Bộ Keyless/Immobilizer','PCM (hiếm)'], fix:'Đăng ký chìa bằng HDS; xử lý mã U trước.'}},
+    {t:'Cầu chì & rơ-le starter cut', how:'Kiểm tra cầu chì mạch đề; nghe tiếng rơ-le; đo điện áp chân S máy đề khi bấm đề.', spec:'Chân S ≥ ~8 V khi đề',
+     fail:{c:'Rơ-le starter cut, cầu chì hoặc dây/giắc mạch S hỏng', parts:['Rơ-le starter cut','Cầu chì mạch đề'], fix:'Thay rơ-le/cầu chì; kiểm tra dây từ hộp cầu chì tới máy đề.'}},
+    {t:'Máy đề & cáp chính', how:'Có điện ở chân S mà không quay: đo sụt áp cáp B+ và cáp mass khi đề; kìm đo dòng.', spec:'Sụt áp mỗi cáp < 0,5 V; dòng ~100–200 A',
+     fail:{c:'Máy đề hỏng (chổi than, công-tắc từ, bendix) hoặc cáp B+', parts:['Máy đề','Cáp B+ máy đề'], fix:'Thay/phục hồi máy đề hoặc cáp.'}}
+  ],
+  codes:[['P0615–P0617','Mạch rơ-le đề'],['P0562','Điện áp hệ thống thấp'],['P0705','Công tắc dải số'],['P0571','Công tắc phanh'],['U0100 / U0140','Mất giao tiếp PCM / BCM'],['Mã Keyless/Immo','Mã riêng Honda – đọc bằng i-HDS']],
+  parts:[['Ắc quy 12 V',3,'Sau khi thay: khởi tạo kính AUTO, học không tải'],['Pin chìa CR2032',3,'Thay đúng chiều cực'],['Rơ-le starter cut',2,''],['Máy đề',2,''],['Công tắc phanh',2,'Kiểm tra cả đèn phanh'],['Công tắc dải số',1,'Chỉnh đúng vị trí N'],['Bộ Keyless/Immobilizer',1,'Đăng ký chìa bằng HDS']] },
+
+{ id:'nostart', grp:'Động cơ & khởi động', t:'Đề quay đều nhưng không nổ / nổ rồi tắt',
+  sym:'Máy đề quay bình thường nhưng động cơ không nổ, hoặc nổ vài giây rồi tắt.',
+  sys:['Immobilizer','Nhiên liệu','Đánh lửa','Cảm biến vị trí'],
+  sus:['key','pump','r-main2','ckp','cmp','coil','inj','pcm','rail'], steps:['F','J','N','O','P','Q'],
+  checks:[
+    {t:'Đèn immobilizer tắt sau khi bật ON?', how:'Quan sát đèn chìa; HDS: trạng thái immobilizer.', spec:'Tắt',
+     fail:{c:'Immobilizer từ chối → PCM cấm phun và đánh lửa', parts:['Chìa (đăng ký lại)','Bộ Keyless/Immobilizer'], fix:'Đăng ký chìa/kiểm tra giao tiếp Keyless ↔ PCM.'}},
+    {t:'Bơm xăng & áp suất nhiên liệu', how:'Nghe bơm chạy ~2 s khi bật ON; lắp đồng hồ áp suất nhiên liệu.', spec:'~320–370 kPa, giữ áp sau khi tắt (tham khảo)',
+     fail:{c:'Rơ-le PGM-FI Main 2, cầu chì, bơm xăng, lọc/điều áp trong cụm bơm', parts:['Cụm bơm xăng','Rơ-le PGM-FI Main 2','Cầu chì bơm'], fix:'Đo điện áp tại giắc bơm khi mồi; có điện mà bơm không chạy → thay cụm bơm.'}},
+    {t:'Tín hiệu vòng tua khi đề', how:'HDS: Engine speed khi đề; oscilloscope tại CKP.', spec:'200–300 vòng/phút; xung vuông đều',
+     fail:{c:'CKP, dây CKP hoặc bánh răng tín hiệu → PCM không đồng bộ', parts:['Cảm biến CKP','Giắc/dây CKP'], fix:'Thay CKP; kiểm tra khe hở, mạt sắt bám.'}},
+    {t:'CMP & đồng bộ pha', how:'Dạng sóng CKP + CMP; mã P0016/P0340.', spec:'Pha đúng chuẩn',
+     fail:{c:'CMP lỗi hoặc xích cam nhảy răng/giãn', parts:['Cảm biến CMP','Bộ xích cam & tăng xích (hiếm)'], fix:'Kiểm tra dấu cân cam.'}},
+    {t:'Tia lửa', how:'Bugi thử tia lửa từng máy; kiểm tra nguồn IG1 tại giắc bô-bin.', spec:'Tia lửa mạnh ở cả 4 máy',
+     fail:{c:'Bô-bin, bugi, nguồn bô-bin hoặc mạch điều khiển', parts:['Bô-bin COP','Bugi iridium'], fix:'Thay chi tiết lỗi.'}},
+    {t:'Xung kim phun', how:'Đèn noid hoặc oscilloscope tại giắc kim.', spec:'Có xung khi đề',
+     fail:{c:'Mạch kim phun, nguồn kim hoặc PCM', parts:['Kim phun','PCM (hiếm)'], fix:'Kiểm tra cầu chì & dây; điện trở kim sai → thay.'}},
+    {t:'Áp suất nén', how:'Đồng hồ đo nén, bướm ga mở hết, ngắt bơm xăng.', spec:'≥ ~930 kPa; chênh lệch ≤ ~200 kPa (tham khảo)',
+     fail:{c:'Hở xu-páp, xéc-măng, gioăng nắp máy, cam lệch', parts:['Gioăng nắp máy','Xu-páp / xéc-măng (đại tu)'], fix:'Làm thêm thử rò xi-lanh (leak-down).'}}
+  ],
+  codes:[['P0335/P0336','Cảm biến CKP'],['P0340/P0341','Cảm biến CMP'],['P0016','Tương quan trục khuỷu – trục cam'],['P0230','Mạch bơm xăng'],['P0351–P0354','Bô-bin 1–4'],['P0201–P0204','Kim phun 1–4'],['P0685','Rơ-le nguồn PCM']],
+  parts:[['Cụm bơm xăng',3,'Gồm lọc & điều áp'],['Cảm biến CKP',3,''],['Bugi iridium',2,'Thay cả bộ 4'],['Bô-bin COP',2,''],['Rơ-le PGM-FI',2,''],['Cảm biến CMP',2,''],['Kim phun',1,''],['Xích cam / tăng xích',1,'Kiểm tra dấu cân cam']] },
+
+{ id:'mil', grp:'Động cơ & khởi động', t:'Đèn Check Engine (MIL) sáng hoặc nhấp nháy',
+  sym:'Đèn báo lỗi động cơ sáng khi đang chạy; nhấp nháy là cảnh báo bỏ máy nặng.',
+  sys:['PGM-FI','Khí thải','EVAP','OBD-II'],
+  sus:['pcm','dlc','af','o2','cat','purge','map','ect','coil'], steps:['H','I','T','Y'],
+  checks:[
+    {t:'MIL sáng liên tục (không nhấp nháy)?', how:'Quan sát khi chạy.', spec:'Không nhấp nháy',
+     fail:{c:'Bỏ máy nặng – nguy cơ quá nhiệt, hỏng bầu xúc tác', parts:['Bugi','Bô-bin'], fix:'Giảm tải, không chạy tốc độ cao; xử lý theo nhóm “Rung, bỏ máy”.'}},
+    {t:'Đọc mã & freeze frame', how:'Honda i-HDS hoặc máy OBD-II tại giắc DLC; ghi mã, trạng thái, freeze frame (rpm, ECT, tải, fuel trim).', spec:'Kết nối được, có mã để phân nhóm',
+     fail:{c:'Không kết nối được máy chẩn đoán', parts:['Cầu chì nguồn DLC','Dây CAN tại DLC'], fix:'DLC: chân 16 B+, chân 4/5 mass, chân 6/14 CAN (≈ 60 Ω).'}},
+    {info:true, t:'Phân nhóm mã', how:'P01xx nhiên liệu & khí nạp · P03xx đánh lửa/bỏ máy · P04xx khí thải/EVAP · P05xx không tải/điện áp · P06xx PCM · P07xx CVT · U0xxx mạng.'},
+    {t:'Mạch cảm biến liên quan', how:'Đo 5 V tham chiếu, mass cảm biến, tín hiệu tại giắc (back-probe); kiểm tra giắc ẩm, chân lỏng.', spec:'5,0 ± 0,1 V; mass < 0,1 V',
+     fail:{c:'Dây/giắc hỏng hoặc cảm biến lỗi', parts:['Cảm biến tương ứng','Giắc / đoạn dây'], fix:'Sửa dây trước, thay cảm biến khi đã chứng minh hỏng.'}},
+    {t:'So sánh dữ liệu trực tiếp', how:'MAP, ECT, IAT, TP, A/F, fuel trim, bộ đếm bỏ máy so với chuẩn.', spec:'Trong giới hạn',
+     fail:{c:'Cảm biến sai lệch hoặc lỗi cơ khí', parts:['Theo kết quả đo'], fix:'Đối chiếu bảng giá trị chuẩn (tab Bảo dưỡng).'}},
+    {t:'Xóa lỗi & chạy thử', how:'Xóa mã, chạy chu trình lái, kiểm tra readiness và mã tạm.', spec:'Không tái lập mã; readiness hoàn tất',
+     fail:{c:'Lỗi chưa xử lý tận gốc', parts:[], fix:'Quay lại bước phân tích dữ liệu.'}}
+  ],
+  codes:[['P0171/P0172','Hỗn hợp nghèo / giàu'],['P0300–P0304','Bỏ máy'],['P0420','Hiệu suất bầu xúc tác thấp'],['P0455/P0456','Rò EVAP lớn / rất nhỏ'],['P0128','Nhiệt độ nước dưới mức điều chỉnh'],['P2195/P2196','Cảm biến A/F kẹt nghèo / giàu'],['P0135/P0141','Mạch sấy cảm biến'],['P0505–P0507','Hệ thống không tải']],
+  parts:[['Bugi iridium',3,''],['Nắp bình xăng',3,'Nguyên nhân phổ biến của mã EVAP'],['Cảm biến A/F',2,''],['Cảm biến O2 sau',2,''],['Van EVAP purge',2,''],['Bô-bin COP',2,''],['Bầu xúc tác',1,'Tìm nguyên nhân gốc (bỏ máy, hao dầu) trước khi thay']] },
+
+{ id:'rough', grp:'Động cơ & khởi động', t:'Động cơ rung, bỏ máy, ì khi tăng tốc',
+  sym:'Không tải rung giật, vòng tua dao động, hụt ga hoặc ì khi tăng tốc.',
+  sys:['Đánh lửa','Nhiên liệu','Khí nạp/DBW','Chân máy'],
+  sus:['coil','inj','tb','map','plenum','vtc','knock','pcm'], steps:['O','P','R','V','W'],
+  checks:[
+    {info:true, t:'Đọc mã & bộ đếm bỏ máy từng xi-lanh', how:'HDS: misfire counter; P0300 (ngẫu nhiên) hay P0301–P0304 (máy cụ thể).'},
+    {t:'Đảo bô-bin sang máy khác', how:'Hoán đổi bô-bin máy lỗi với máy bên cạnh, xóa mã, chạy lại.', spec:'Lỗi không đi theo bô-bin',
+     fail:{c:'Bô-bin hỏng (lỗi chạy theo bô-bin)', parts:['Bô-bin COP'], fix:'Thay bô-bin; kiểm tra luôn bugi cùng máy.'}},
+    {t:'Bugi', how:'Tháo kiểm tra màu sứ, mòn điện cực, khe hở, nứt sứ.', spec:'Khe hở ~1,0–1,1 mm (tham khảo); sứ nâu nhạt',
+     fail:{c:'Bugi mòn, muội hoặc nứt', parts:['Bộ 4 bugi iridium'], fix:'Thay cả bộ đúng mã.'}},
+    {t:'Kim phun', how:'Đo điện trở cuộn dây; cân bằng xi-lanh bằng HDS; xem tia phun trên máy test.', spec:'~10–14 Ω (tham khảo), các máy đều nhau',
+     fail:{c:'Kim tắc, rò hoặc cuộn dây hỏng', parts:['Kim phun','Gioăng kim'], fix:'Vệ sinh siêu âm hoặc thay.'}},
+    {t:'Rò khí nạp & áp suất xăng', how:'Fuel trim (STFT+LTFT) ở không tải và 2.500 vòng/phút; máy tạo khói tìm rò.', spec:'Tổng trong ±10%',
+     fail:{c:'Rò chân không (ống, gioăng cổ hút, PCV) hoặc áp suất xăng thấp', parts:['Ống chân không / van PCV','Gioăng cổ hút'], fix:'Thay chi tiết rò.'}},
+    {t:'Bướm ga & không tải', how:'Bướm ga bẩn muội? TP/APP tương quan? Học lại không tải.', spec:'Không tải nóng ~700 ± 50 vòng/phút ổn định',
+     fail:{c:'Bướm ga bẩn/chưa học lại, cảm biến TP lỗi', parts:['Cụm bướm ga (vệ sinh hoặc thay)'], fix:'Vệ sinh đúng cách, học lại không tải bằng HDS.'}},
+    {t:'Chân máy (rung khi dừng ở D/R)', how:'Rung tăng khi vào D/R, đứng phanh; kiểm tra cao su chân máy nứt, chân thủy lực chảy dầu.', spec:'Không nứt, không chảy dầu',
+     fail:{c:'Chân máy hỏng', parts:['Chân máy (cao su/thủy lực)'], fix:'Thay chân máy.'}},
+    {t:'Áp suất nén & VTC', how:'Đo nén; HDS: góc VTC mục tiêu/thực tế.', spec:'Nén đều; VTC bám mục tiêu',
+     fail:{c:'Lỗi cơ khí hoặc van OCV kẹt do dầu bẩn', parts:['Van OCV (VTC)','Gioăng nắp máy (hiếm)'], fix:'Thay dầu đúng chuẩn, kiểm tra lưới lọc OCV.'}}
+  ],
+  codes:[['P0300–P0304','Bỏ máy ngẫu nhiên / máy 1–4'],['P0171','Hỗn hợp nghèo'],['P0505–P0507','Không tải'],['P2101','Mô-tơ bướm ga'],['P2135','Tương quan TP-A/TP-B'],['P0011/P0012','Pha cam nạp quá sớm / quá muộn'],['P0325','Cảm biến kích nổ']],
+  parts:[['Bugi iridium',3,''],['Bô-bin COP',3,''],['Chân máy',3,'Rung khi dừng ở D/R'],['Cụm bướm ga',2,'Học lại không tải sau khi vệ sinh/thay'],['Kim phun',2,''],['Ống chân không / gioăng cổ hút',2,''],['Van OCV (VTC)',1,'']] },
+
+{ id:'fuel', grp:'Động cơ & khởi động', t:'Xe hao xăng bất thường',
+  sym:'Mức tiêu thụ tăng rõ so với trước (công bố: hỗn hợp ~5,7 L/100 km, đô thị ~7,3 L/100 km).',
+  sys:['PGM-FI','Làm mát','CVT','Lốp & phanh'],
+  sus:['af','o2','ect','thermo','airf','inj','cvt','wheel'], steps:['T','U','X'],
+  checks:[
+    {t:'Áp suất lốp & phanh bó', how:'Áp suất theo tem cột cửa lái (lốp nguội); sờ nhiệt độ đĩa phanh sau khi chạy.', spec:'Đúng chuẩn; các bánh nóng tương đương',
+     fail:{c:'Lốp non hoặc phanh bó', parts:['Heo phanh / chốt dẫn hướng','Lốp'], fix:'Bơm đúng chuẩn; bảo dưỡng phanh.'}},
+    {t:'Nhiệt độ động cơ', how:'ECT trên HDS sau 15 phút chạy.', spec:'~80–95 °C',
+     fail:{c:'Van hằng nhiệt kẹt mở (P0128) hoặc ECT sai → PCM tăng xăng', parts:['Van hằng nhiệt','Cảm biến ECT'], fix:'Thay van hằng nhiệt kèm gioăng.'}},
+    {t:'Fuel trim & cảm biến A/F', how:'STFT+LTFT; phản hồi A/F khi tăng/giảm ga.', spec:'±10%; phản hồi nhanh',
+     fail:{c:'Cảm biến A/F chậm/sai hoặc rò khí', parts:['Cảm biến A/F'], fix:''}},
+    {t:'Lọc gió & bướm ga', how:'Kiểm tra lọc gió, muội bướm ga.', spec:'Sạch',
+     fail:{c:'Lọc gió tắc', parts:['Lọc gió động cơ'], fix:''}},
+    {t:'Bugi & kim phun', how:'Như nhóm “Rung, bỏ máy”.', spec:'Đạt chuẩn',
+     fail:{c:'Cháy không hết', parts:['Bugi iridium','Kim phun'], fix:''}},
+    {t:'CVT & khóa biến mô', how:'Vòng tua ổn định ở 60 km/h; HDS: trạng thái ly hợp khóa biến mô.', spec:'Khóa biến mô đóng khi chạy đều',
+     fail:{c:'Trượt CVT hoặc không khóa biến mô (P0741)', parts:['Dầu CVT HCF-2','Van điện từ CVT'], fix:'Xem nhóm “Hộp số CVT”.'}},
+    {info:true, t:'Điều kiện sử dụng', how:'Kẹt xe, chạy quãng ngắn, tải nặng, điều hòa nhiệt độ thấp đều làm tăng tiêu hao đáng kể.'}
+  ],
+  codes:[['P0128','Van hằng nhiệt'],['P0171/P0172','Nghèo / giàu'],['P2195/P2196','Cảm biến A/F'],['P0420','Bầu xúc tác'],['P0741','Ly hợp khóa biến mô'],['P0300','Bỏ máy']],
+  parts:[['Lọc gió động cơ',3,''],['Bugi iridium',2,''],['Van hằng nhiệt',2,''],['Cảm biến A/F',2,''],['Kim phun',1,''],['Heo phanh',1,'']] },
+
+{ id:'overheat', grp:'Động cơ & khởi động', t:'Động cơ quá nóng / quạt két nước không chạy',
+  sym:'Kim/đèn nhiệt độ báo cao, quạt két nước không chạy, mất nước làm mát.',
+  sys:['Làm mát','Quạt','PCM'],
+  sus:['radiator','fan','r-fan','thermo','ect','pcm'], steps:['U'],
+  checks:[
+    {t:'Mức nước làm mát (máy nguội)', how:'Bình phụ & két; vết rò; nắp két.', spec:'Giữa MIN–MAX; đúng loại Honda Type 2',
+     fail:{c:'Thiếu nước do rò (ống, két, bơm nước, nắp két)', parts:['Nước làm mát Honda Type 2','Ống nước','Nắp két','Két nước'], fix:'Tìm rò bằng bơm áp két.'}},
+    {t:'Quạt két nước', how:'Bật A/C → quạt phải chạy; HDS chạy thử quạt; kiểm tra rơ-le, cầu chì, mô-tơ.', spec:'Quạt chạy khi bật A/C hoặc ECT cao',
+     fail:{c:'Rơ-le quạt, cầu chì, mô-tơ quạt hoặc mạch điều khiển', parts:['Mô-tơ quạt két nước','Rơ-le quạt'], fix:''}},
+    {t:'Cảm biến ECT', how:'So sánh ECT trên HDS với nhiệt kế hồng ngoại tại cổ nước.', spec:'Sai lệch nhỏ',
+     fail:{c:'ECT sai → quạt không được bật', parts:['Cảm biến ECT'], fix:''}},
+    {t:'Van hằng nhiệt', how:'Ống trên két nóng dần khi ECT ~80 °C; ống lạnh khi máy nóng → kẹt đóng.', spec:'Mở ~76–80 °C (tham khảo)',
+     fail:{c:'Van hằng nhiệt kẹt đóng', parts:['Van hằng nhiệt + gioăng'], fix:''}},
+    {t:'Bơm nước & dây đai', how:'Tiếng ồn, rỉ ở lỗ thoát, tuần hoàn.', spec:'Không rỉ, không ồn',
+     fail:{c:'Bơm nước hỏng', parts:['Bơm nước'], fix:''}},
+    {t:'Gioăng nắp máy', how:'Bọt khí trong két, test CO₂ (block tester), khói trắng.', spec:'Không có khí xả trong nước',
+     fail:{c:'Thổi gioăng nắp máy', parts:['Gioăng nắp máy'], fix:'Kiểm tra độ phẳng mặt máy.'}}
+  ],
+  codes:[['P0115–P0118','Mạch cảm biến ECT'],['P0116','ECT dải/hiệu suất'],['P0128','Van hằng nhiệt'],['P0480','Mạch điều khiển quạt 1'],['P0217','Quá nhiệt động cơ']],
+  parts:[['Nước làm mát Honda Type 2',3,''],['Mô-tơ quạt / rơ-le quạt',3,''],['Van hằng nhiệt',2,''],['Nắp két',2,''],['Bơm nước',2,''],['Két nước',1,''],['Gioăng nắp máy',1,'']] },
+
+{ id:'oil', grp:'Động cơ & khởi động', t:'Đèn áp suất dầu sáng / tiếng gõ máy',
+  sym:'Đèn dầu sáng khi chạy, tiếng gõ, mã VTC/VTEC.',
+  sys:['Bôi trơn','i-VTEC'],
+  sus:['vtc','vtec','pcm','crank'], steps:['Q','W'],
+  checks:[
+    {t:'Dừng máy ngay – kiểm tra mức dầu', how:'Đỗ phẳng, chờ vài phút, rút que thăm.', spec:'Giữa vạch MIN–MAX',
+     fail:{c:'Thiếu dầu (rò hoặc hao dầu)', parts:['Dầu 0W-20 + lọc dầu','Gioăng/phớt rò'], fix:'Bổ sung, tìm điểm rò; không chạy tiếp khi đèn sáng.'}},
+    {t:'Loại dầu & hạn thay', how:'Đúng 0W-20, đúng hạn; dầu không đặc quánh, không lẫn nước.', spec:'Đúng chuẩn, đúng hạn',
+     fail:{c:'Dầu sai/bẩn làm kẹt van OCV/VTEC', parts:['Dầu 0W-20 + lọc dầu'], fix:'Thay dầu, kiểm tra lưới lọc van OCV.'}},
+    {t:'Áp suất dầu thực tế', how:'Lắp đồng hồ áp suất dầu cơ thay công tắc.', spec:'Theo Service Manual tại không tải/3.000 vòng/phút',
+     fail:{c:'Bơm dầu mòn, lưới hút tắc, bạc mòn', parts:['Bơm dầu','Lưới lọc hút dầu'], fix:''}},
+    {t:'Công tắc áp suất dầu', how:'Áp suất thực tế đạt nhưng đèn vẫn sáng → kiểm tra công tắc và dây.', spec:'Công tắc mở khi có áp',
+     fail:{c:'Công tắc áp suất dầu hoặc dây chạm mass', parts:['Công tắc áp suất dầu'], fix:''}},
+    {t:'VTC/VTEC', how:'HDS: góc VTC, trạng thái công tắc áp suất VTEC; mã P0011/P2646.', spec:'Bám mục tiêu, không mã',
+     fail:{c:'Van OCV hoặc van VTEC kẹt', parts:['Van OCV (VTC)','Van điện từ VTEC'], fix:''}}
+  ],
+  codes:[['P0520–P0523','Cảm biến/công tắc áp suất dầu'],['P0010–P0012','Bộ chấp hành pha cam nạp'],['P2646–P2649','Hệ chấp hành cò mổ (VTEC)']],
+  parts:[['Dầu 0W-20 + lọc dầu',3,''],['Công tắc áp suất dầu',2,''],['Van OCV / van VTEC',1,''],['Bơm dầu',1,'']] },
+
+/* ---------- ĐIỆN & MẠNG ---------- */
+{ id:'charge', grp:'Điện & mạng', t:'Đèn sạc sáng, ắc quy yếu, hết điện khi đỗ',
+  sym:'Đèn sạc sáng, đề yếu buổi sáng, hết điện sau vài ngày đỗ.',
+  sys:['Nguồn','Sạc','Dòng rò'],
+  sus:['battery','alt','belt','mainfuse','g1','pcm'], steps:['A','S','Z'],
+  checks:[
+    {t:'Điện áp nghỉ & thử tải ắc quy', how:'Đo sau khi để yên vài giờ; máy test CCA.', spec:'12,4–12,7 V; CCA ≥ ~80% định mức',
+     fail:{c:'Ắc quy suy giảm', parts:['Ắc quy 12 V'], fix:'Thay đúng dung lượng/kích thước; khởi tạo sau khi thay.'}},
+    {t:'Điện áp nạp', how:'Đo tại cọc ở 2.000 vòng/phút, bật tải (đèn, quạt gió, sấy kính).', spec:'13,5–14,8 V',
+     fail:{c:'Máy phát/IC tiết chế, mạch C/FR hoặc cu-roa trượt', parts:['Máy phát','Dây cu-roa'], fix:''}},
+    {t:'Dây cu-roa & bộ tăng đai', how:'Nứt chân, mòn, trượt, tiếng rít.', spec:'Không nứt, không trượt',
+     fail:{c:'Đai mòn/căng kém', parts:['Dây cu-roa','Bộ tăng đai tự động'], fix:''}},
+    {t:'Sụt áp mạch nạp & mass', how:'Đo từ chân B máy phát tới cọc +, từ vỏ máy phát tới cọc − khi có tải.', spec:'< ~0,2–0,3 V',
+     fail:{c:'Cáp B hoặc mass kém', parts:['Cáp B máy phát','Dây mass G1'], fix:''}},
+    {t:'Gợn sóng AC (diode)', how:'Đồng hồ thang AC hoặc oscilloscope tại cọc.', spec:'< ~0,5 V AC',
+     fail:{c:'Hỏng diode chỉnh lưu', parts:['Máy phát'], fix:''}},
+    {t:'Dòng rò khi đỗ', how:'Kìm đo dòng ở cọc −, chờ mạng ngủ; rút lần lượt cầu chì tìm mạch.', spec:'< ~50 mA',
+     fail:{c:'Module không ngủ, đèn cốp/hộc, phụ kiện lắp thêm (camera hành trình, định vị)', parts:['Phụ kiện lắp thêm','Module/công tắc lỗi'], fix:'Đấu phụ kiện qua nguồn ACC hoặc có ngắt điện áp thấp.'}}
+  ],
+  codes:[['P0562/P0563','Điện áp hệ thống thấp / cao'],['P0620–P0626','Mạch điều khiển máy phát'],['U0xxx','Mã mất giao tiếp khi điện yếu']],
+  parts:[['Ắc quy 12 V',3,''],['Phụ kiện gây rò',3,''],['Dây cu-roa',2,''],['Máy phát',2,''],['Cáp / cọc ắc quy',2,'']] },
+
+{ id:'can', grp:'Điện & mạng', t:'Nhiều đèn cảnh báo cùng sáng, mã U (lỗi mạng CAN)',
+  sym:'Nhiều đèn cảnh báo sáng cùng lúc, đồng hồ chập chờn, máy chẩn đoán báo mất giao tiếp.',
+  sys:['F-CAN','B-CAN','Gateway','Nguồn & mass'],
+  sus:['gw','dlc','pcm','vsa','eps','srs','micu','key','hvac','battery'], steps:['C','H','I'],
+  checks:[
+    {t:'Điện áp ắc quy', how:'Đo khi bật ON và khi đề.', spec:'≥ 12,2 V khi bật ON',
+     fail:{c:'Điện yếu gây mã U hàng loạt', parts:['Ắc quy 12 V'], fix:'Sạc/thay ắc quy, xóa mã, kiểm tra lại.'}},
+    {info:true, t:'Quét toàn bộ module', how:'All-module scan bằng i-HDS: ghi lại module nào mất giao tiếp và module nào báo mất ai → khoanh vùng nhánh mạng.'},
+    {t:'Điện trở bus tại DLC', how:'Ngắt cọc âm; đo giữa chân 6 (CAN-H) và 14 (CAN-L).', spec:'≈ 60 Ω',
+     fail:{c:'≈ 120 Ω: hở một nhánh/mất một điện trở đầu cuối · ≈ 0 Ω: chập CAN-H/CAN-L', parts:['Dây/giắc CAN'], fix:'Khoanh vùng bằng cách tháo giắc từng đoạn.'}},
+    {t:'Điện áp & dạng sóng', how:'Oscilloscope 2 kênh: CAN-H và CAN-L so với mass.', spec:'CAN-H ~2,5–3,5 V, CAN-L ~1,5–2,5 V, đối xứng',
+     fail:{c:'Chập lên nguồn/mass hoặc nhiễu', parts:['Dây/giắc CAN'], fix:''}},
+    {t:'Tìm node gây nhiễu', how:'Ngắt lần lượt giắc từng module, quan sát bus phục hồi.', spec:'Bus ổn định',
+     fail:{c:'Một module làm treo bus', parts:['Module lỗi (thay & cài đặt)'], fix:''}},
+    {t:'Mass & giắc ẩm', how:'Kiểm tra điểm mass G5/G6 của module, giắc dưới sàn/cột A (xe từng ngập).', spec:'Sạch, chặt; sụt áp mass < 0,1 V',
+     fail:{c:'Giắc oxy hóa, mass lỏng', parts:['Giắc / điểm mass'], fix:'Vệ sinh, xử lý chống ẩm.'}}
+  ],
+  codes:[['U0001','Bus CAN tốc độ cao'],['U0100','Mất giao tiếp PCM'],['U0121','Mất giao tiếp ABS/VSA'],['U0131','Mất giao tiếp EPS'],['U0140','Mất giao tiếp BCM'],['U0151','Mất giao tiếp SRS'],['U0155','Mất giao tiếp cụm đồng hồ'],['U0164','Mất giao tiếp HVAC']],
+  parts:[['Giắc / dây CAN',3,'Ẩm, oxy hóa, chuột cắn'],['Ắc quy 12 V',2,''],['Module lỗi',1,'Cần cài đặt/cập nhật bằng HDS']] },
+
+{ id:'light', grp:'Điện & mạng', t:'Đèn không sáng hoặc nhấp nháy',
+  sym:'Đèn pha/hậu/xi-nhan không sáng, sáng mờ, chập chờn hoặc xi-nhan nháy nhanh.',
+  sys:['Chiếu sáng','MICU','LIN'],
+  sus:['micu','lamp','uhbox','lin'], steps:['C'],
+  checks:[
+    {info:true, t:'Bóng sợi đốt hay LED?', how:'Đèn LED thường thay cả cụm/module; bóng halogen/sợi đốt thay riêng.'},
+    {t:'Cầu chì & rơ-le', how:'Kiểm tra cầu chì & rơ-le đèn tương ứng.', spec:'Thông mạch',
+     fail:{c:'Đứt cầu chì/rơ-le hỏng', parts:['Cầu chì','Rơ-le'], fix:'Tìm nguyên nhân chập trước khi thay.'}},
+    {t:'Điện áp & mass tại giắc đèn', how:'Đo khi bật đèn; sụt áp mass thân xe.', spec:'≈ điện áp ắc quy; mass < 0,1 V',
+     fail:{c:'Dây/giắc/mass thân xe kém', parts:['Giắc / điểm mass'], fix:''}},
+    {t:'Công tắc tổ hợp', how:'HDS: trạng thái công tắc trong data list MICU.', spec:'Chuyển đúng trạng thái',
+     fail:{c:'Công tắc tổ hợp hỏng', parts:['Công tắc tổ hợp đèn'], fix:''}},
+    {t:'Bóng/cụm đèn', how:'Xi-nhan nháy nhanh → một bóng cháy; thử cấp nguồn trực tiếp.', spec:'Sáng bình thường',
+     fail:{c:'Bóng cháy hoặc cụm LED hỏng', parts:['Bóng đèn','Cụm đèn LED'], fix:''}},
+    {t:'MICU', how:'HDS chạy thử chức năng đèn (active test).', spec:'Đèn phản hồi lệnh',
+     fail:{c:'MICU không xuất lệnh', parts:['MICU (hộp cầu chì dưới táp-lô)'], fix:'Cài đặt cấu hình sau khi thay.'}}
+  ],
+  codes:[['Mã MICU','Đọc bằng i-HDS'],['U0140','Mất giao tiếp BCM']],
+  parts:[['Bóng đèn',3,''],['Cầu chì / rơ-le',3,''],['Cụm đèn LED',2,''],['Công tắc tổ hợp',2,''],['MICU',1,'']] },
+
+{ id:'body', grp:'Điện & mạng', t:'Kính điện, còi, gạt mưa, cốp không hoạt động',
+  sym:'Một chức năng thân xe không hoạt động hoặc hoạt động sai (kính không tự lên/xuống AUTO…).',
+  sys:['Thân xe','MICU','LIN'],
+  sus:['micu','door','lamp','lin','uhbox'], steps:['B','C'],
+  checks:[
+    {t:'Cầu chì', how:'Cầu chì của chức năng.', spec:'Thông mạch', fail:{c:'Đứt cầu chì', parts:['Cầu chì'], fix:''}},
+    {t:'Công tắc', how:'Đo thông mạch hoặc xem data list.', spec:'Chuyển trạng thái đúng', fail:{c:'Công tắc hỏng', parts:['Công tắc kính/còi/gạt mưa'], fix:''}},
+    {t:'Điện áp tại mô-tơ', how:'Đo khi bấm công tắc.', spec:'≈ điện áp ắc quy', fail:{c:'Dây/giắc (đặc biệt bó dây bản lề cửa)', parts:['Bó dây cửa'], fix:''}},
+    {t:'Kính: khởi tạo AUTO', how:'Sau tháo ắc quy: hạ hết kính, kéo lên đóng hết và giữ thêm ~2 giây.', spec:'AUTO hoạt động', fail:{c:'Mô-tơ kính/bộ chống kẹt hỏng', parts:['Mô-tơ nâng kính'], fix:''}},
+    {t:'Còi & nút vô-lăng', how:'Còi không kêu và nút vô-lăng cũng lỗi → cáp xoắn.', spec:'Còi kêu', fail:{c:'Rơ-le còi hoặc cáp xoắn', parts:['Rơ-le còi','Cáp xoắn (cable reel)'], fix:'Cáp xoắn liên quan SRS: tuân thủ an toàn túi khí.'}},
+    {t:'Gạt mưa', how:'Mô-tơ quay nhưng gạt không chạy → cơ cấu thanh giằng.', spec:'Gạt đủ hành trình', fail:{c:'Mô-tơ hoặc thanh giằng', parts:['Mô-tơ gạt mưa','Cơ cấu thanh giằng','Lưỡi gạt'], fix:''}}
+  ],
+  codes:[['Mã MICU/LIN','Đọc bằng i-HDS']],
+  parts:[['Lưỡi gạt mưa',3,'Hao mòn ~1 năm'],['Công tắc kính',2,''],['Mô-tơ nâng kính',2,''],['Rơ-le còi',2,''],['Cáp xoắn',2,''],['Mô-tơ/khóa cốp',2,''],['Mô-tơ gạt mưa',1,'']] },
+
+/* ---------- KHUNG GẦM & AN TOÀN ---------- */
+{ id:'cvt', grp:'Khung gầm & an toàn', t:'Hộp số CVT giật, trượt, rú ga, kêu hú',
+  sym:'Vào số giật, tăng tốc rú ga mà xe không đi, tiếng hú theo tốc độ, đèn báo số nhấp nháy.',
+  sys:['CVT','PCM'],
+  sus:['cvt','cvtsens','cvtsol','tc','range','pcm'], steps:['X'],
+  checks:[
+    {t:'Mức & chất lượng dầu CVT', how:'Kiểm tra theo quy trình Honda (đúng nhiệt độ dầu); màu, mùi khét, mạt kim loại.', spec:'Đúng mức; Honda HCF-2; không mùi khét',
+     fail:{c:'Dầu thiếu/biến chất', parts:['Dầu CVT HCF-2','Lọc dầu CVT'], fix:'Thay dầu đúng loại, học lại CVT.'}},
+    {t:'Mã P07xx & dữ liệu', how:'Tốc độ puli sơ cấp/thứ cấp, tỉ số thực vs mục tiêu, nhiệt độ dầu.', spec:'Tỉ số thực bám mục tiêu',
+     fail:{c:'Cảm biến tốc độ hoặc nhiệt độ dầu lỗi', parts:['Cảm biến tốc độ đầu vào','Cảm biến tốc độ đầu ra','Cảm biến nhiệt độ dầu'], fix:''}},
+    {t:'Van điện từ tuyến tính', how:'Điện trở, dòng điều khiển; HDS chạy thử.', spec:'Theo Service Manual',
+     fail:{c:'Van kẹt/cuộn dây hỏng', parts:['Cụm van điện từ CVT'], fix:''}},
+    {t:'Công tắc dải số & cáp số', how:'So data list với vị trí cần số.', spec:'P/R/N/D khớp',
+     fail:{c:'Lệch công tắc hoặc cáp', parts:['Công tắc dải số','Cáp cần số'], fix:''}},
+    {t:'Học lại CVT', how:'Sau thay dầu/sửa chữa/thay PCM: quy trình học CVT bằng HDS.', spec:'Hoàn tất, không mã',
+     fail:{c:'Lỗi cơ khí bên trong (đai, puli, ly hợp)', parts:['Cụm hộp số CVT (hiếm)'], fix:'Chuyển xưởng chuyên sâu/đại lý.'}},
+    {t:'Chân hộp số', how:'Giật khi vào D/R; kiểm tra cao su chân hộp số.', spec:'Không nứt',
+     fail:{c:'Chân hộp số hỏng', parts:['Chân hộp số'], fix:''}}
+  ],
+  codes:[['P0705/P0706','Công tắc dải số'],['P0711–P0713','Cảm biến nhiệt độ dầu'],['P0715','Cảm biến tốc độ đầu vào'],['P0720','Cảm biến tốc độ đầu ra'],['P0741','Ly hợp khóa biến mô'],['P0962/P0963','Van điều áp A'],['P0966/P0967','Van điều áp B']],
+  parts:[['Dầu CVT HCF-2',3,''],['Lọc dầu CVT',2,''],['Cảm biến tốc độ',2,''],['Cụm van điện từ',2,''],['Chân hộp số',2,''],['Cụm CVT',1,'']] },
+
+{ id:'abs', grp:'Khung gầm & an toàn', t:'Đèn ABS/VSA/phanh sáng, phanh bất thường',
+  sym:'Đèn ABS, VSA hoặc đèn hệ thống phanh sáng; bàn đạp rung bất thường; phanh kêu.',
+  sys:['ABS/VSA','Phanh','F-CAN'],
+  sus:['vsa','wss','wheel','fbig','pcm'], steps:['V','Y'],
+  checks:[
+    {t:'Dầu phanh & má phanh', how:'Mức dầu, độ dày má, đĩa.', spec:'Trên MIN; má trên giới hạn mòn',
+     fail:{c:'Má mòn hoặc rò dầu phanh', parts:['Má phanh','Đĩa phanh','Dầu phanh DOT 3/4'], fix:''}},
+    {info:true, t:'Đọc mã VSA', how:'i-HDS: ghi mã và điều kiện xuất hiện (tốc độ, đường xấu).'},
+    {t:'Tốc độ 4 bánh khi chạy', how:'HDS data: so sánh 4 bánh ở ~20–40 km/h.', spec:'Chênh lệch rất nhỏ',
+     fail:{c:'Cảm biến tốc độ bánh, vòng từ (vòng bi có vòng từ), giắc', parts:['Cảm biến tốc độ bánh','Vòng bi bánh xe'], fix:''}},
+    {t:'Nguồn modulator', how:'Cầu chì lớn mô-tơ bơm & van; mass.', spec:'≈ điện áp ắc quy',
+     fail:{c:'Đứt cầu chì lớn/mass kém', parts:['Cầu chì ABS/VSA'], fix:''}},
+    {t:'Giao tiếp CAN', how:'U0121/U0100 ở các module.', spec:'Không mã U',
+     fail:{c:'Dây/giắc CAN', parts:['Dây/giắc CAN'], fix:'Xem nhóm “Lỗi mạng CAN”.'}},
+    {t:'Hiệu chỉnh', how:'Sau căn chỉnh góc lái/thay modulator/cảm biến: hiệu chỉnh cảm biến góc lái & yaw bằng HDS.', spec:'Hoàn tất',
+     fail:{c:'Modulator lỗi bên trong', parts:['Modulator VSA (hiếm)'], fix:''}}
+  ],
+  codes:[['C0035/C0040','Cảm biến tốc độ bánh trước trái / phải (SAE)'],['C0045/C0050','Cảm biến tốc độ bánh sau trái / phải (SAE)'],['U0121','Mất giao tiếp ABS/VSA'],['U0100','Mất giao tiếp PCM'],['Mã VSA Honda','Đọc bằng i-HDS']],
+  parts:[['Má / đĩa phanh',3,''],['Cảm biến tốc độ bánh',3,''],['Dầu phanh DOT 3/4',2,'Thay 3 năm'],['Vòng bi bánh (vòng từ)',2,''],['Modulator VSA',1,'Hiệu chỉnh sau thay']] },
+
+{ id:'eps', grp:'Khung gầm & an toàn', t:'Tay lái nặng / đèn EPS sáng',
+  sym:'Vô-lăng nặng đột ngột, trợ lực chập chờn, đèn EPS sáng.',
+  sys:['EPS','Nguồn','F-CAN'],
+  sus:['eps','fbig','battery','vsa','pcm'], steps:['I','Y'],
+  checks:[
+    {t:'Điện áp ắc quy & cầu chì EPS', how:'Đo khi đánh lái tại chỗ (tải lớn).', spec:'≥ ~12 V khi nổ máy; cầu chì tốt',
+     fail:{c:'Điện yếu/cầu chì lớn', parts:['Ắc quy','Cầu chì EPS'], fix:''}},
+    {info:true, t:'Đọc mã EPS', how:'i-HDS: mã EPS và dữ liệu mô-men lái.'},
+    {t:'Tín hiệu tốc độ xe & vòng tua', how:'EPS nhận qua CAN từ VSA/PCM.', spec:'Có dữ liệu',
+     fail:{c:'Mất tín hiệu CAN (U0121/U0100)', parts:['Dây/giắc CAN'], fix:''}},
+    {t:'Cảm biến mô-men', how:'Data list khi xoay vô-lăng hai chiều.', spec:'Đối xứng, về 0 ở giữa',
+     fail:{c:'Cảm biến mô-men lệch/hỏng', parts:['Cụm trụ lái EPS (hiếm)'], fix:'Khởi tạo cảm biến mô-men bằng HDS.'}},
+    {t:'Cơ khí', how:'Rô-tuyn, thước lái, áp suất lốp, góc đặt bánh.', spec:'Không rơ, không kẹt',
+     fail:{c:'Kẹt cơ khí', parts:['Rô-tuyn / thước lái'], fix:''}}
+  ],
+  codes:[['U0131','Mất giao tiếp EPS'],['U0121','Mất giao tiếp ABS/VSA'],['Mã EPS Honda','Đọc bằng i-HDS']],
+  parts:[['Ắc quy',2,''],['Cầu chì EPS',2,''],['Rô-tuyn / thước lái',2,''],['Cụm trụ lái EPS',1,'Khởi tạo sau thay']] },
+
+{ id:'srs', grp:'Khung gầm & an toàn', t:'Đèn túi khí SRS sáng',
+  sym:'Đèn SRS sáng liên tục hoặc không tắt sau khi bật ON.',
+  sys:['SRS'],
+  sus:['srs','gw'], steps:['I'],
+  checks:[
+    {info:true, t:'An toàn trước khi làm việc', how:'Ngắt cọc âm, chờ ít nhất 3 phút trước khi tháo giắc SRS. Không đo điện trở túi khí bằng VOM. Không tháo/cắm giắc khi đang bật ON.'},
+    {info:true, t:'Đọc mã SRS', how:'i-HDS: xác định mạch lỗi (túi khí người lái/phụ/bên/rèm, đai căng, công tắc khóa đai, cảm biến va chạm).'},
+    {t:'Cáp xoắn (cable reel)', how:'Còi hoặc nút vô-lăng cũng lỗi → nghi cáp xoắn.', spec:'Còi & nút vô-lăng hoạt động',
+     fail:{c:'Cáp xoắn đứt', parts:['Cáp xoắn (cable reel)'], fix:'Căn giữa đúng khi lắp.'}},
+    {t:'Giắc dưới ghế', how:'Thường lỏng sau khi tháo/chỉnh ghế.', spec:'Cắm chắc, khóa đủ',
+     fail:{c:'Giắc lỏng/oxy hóa', parts:['Giắc dưới ghế','Đai căng / công tắc khóa đai'], fix:''}},
+    {t:'Sau va chạm', how:'Túi khí đã nổ, đai căng đã kích hoạt.', spec:'—',
+     fail:{c:'Chi tiết đã kích hoạt phải thay', parts:['Túi khí','Đai căng','Cảm biến va chạm','SRS unit'], fix:'Theo quy trình SRS của Honda.'}}
+  ],
+  codes:[['U0151','Mất giao tiếp SRS'],['Mã SRS Honda','Đọc bằng i-HDS']],
+  parts:[['Cáp xoắn',3,''],['Giắc dưới ghế',2,''],['Đai căng',2,''],['Cảm biến va chạm',1,''],['SRS unit',1,'Sau va chạm']] },
+
+{ id:'tpms', grp:'Khung gầm & an toàn', t:'Đèn cảnh báo áp suất lốp',
+  sym:'Đèn áp suất lốp sáng, hoặc nháy rồi sáng liên tục.',
+  sys:['Cảnh báo áp suất lốp','VSA'],
+  sus:['wheel','wss','vsa'], steps:['Y'],
+  checks:[
+    {t:'Áp suất lốp', how:'Bơm theo tem cột cửa lái khi lốp nguội.', spec:'Đúng chuẩn',
+     fail:{c:'Lốp non/thủng', parts:['Lốp / van lốp'], fix:''}},
+    {t:'Khởi tạo lại hệ thống', how:'Sau khi bơm/đảo/thay lốp: khởi tạo trên màn hình đồng hồ/thiết lập.', spec:'Đèn tắt',
+     fail:{c:'Chưa khởi tạo hoặc kích cỡ lốp khác chuẩn', parts:['Lốp đúng kích cỡ'], fix:''}},
+    {t:'Đèn nháy rồi sáng liên tục', how:'Lỗi hệ thống → đọc mã VSA, kiểm tra cảm biến tốc độ bánh.', spec:'Không nháy',
+     fail:{c:'Lỗi hệ thống giám sát', parts:['Cảm biến tốc độ bánh'], fix:'Honda thường dùng loại gián tiếp qua cảm biến tốc độ bánh (tùy phiên bản/thị trường).'}}
+  ],
+  codes:[['Mã VSA/DWS','Đọc bằng i-HDS']],
+  parts:[['Lốp / van',3,''],['Cảm biến tốc độ bánh',1,'']] },
+
+/* ---------- TIỆN NGHI & THÂN XE ---------- */
+{ id:'lock', grp:'Tiện nghi & thân xe', t:'Cửa không khóa/mở, Smart Key/remote yếu',
+  sym:'Bấm remote/chạm tay nắm không mở; tầm hoạt động ngắn; một cửa không khóa.',
+  sys:['Smart Key','MICU','Khóa cửa'],
+  sus:['key','micu','door','lin','btn'], steps:['B','C'],
+  checks:[
+    {t:'Pin chìa', how:'Đo pin CR2032; thử chìa thứ hai.', spec:'≥ ~3,0 V; chìa thứ hai hoạt động',
+     fail:{c:'Pin chìa yếu', parts:['Pin CR2032'], fix:''}},
+    {t:'Khóa bằng nút trên cửa', how:'Phân biệt lỗi chìa với lỗi cơ cấu khóa.', spec:'Tất cả cửa khóa/mở',
+     fail:{c:'Lỗi cơ cấu/điều khiển khóa', parts:['Mô-tơ khóa cửa'], fix:''}},
+    {t:'Chỉ một cửa lỗi?', how:'Nghe tiếng mô-tơ tại cửa lỗi.', spec:'Có tiếng/hoạt động',
+     fail:{c:'Mô-tơ khóa cửa đó hỏng hoặc dây bản lề đứt', parts:['Mô-tơ khóa cửa','Bó dây cửa'], fix:''}},
+    {t:'Cảm biến tay nắm & anten LF', how:'HDS: trạng thái cảm biến chạm, chạy thử anten.', spec:'Phản hồi đúng',
+     fail:{c:'Tay nắm/anten lỗi', parts:['Tay nắm có cảm biến','Anten LF'], fix:''}},
+    {t:'Cầu chì & MICU/Keyless', how:'Đọc mã Keyless/MICU.', spec:'Không mã',
+     fail:{c:'Module lỗi', parts:['Bộ Keyless','MICU'], fix:'Đăng ký lại toàn bộ chìa bằng HDS sau khi thay.'}}
+  ],
+  codes:[['Mã Keyless/MICU','Đọc bằng i-HDS'],['U0140','Mất giao tiếp BCM']],
+  parts:[['Pin chìa CR2032',3,''],['Mô-tơ khóa cửa',3,''],['Tay nắm có cảm biến',2,''],['Anten LF',1,''],['Bộ Keyless',1,'Đăng ký chìa'],['MICU',1,'']] },
+
+{ id:'ac', grp:'Tiện nghi & thân xe', t:'Điều hòa không mát / yếu',
+  sym:'Gió ra không lạnh, lạnh yếu, lạnh ngắt quãng hoặc gió yếu.',
+  sys:['HVAC','PCM','B-CAN → F-CAN'],
+  sus:['hvac','comp','r-ac','fan','radiator','pcm','gw'], steps:['U','W'],
+  checks:[
+    {t:'Quạt dàn lạnh & lọc gió cabin', how:'Quạt chạy đủ các mức; lọc gió cabin sạch.', spec:'Gió mạnh, đổi mức đúng',
+     fail:{c:'Lọc tắc hoặc quạt/bộ điều tốc lỗi', parts:['Lọc gió điều hòa','Quạt dàn lạnh / bộ điều tốc'], fix:''}},
+    {t:'Ly hợp máy nén có đóng?', how:'Quan sát ly hợp khi bật A/C; HDS: yêu cầu A/C, cho phép từ PCM.', spec:'Đóng khi bật A/C',
+     fail:{c:'Rơ-le A/C, cầu chì, khe hở ly hợp hoặc PCM chưa cho phép', parts:['Rơ-le ly hợp A/C','Ly hợp máy nén'], fix:''}},
+    {t:'Áp suất ga', how:'Bộ đồng hồ ga; đúng loại ga theo tem dưới nắp capo.', spec:'Thấp/cao trong chuẩn',
+     fail:{c:'Thiếu ga (rò) hoặc tắc van tiết lưu', parts:['Nạp ga + xử lý rò','Van tiết lưu'], fix:'Dò rò bằng máy dò điện tử/UV.'}},
+    {t:'Cảm biến áp suất ga', how:'Data list so với đồng hồ cơ.', spec:'Khớp',
+     fail:{c:'Cảm biến sai → PCM ngắt máy nén', parts:['Cảm biến áp suất ga'], fix:''}},
+    {t:'Quạt két nước khi bật A/C', how:'Quạt phải chạy khi bật A/C.', spec:'Chạy',
+     fail:{c:'Giải nhiệt dàn nóng kém', parts:['Mô-tơ quạt / rơ-le'], fix:''}},
+    {t:'Cảm biến dàn lạnh & mô-tơ trộn gió', how:'Lạnh ngắt quãng/đóng băng → cảm biến dàn lạnh; gió nóng lẫn → mô-tơ trộn gió.', spec:'Hoạt động đúng',
+     fail:{c:'Cảm biến/actuator lỗi', parts:['Cảm biến nhiệt độ dàn lạnh','Mô-tơ trộn gió'], fix:''}}
+  ],
+  codes:[['P0530–P0533','Cảm biến áp suất ga A/C'],['U0164','Mất giao tiếp HVAC'],['Mã HVAC','Tự chẩn đoán / i-HDS']],
+  parts:[['Lọc gió điều hòa',3,''],['Ga lạnh + xử lý rò',3,''],['Rơ-le ly hợp A/C',2,''],['Cảm biến áp suất ga',2,''],['Quạt dàn lạnh',2,''],['Mô-tơ trộn gió',2,''],['Máy nén / ly hợp',1,''],['Van tiết lưu',1,'']] },
+
+{ id:'audio', grp:'Tiện nghi & thân xe', t:'Màn hình giải trí treo, lỗi, mất kết nối',
+  sym:'Màn hình đen, treo, khởi động lại liên tục, không kết nối Apple CarPlay/Android Auto.',
+  sys:['Giải trí','B-CAN'],
+  sus:['audio','gw','micu'], steps:['G','M'],
+  checks:[
+    {t:'Khởi động lại hệ thống', how:'Tắt máy, khóa xe cho hệ thống ngủ, bật lại.', spec:'Hoạt động bình thường',
+     fail:{c:'Lỗi phần mềm/nguồn', parts:[], fix:'Tiếp các bước dưới.'}},
+    {t:'Nguồn ACC, B+ & mass', how:'Cầu chì audio/ACC, điện áp tại giắc đầu.', spec:'Đủ áp',
+     fail:{c:'Cầu chì/nguồn', parts:['Cầu chì audio'], fix:''}},
+    {t:'Cáp & cổng USB', how:'Dùng cáp chính hãng chất lượng; thử cổng khác.', spec:'Kết nối ổn định',
+     fail:{c:'Cáp/cổng USB lỗi', parts:['Cáp USB','Cổng USB'], fix:''}},
+    {t:'Phần mềm', how:'Cập nhật phần mềm điện thoại; cập nhật phần mềm đầu tại đại lý.', spec:'Bản mới',
+     fail:{c:'Xung đột phần mềm', parts:[], fix:'Cập nhật.'}},
+    {t:'Mạng & phụ kiện', how:'Mã U, micro, loa, anten.', spec:'Không mã',
+     fail:{c:'Đầu giải trí lỗi phần cứng', parts:['Đầu giải trí','Micro/anten'], fix:''}}
+  ],
+  codes:[['Mã Audio','Đọc bằng i-HDS']],
+  parts:[['Cáp USB',3,''],['Cổng USB',2,''],['Đầu giải trí',1,''],['Micro/anten',1,'']] },
+
+{ id:'camera', grp:'Tiện nghi & thân xe', t:'Camera lùi, cảm biến đỗ, Honda Sensing lỗi',
+  sym:'Camera lùi mờ/đen, cảm biến đỗ báo sai, thông báo Honda Sensing không khả dụng.',
+  sys:['ADAS','Camera','F-CAN'],
+  sus:['cam','park','gw'], steps:['I','Y'],
+  checks:[
+    {t:'Vệ sinh ống kính & kính lái', how:'Ống kính camera lùi; vùng kính lái trước camera Honda Sensing.', spec:'Sạch, không nứt',
+     fail:{c:'Bẩn/nứt kính', parts:['Kính lái (khi nứt)'], fix:''}},
+    {info:true, t:'Điều kiện tạm thời', how:'Mưa lớn, nắng gắt rọi thẳng, kính mờ, xe vừa khởi động: thông báo có thể tự hết.'},
+    {t:'Giắc & tín hiệu số lùi', how:'Giắc camera; tín hiệu R tới màn hình.', spec:'Có hình khi vào R',
+     fail:{c:'Giắc/dây/camera', parts:['Camera lùi'], fix:''}},
+    {t:'Cảm biến siêu âm (nếu có)', how:'Bẩn, va đập, sơn dày.', spec:'Báo đúng',
+     fail:{c:'Cảm biến hỏng', parts:['Cảm biến siêu âm'], fix:''}},
+    {t:'Hiệu chỉnh camera', how:'Sau thay kính lái/camera/va chạm đầu xe: hiệu chỉnh (aiming) bằng HDS.', spec:'Hoàn tất',
+     fail:{c:'Camera Honda Sensing lỗi', parts:['Camera Honda Sensing (hiếm)'], fix:''}}
+  ],
+  codes:[['Mã ADAS Honda','Đọc bằng i-HDS']],
+  parts:[['Camera lùi',2,''],['Cảm biến siêu âm',2,''],['Kính lái',2,'Hiệu chỉnh camera sau thay'],['Camera Honda Sensing',1,'']] }
+];
+
+/* ===== DANH MỤC CHI TIẾT CHẨN ĐOÁN =====
+   [hệ thống, chi tiết, vị trí, chức năng/tín hiệu, cách kiểm tra, giá trị tham khảo, mã lỗi, triệu chứng khi hỏng, lưu ý thay thế] */
+const CATALOG = [
+['Nguồn & khởi động','Ắc quy 12 V','Khoang máy','Nguồn B+ toàn xe','Điện áp nghỉ, thử tải CCA, cọc','12,4–12,7 V nghỉ; ≥ 9,6 V khi đề','P0562','Đề yếu, mã U ngẫu nhiên, đèn chập chờn','Khởi tạo kính AUTO, học không tải sau khi thay'],
+['Nguồn & khởi động','Cầu chì chính (FL/MAIN)','Cạnh ắc quy','Bảo vệ mạch tổng','Thông mạch, sụt áp','≈ 0 Ω','—','Mất điện toàn xe','Tìm nguyên nhân chập trước khi thay'],
+['Nguồn & khởi động','Hộp cầu chì/rơ-le khoang máy','Khoang máy','Phân phối nguồn, rơ-le PGM-FI, đề, quạt, A/C','Sụt áp qua cầu chì, nghe rơ-le','Sụt áp < ~0,1 V','—','Mất chức năng theo mạch','Kiểm tra ăn mòn chân cầu chì'],
+['Nguồn & khởi động','Hộp cầu chì dưới táp-lô (MICU)','Dưới táp-lô bên lái','IG1/IG2/ACC, điều khiển thân xe','HDS data list MICU, active test','—','U0140','Nhiều chức năng thân xe lỗi','Cài đặt cấu hình sau khi thay'],
+['Nguồn & khởi động','Rơ-le PGM-FI Main 1','Hộp khoang máy','Nguồn chính PCM & cảm biến','Điện áp ra khi bật ON','≈ điện áp ắc quy','P0685','Không nổ, mất giao tiếp PCM',''],
+['Nguồn & khởi động','Rơ-le PGM-FI Main 2','Hộp khoang máy','Nguồn bơm xăng','Bơm chạy ~2 s khi bật ON','≈ điện áp ắc quy','P0230','Đề không nổ',''],
+['Nguồn & khởi động','Rơ-le starter cut','Hộp khoang máy','Cấp điện chân S máy đề','Tiếng rơ-le, điện áp chân S','≥ ~8 V khi đề','P0615–P0617','Không đề',''],
+['Nguồn & khởi động','Máy đề','Thân máy phía hộp số','Quay trục khuỷu','Dòng đề, sụt áp cáp','~100–200 A; sụt áp < 0,5 V','—','Đề chậm, tiếng “tạch”',''],
+['Nguồn & khởi động','Máy phát (PCM điều khiển)','Trước động cơ','Nạp điện; chân C điều khiển, FR phản hồi','Điện áp nạp, gợn AC','13,5–14,8 V; AC < ~0,5 V','P0620–P0626','Đèn sạc, ắc quy yếu','Kiểm tra cu-roa cùng lúc'],
+['Nguồn & khởi động','Dây cu-roa & bộ tăng đai','Trước động cơ','Dẫn động máy phát, máy nén A/C','Nứt, mòn, trượt, tiếng rít','Không nứt','—','Đèn sạc, rít, A/C yếu',''],
+['Nguồn & khởi động','Điểm mass G1–G6','Động cơ, hộp số, khung, thân, ECU, cảm biến','Đường về âm','Sụt áp mass khi có tải','< 0,1 V (tín hiệu); < 0,2–0,3 V (tải lớn)','—','Lỗi chập chờn đa hệ thống','Vệ sinh, siết đúng lực'],
+
+['Quản lý động cơ (PGM-FI)','PCM','Khoang máy','ECU động cơ + điều khiển CVT','Nguồn, mass, 5 V ref, CAN','5 V ref 5,0 ± 0,1 V','P0601–P0607; U0100','Không nổ, nhiều mã','Cập nhật phần mềm, đăng ký immobilizer, học CVT & không tải'],
+['Quản lý động cơ (PGM-FI)','Cảm biến CKP','Thân máy, đầu trục khuỷu','Vị trí & tốc độ trục khuỷu (xung vuông)','Dạng sóng, khe hở, mạt sắt','Xung đều, có mốc răng khuyết','P0335/P0336','Đề không nổ, chết máy khi chạy',''],
+['Quản lý động cơ (PGM-FI)','Cảm biến CMP','Nắp máy, đầu trục cam','Pha trục cam','Dạng sóng so với CKP','Đúng pha','P0340/P0341, P0365/P0366','Khó nổ, mã VTC',''],
+['Quản lý động cơ (PGM-FI)','Cảm biến MAP','Trên cổ hút','Áp suất cổ hút → tính khí nạp','Data list KOEO & không tải','~100 kPa (KOEO); ~25–40 kPa không tải','P0105–P0108','Chạy không êm, hao xăng',''],
+['Quản lý động cơ (PGM-FI)','Cảm biến IAT','Đường ống nạp','Nhiệt độ khí nạp','So với môi trường khi máy nguội','≈ nhiệt độ môi trường','P0110–P0113','Khó nổ khi lạnh',''],
+['Quản lý động cơ (PGM-FI)','Cảm biến MAF (nếu trang bị)','Sau lọc gió','Lưu lượng khí nạp','Data list g/s','Tăng tuyến tính theo vòng tua','P0100–P0103','Ì máy, chết máy','Không vệ sinh bằng dung dịch không phù hợp'],
+['Quản lý động cơ (PGM-FI)','Cảm biến ECT','Cổ nước ra trên nắp máy','Nhiệt độ nước làm mát','Data list, điện trở','~2–3 kΩ @20 °C; ~0,3 kΩ @80 °C (tham khảo)','P0115–P0118, P0128','Quạt chạy liên tục, hao xăng, khó nổ',''],
+['Quản lý động cơ (PGM-FI)','Cảm biến TP (kép TP-A/TP-B)','Cụm bướm ga','Vị trí bướm ga','Hai tín hiệu tương quan','Tương quan đúng','P0120–P0123, P0220–P0223, P2135','Giới hạn ga, MIL','Học lại sau vệ sinh/thay'],
+['Quản lý động cơ (PGM-FI)','Cảm biến APP (kép)','Bàn đạp ga','Yêu cầu tải của người lái','APP-A/APP-B tương quan','Tương quan đúng','P2122–P2128, P2138','Không tăng ga, MIL',''],
+['Quản lý động cơ (PGM-FI)','Cảm biến kích nổ','Thân máy','Rung do kích nổ','Dạng sóng, lực siết','Đúng lực siết','P0325–P0328','Giảm công suất (trễ đánh lửa)',''],
+['Quản lý động cơ (PGM-FI)','Công tắc vị trí bàn đạp phanh','Bàn đạp phanh','Đèn phanh, điều kiện đề, cắt ga','Data list ON/OFF','Chuyển đúng','P0571','Không đề được, đèn phanh không sáng',''],
+['Quản lý động cơ (PGM-FI)','Cụm bướm ga điện tử (DBW)','Cổ hút','Điều khiển khí nạp & không tải','Vệ sinh, data list duty mô-tơ','Không tải ổn định','P2101, P2118, P2176','Rung không tải, ga không phản hồi','Học lại vị trí bướm ga & không tải'],
+['Quản lý động cơ (PGM-FI)','Van OCV (VTC)','Đầu trục cam nạp','Xoay pha cam nạp','VTC mục tiêu vs thực tế','Sai lệch nhỏ','P0010–P0012','Yếu máy, rung không tải','Dầu bẩn gây kẹt – kiểm tra lưới lọc'],
+['Quản lý động cơ (PGM-FI)','Van điện từ VTEC & công tắc áp suất dầu VTEC','Nắp máy','Chuyển cấu hình cò mổ','Điện trở cuộn, áp suất dầu','Theo Service Manual','P2646–P2649','Yếu ở vòng tua cao, MIL',''],
+
+['Đánh lửa & nhiên liệu','Bô-bin COP ×4 (IC tích hợp)','Trên bugi','Đánh lửa','Đảo bô-bin, dạng sóng điều khiển','—','P0351–P0354, P0301–P0304','Bỏ máy, rung',''],
+['Đánh lửa & nhiên liệu','Bugi iridium ×4','Nắp máy','Tia lửa','Khe hở, màu sứ, nứt','~1,0–1,1 mm (tham khảo)','P0300–P0304','Rung, hao xăng, khó nổ','Thay cả bộ theo lịch'],
+['Đánh lửa & nhiên liệu','Kim phun ×4 (PFI)','Cổ hút','Phun xăng tuần tự','Điện trở, dạng sóng, cân bằng xi-lanh','~10–14 Ω (tham khảo)','P0201–P0204, P0261–P0271','Bỏ máy, hao xăng','Thay gioăng kim'],
+['Đánh lửa & nhiên liệu','Cụm bơm xăng (bơm + lọc + điều áp)','Trong bình xăng 40 L','Cấp nhiên liệu, không hồi','Áp suất, giữ áp, dòng bơm','~320–370 kPa (tham khảo)','P0230','Khó nổ, hụt ga',''],
+['Đánh lửa & nhiên liệu','Ống phân phối & ống dẫn xăng','Động cơ, gầm xe','Dẫn nhiên liệu','Rò, mùi xăng','Không rò','—','Mùi xăng, cháy nổ','An toàn cháy nổ'],
+
+['Làm mát & bôi trơn','Van hằng nhiệt','Đường nước động cơ','Điều tiết nhiệt độ','Nhiệt độ ống trên két, ECT','Mở ~76–80 °C (tham khảo)','P0128','Hao xăng, sưởi kém hoặc quá nhiệt','Thay kèm gioăng'],
+['Làm mát & bôi trơn','Quạt két nước & rơ-le','Sau két nước','Giải nhiệt két & dàn nóng','Chạy thử HDS, bật A/C','Chạy khi ECT cao/bật A/C','P0480','Quá nhiệt khi kẹt xe, A/C yếu',''],
+['Làm mát & bôi trơn','Bơm nước','Thân máy','Tuần hoàn nước','Rỉ, ồn','Không rỉ','—','Quá nhiệt',''],
+['Làm mát & bôi trơn','Két nước & nắp két','Đầu xe','Tản nhiệt, giữ áp','Thử áp két & nắp','Giữ áp','—','Mất nước, quá nhiệt',''],
+['Làm mát & bôi trơn','Công tắc áp suất dầu','Thân máy','Cảnh báo áp suất dầu','So với đồng hồ cơ','Mở khi có áp','P0520–P0523','Đèn dầu sáng',''],
+
+['Khí thải & EVAP','Cảm biến A/F (trước xúc tác)','Ống xả trước xúc tác','Tỉ lệ khí – nhiên liệu (dải rộng, có sấy)','λ, tốc độ phản hồi, mạch sấy','λ ≈ 1,00 ở vòng kín','P2195/P2196, P0130–P0135','Hao xăng, MIL',''],
+['Khí thải & EVAP','Cảm biến O2 sau xúc tác','Sau bầu xúc tác','Giám sát hiệu suất xúc tác','Điện áp & dao động','Ổn định ~0,6–0,8 V khi xúc tác tốt','P0136–P0141','MIL',''],
+['Khí thải & EVAP','Bầu xúc tác 3 chiều','Ống xả','Xử lý CO, HC, NOx','So sánh tín hiệu A/F trước & O2 sau','—','P0420','MIL, mùi trứng thối, nghẹt xả','Xử lý nguyên nhân gốc (bỏ máy, hao dầu)'],
+['Khí thải & EVAP','Van EVAP purge','Cạnh cổ hút','Thu hồi hơi xăng về cổ hút','Duty, kín khi không điều khiển','Kín khi tắt','P0441, P0443, P0497','MIL, khó nổ sau khi đổ xăng',''],
+['Khí thải & EVAP','Bầu than hoạt tính & nắp bình xăng','Gầm xe, bình xăng','Chứa hơi xăng, kín hệ thống','Máy tạo khói kiểm tra rò','Không rò','P0455/P0456','MIL, mùi xăng','Nắp bình xăng lỏng là nguyên nhân phổ biến'],
+
+['Hộp số CVT','Cảm biến tốc độ đầu vào','Vỏ CVT – puli sơ cấp','Tốc độ puli sơ cấp','Dạng sóng/data list','Khớp vòng tua','P0715','Giật, chế độ an toàn',''],
+['Hộp số CVT','Cảm biến tốc độ đầu ra','Vỏ CVT – puli thứ cấp','Tốc độ puli thứ cấp','Data list','Tỉ lệ hợp lý với tốc độ xe','P0720','Giật, sai tỉ số',''],
+['Hộp số CVT','Cảm biến nhiệt độ dầu CVT','Trong CVT','Nhiệt độ dầu','Data list khi nguội/nóng','Tăng dần khi chạy','P0711–P0713','Sang số bất thường',''],
+['Hộp số CVT','Cụm van điện từ tuyến tính','Thân van CVT','Áp suất puli, ly hợp, khóa biến mô','Điện trở, dòng, active test','Theo Service Manual','P0962/P0963, P0966/P0967, P0741','Trượt, rú ga, giật',''],
+['Hộp số CVT','Công tắc dải số','Trên hộp số','Vị trí P/R/N/D','Data list so vị trí cần','Khớp','P0705/P0706','Không đề, sai đèn báo số','Chỉnh ở N'],
+['Hộp số CVT','Dầu CVT Honda HCF-2 & lọc','Trong CVT','Truyền lực, làm mát, điều khiển','Mức, màu, mùi','Đúng mức, không khét','—','Trượt, hú, giật','Học lại CVT sau khi thay'],
+
+['Mạng & điều khiển','Giắc chẩn đoán DLC (OBD-II 16 chân)','Dưới táp-lô bên lái','Truy cập chẩn đoán','Chân 16 B+, 4/5 mass, 6/14 CAN','≈ 60 Ω giữa 6–14 (đã ngắt nguồn)','—','Không kết nối máy chẩn đoán',''],
+['Mạng & điều khiển','F-CAN (~500 kbps)','Bó dây xoắn đôi','Động lực & khung gầm: PCM, VSA, EPS, SRS, camera','Điện áp, dạng sóng, điện trở','CAN-H ~2,5–3,5 V; CAN-L ~1,5–2,5 V','U0001, U0100, U0121, U0131, U0151','Nhiều đèn cảnh báo cùng sáng',''],
+['Mạng & điều khiển','B-CAN (~125 kbps)','Bó dây thân xe','Thân xe & tiện nghi: MICU, Keyless, HVAC, audio','Như F-CAN','Như F-CAN','U0140, U0164','Mất chức năng tiện nghi',''],
+['Mạng & điều khiển','Mạng LIN (~19,2 kbps, một dây)','Cửa, đèn, gạt mưa','Bus phụ dưới MICU','Điện áp nền, dạng sóng','~12 V nghỉ, kéo về ~0 V khi truyền','Mã MICU','Mất chức năng con',''],
+['Mạng & điều khiển','Cụm đồng hồ (gateway)','Táp-lô','Hiển thị, cầu nối F-CAN ↔ B-CAN (kiến trúc Honda điển hình)','Kiểm tra đèn, mã','—','U0155','Mất hiển thị, lỗi mạng diện rộng',''],
+
+['Smart Key & Immobilizer','Bộ Keyless/Immobilizer','Trong cabin','Xác thực chìa, điều khiển nguồn','Mã HDS, trạng thái','—','Mã Keyless Honda','Không đề, không mở cửa','Đăng ký chìa bằng HDS'],
+['Smart Key & Immobilizer','Chìa thông minh (pin CR2032)','—','Phát mã nhận dạng','Đo pin, chìa thứ hai','≥ ~3,0 V','—','Tầm ngắn, báo không thấy chìa',''],
+['Smart Key & Immobilizer','Anten LF & tay nắm cảm biến','Tay nắm, cabin, cốp','Phát sóng tìm chìa','HDS active test','—','Mã Keyless','Không mở bằng chạm tay nắm',''],
+['Smart Key & Immobilizer','Nút ENGINE START/STOP','Táp-lô','Yêu cầu khởi động/tắt (2 mạch)','Data list','Chuyển đúng','Mã Keyless','Không đề',''],
+
+['Chiếu sáng & tiện nghi','Cụm đèn pha/hậu/xi-nhan','Đầu/đuôi xe','Chiếu sáng, báo hiệu','Điện áp, mass, active test','—','Mã MICU','Đèn không sáng/chập chờn','LED thường thay cả cụm'],
+['Chiếu sáng & tiện nghi','Công tắc tổ hợp & cáp xoắn','Trụ lái','Đèn, gạt mưa, còi, nút vô-lăng','Data list, thông mạch','—','—','Còi/nút vô-lăng lỗi','Cáp xoắn liên quan SRS'],
+['Chiếu sáng & tiện nghi','Mô-tơ khóa cửa ×4','Trong cửa','Khóa/mở cửa','Điện áp, tiếng mô-tơ','—','—','Một cửa không khóa',''],
+['Chiếu sáng & tiện nghi','Mô-tơ & công tắc kính điện','Trong cửa','Nâng hạ kính, AUTO, chống kẹt','Điện áp, khởi tạo AUTO','—','—','Kính không AUTO','Khởi tạo sau tháo ắc quy'],
+['Chiếu sáng & tiện nghi','Mô-tơ gạt mưa & lưỡi gạt','Dưới kính lái','Gạt nước','Dòng mô-tơ, thanh giằng','—','—','Gạt không chạy, kêu','Lưỡi gạt ~1 năm'],
+
+['Điều hòa (HVAC)','Máy nén A/C & ly hợp từ','Trước động cơ','Nén ga lạnh','Khe hở ly hợp, điện áp cuộn','Đóng khi được cho phép','—','Không lạnh',''],
+['Điều hòa (HVAC)','Cảm biến áp suất ga','Đường cao áp','Bảo vệ, điều khiển quạt','Data list vs đồng hồ cơ','Khớp','P0530–P0533','Máy nén không đóng',''],
+['Điều hòa (HVAC)','Cảm biến nhiệt độ dàn lạnh','Dàn lạnh','Chống đóng băng','Data list','Theo nhiệt độ thực','Mã HVAC','Lạnh ngắt quãng',''],
+['Điều hòa (HVAC)','Quạt dàn lạnh & bộ điều tốc','Dưới táp-lô phụ','Thổi gió','Chạy các mức','Đổi mức đúng','Mã HVAC','Gió yếu/không đổi mức',''],
+['Điều hòa (HVAC)','Mô-tơ chia gió/trộn gió','Hộp điều hòa','Hướng gió, nhiệt độ gió','Active test','Chạy đủ hành trình','Mã HVAC','Gió sai cửa, gió nóng lẫn',''],
+['Điều hòa (HVAC)','Lọc gió điều hòa','Sau hộc găng tay','Lọc gió cabin','Quan sát','Sạch','—','Gió yếu, mùi','~10.000–20.000 km'],
+
+['Phanh & ổn định (ABS/VSA)','Modulator ABS/VSA','Khoang máy','Điều áp phanh, kiểm soát lực kéo, ổn định','Mã, active test','—','U0121, mã VSA','Đèn ABS/VSA','Hiệu chỉnh góc lái/yaw sau thay'],
+['Phanh & ổn định (ABS/VSA)','Cảm biến tốc độ bánh ×4 (chủ động)','Moay-ơ','Tốc độ từng bánh','Data list 4 bánh khi chạy','Chênh lệch rất nhỏ','C0035, C0040, C0045, C0050','Đèn ABS/VSA/áp suất lốp',''],
+['Phanh & ổn định (ABS/VSA)','Cảm biến góc lái / yaw-G','Trụ lái / trong modulator (tùy cấu hình)','Tín hiệu cho VSA','Data list, hiệu chỉnh','Về 0 khi đi thẳng','Mã VSA','VSA can thiệp sai','Hiệu chỉnh sau căn chỉnh góc lái'],
+['Phanh & ổn định (ABS/VSA)','Má phanh, đĩa phanh, dầu phanh','Bánh xe, bình dầu','Phanh','Độ dày, độ ẩm dầu','Trên giới hạn mòn','—','Kêu, rung, phanh kém','Dầu phanh 3 năm'],
+
+['Lái (EPS) & lốp','Cụm trụ lái EPS (mô-tơ + cảm biến mô-men + ECU)','Trụ lái','Trợ lực lái điện','Mã, data mô-men','Đối xứng','U0131, mã EPS','Nặng lái','Khởi tạo cảm biến mô-men'],
+['Lái (EPS) & lốp','Cảnh báo áp suất lốp','Hệ thống VSA (loại gián tiếp – tùy phiên bản)','Phát hiện lốp non','Áp suất lốp, khởi tạo','Theo tem cột cửa','Mã VSA/DWS','Đèn áp suất lốp','Khởi tạo sau bơm/đảo/thay lốp'],
+
+['An toàn (SRS)','SRS unit & cảm biến va chạm','Dưới táp-lô, đầu xe, cột','Kích nổ túi khí, đai căng','Chỉ đọc mã bằng HDS','—','U0151, mã SRS','Đèn SRS','Ngắt ắc quy chờ ≥ 3 phút; không đo bằng VOM'],
+['An toàn (SRS)','Túi khí, đai căng, cáp xoắn, giắc dưới ghế','Vô-lăng, táp-lô, ghế, cột','Bảo vệ người ngồi','Chỉ đọc mã bằng HDS','—','Mã SRS','Đèn SRS','Chi tiết đã kích hoạt phải thay'],
+
+['ADAS & giải trí','Camera Honda Sensing','Sau gương chiếu hậu trong','ACC, CMBS, giữ làn…','Mã, hiệu chỉnh','—','Mã ADAS','Honda Sensing không khả dụng','Hiệu chỉnh sau thay kính lái'],
+['ADAS & giải trí','Camera lùi / cảm biến đỗ','Đuôi xe','Hỗ trợ đỗ','Hình ảnh, giắc, tín hiệu R','—','—','Màn hình đen/báo sai',''],
+['ADAS & giải trí','Đầu giải trí / màn hình','Táp-lô','Âm thanh, kết nối điện thoại, camera','Nguồn, phần mềm, USB','—','Mã Audio','Treo, mất kết nối','Cập nhật phần mềm tại đại lý']
+];
+
+/* ===== BẢO DƯỠNG & THÔNG SỐ ===== */
+const MAINT = [
+['Dầu động cơ 0W-20 + lọc dầu','5.000–10.000 km hoặc 6 tháng','Điều kiện khắc nghiệt (kẹt xe, bụi) → sớm hơn'],
+['Lọc gió động cơ','Kiểm tra 10.000 km; thay ~20.000–30.000 km','Đường bụi → sớm hơn'],
+['Lọc gió điều hòa','~10.000–20.000 km','Có mùi/gió yếu → thay'],
+['Bugi iridium ×4','~100.000 km (tham khảo)','Thay cả bộ'],
+['Dầu CVT Honda HCF-2','Kiểm tra định kỳ; thay ~40.000 km (tham khảo)','Học lại CVT nếu Service Manual yêu cầu'],
+['Nước làm mát Honda Type 2','Lần đầu ~200.000 km/10 năm, sau đó ~100.000 km/5 năm (tham khảo)','Không pha nước thường'],
+['Dầu phanh DOT 3/4','3 năm','Dầu hút ẩm theo thời gian'],
+['Má phanh, đĩa phanh','Kiểm tra mỗi lần bảo dưỡng','Theo độ mòn'],
+['Ắc quy 12 V','Kiểm tra 6 tháng; tuổi thọ ~2–4 năm','Khí hậu nóng làm giảm tuổi thọ'],
+['Dây cu-roa phụ','Kiểm tra mỗi 20.000 km','Thay khi nứt/mòn'],
+['Lốp','Đảo ~10.000 km; kiểm tra áp suất hàng tháng','Khởi tạo cảnh báo áp suất lốp sau khi đảo'],
+['Lưỡi gạt mưa','~1 năm',''],
+['Pin chìa CR2032','~1–2 năm','Khi tầm hoạt động giảm'],
+['Vệ sinh bướm ga, kim phun','Khi có triệu chứng','Học lại không tải sau vệ sinh bướm ga']
+];
+
+const SPECS = [
+['Động cơ','1.5L DOHC i-VTEC, 4 xi-lanh thẳng hàng, 16 xu-páp, 1.498 cc'],
+['Công suất / mô-men','119 hp tại 6.600 vòng/phút / 145 Nm tại 4.300 vòng/phút'],
+['Nhiên liệu / hộp số','Phun xăng điện tử PGM-FI / vô cấp CVT; bình xăng 40 L'],
+['Ắc quy nghỉ','12,4–12,7 V'],
+['Điện áp khi đề','≥ 9,6 V'],
+['Điện áp nạp','13,5–14,8 V'],
+['Gợn sóng AC máy phát','< ~0,5 V'],
+['Dòng rò khi ngủ','< ~50 mA'],
+['Sụt áp mass','< 0,1 V (mạch tín hiệu); < 0,2–0,3 V (tải lớn)'],
+['Điện áp tham chiếu cảm biến','5,0 ± 0,1 V'],
+['Điện trở bus CAN tại DLC 6–14','≈ 60 Ω (đã ngắt nguồn)'],
+['CAN-H / CAN-L','~2,5–3,5 V / ~1,5–2,5 V; nghỉ ≈ 2,5 V'],
+['LIN','~12 V nghỉ, kéo về ~0 V khi truyền; ~19,2 kbps'],
+['Áp suất nhiên liệu','~320–370 kPa (tham khảo, hệ không hồi)'],
+['Không tải máy nóng','~700 ± 50 vòng/phút (không tải điện)'],
+['MAP','~100 kPa máy chưa chạy; ~25–40 kPa không tải'],
+['Fuel trim tổng (STFT+LTFT)','Trong ±10%'],
+['ECT làm việc','~80–95 °C'],
+['Điện trở kim phun','~10–14 Ω (tham khảo)'],
+['Khe hở bugi','~1,0–1,1 mm (tham khảo)'],
+['Áp suất nén','≥ ~930 kPa; chênh lệch ≤ ~200 kPa (tham khảo)']
+];
+
+const PROCS = [
+['Tháo/thay ắc quy','Khởi tạo kính AUTO, đặt giờ, học không tải; xóa mã U giả do mất nguồn'],
+['Thay PCM','Cập nhật phần mềm, đăng ký immobilizer/chìa, học CVT, học không tải (HDS)'],
+['Vệ sinh/thay cụm bướm ga','Học lại vị trí bướm ga & không tải'],
+['Thay dầu CVT, sửa CVT','Học CVT bằng HDS'],
+['Thay chìa/bộ Keyless','Đăng ký chìa bằng HDS (mang đủ các chìa)'],
+['Thay kính lái/camera Honda Sensing, va chạm đầu xe','Hiệu chỉnh (aiming) camera'],
+['Căn chỉnh góc lái, thay modulator VSA','Hiệu chỉnh cảm biến góc lái & yaw'],
+['Bơm/đảo/thay lốp','Khởi tạo cảnh báo áp suất lốp'],
+['Thay cụm EPS','Khởi tạo cảm biến mô-men'],
+['Sửa chữa SRS/sau va chạm','Theo quy trình SRS; xác nhận đèn SRS tắt sau tự kiểm tra'],
+['Thay dầu động cơ','Đặt lại nhắc bảo dưỡng (nếu xe có)']
+];
+
+const TOOLS = [
+['Honda i-HDS + giao tiếp MVCI','Đọc mã riêng Honda (SRS, VSA, EPS, Keyless), data list, active test, đăng ký, học lại'],
+['Máy chẩn đoán OBD-II','Mã P chuẩn SAE, freeze frame, readiness, dữ liệu cơ bản'],
+['Đồng hồ VOM (CAT III)','Điện áp, điện trở, sụt áp, thông mạch'],
+['Oscilloscope 2–4 kênh','CKP/CMP, kim phun, đánh lửa, CAN/LIN'],
+['Kìm đo dòng DC','Dòng đề, dòng rò, dòng bơm xăng'],
+['Máy test ắc quy','CCA, tình trạng ắc quy, hệ thống sạc'],
+['Đồng hồ áp suất nhiên liệu / nén / dầu','Đánh giá cơ khí & nhiên liệu'],
+['Máy tạo khói (smoke tester)','Tìm rò chân không, rò EVAP'],
+['Đồng hồ ga lạnh & máy dò rò','Chẩn đoán điều hòa'],
+['Bugi thử tia lửa, đèn noid, nhiệt kế hồng ngoại','Kiểm tra nhanh tại chỗ'],
+['Kim back-probe / hộp chia giắc','Đo tín hiệu không làm hỏng giắc']
+];
+
+/* ===== XÂY DỰNG SƠ ĐỒ KIẾN TRÚC E/E (SVG) ===== */
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('arch');
+function E(tag, a, p) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function T(x, y, txt, cls, p, anchor) { const t = E('text', { x, y, class: cls || 'lbl' }, p); if (anchor) t.setAttribute('text-anchor', anchor); t.textContent = txt; return t; }
+
+const G = {};
+[['commW','comm'],['elecW','elec'],['elexW','elex'],['flow','meca'],['meca','meca'],['elec','elec'],['elex','elex'],['comm','comm'],['dyn','meca'],['pk','comm'],['zone','']]
+  .forEach(([k, l]) => { G[k] = E('g', l ? { 'data-layer': l } : { class: 'zones' }, svg); });
+
+const C = (id, p) => E('g', { class: 'cmp', 'data-c': id }, p);
+const box = (g, x, y, w, h, rx = 6, cls = 'body') => E('rect', { x, y, width: w, height: h, rx, class: cls }, g);
+const W = (id, d, type) => E('path', { d, class: 'wire t-' + type, 'data-c': id },
+  type === 'bp' || type === 'ig' || type === 'big' ? G.elecW : G.elexW);
+const F = (id, d, type) => E('path', { d, class: 'flowp f-' + type, id: id }, G.flow);
+function relay(id, x, y, label, p) {
+  const g = C(id, p); box(g, x, y, 96, 26, 4);
+  E('circle', { cx: x + 85, cy: y + 13, r: 4, class: 'led' }, g);
+  T(x + 7, y + 17, label, 'lbl rl', g); return g;
+}
+
+/* ---------- ZONE LABELS ---------- */
+T(20, 20, 'LỚP 4 · TRUYỀN THÔNG — F-CAN ~500 kbps', 'zl', G.zone);
+T(790, 20, 'B-CAN ~125 kbps · LIN ~19,2 kbps', 'zl', G.zone);
+T(26, 160, 'LỚP 2 · ĐIỆN — NGUỒN & PHÂN PHỐI', 'zl', G.zone);
+T(372, 740, 'LỚP 1 · CƠ KHÍ — 1.5L DOHC i-VTEC · 4 xi-lanh · thứ tự nổ 1-3-4-2', 'zl', G.zone);
+T(1096, 742, 'TRUYỀN LỰC', 'zl', G.zone);
+
+/* ---------- LỚP 4: BUS CAN / LIN ---------- */
+const bus = (id, d, cls) => E('path', { d, class: 'bus ' + cls, 'data-c': id }, G.commW);
+bus('fcan', 'M20,53 H650', 'canh'); bus('fcan', 'M20,59 H650', 'canl');
+bus('bcan', 'M770,53 H1262', 'bcanh'); bus('bcan', 'M770,59 H1262', 'bcanl');
+[56, 144, 230, 310, 402].forEach(x => { bus('fcan', `M${x - 2},53 V72`, 'canh'); bus('fcan', `M${x + 2},59 V72`, 'canl'); });
+bus('fcan', 'M557,53 V165', 'canh'); bus('fcan', 'M563,59 V165', 'canl');
+[824, 924, 1014, 1095, 1203].forEach(x => { bus('bcan', `M${x - 2},53 V72`, 'bcanh'); bus('bcan', `M${x + 2},59 V72`, 'bcanl'); });
+bus('lin', 'M824,112 V128 H1256', 'lin');
+T(24, 47, 'CAN-H / CAN-L', 'lbl sm', G.zone);
+
+function node(id, x, w, l1, l2, y = 72, h = 40) {
+  const g = C(id, G.elex); box(g, x, y, w, h, 6, 'body node');
+  T(x + w / 2, y + 17, l1, 'nt', g, 'middle'); if (l2) T(x + w / 2, y + 31, l2, 'ns', g, 'middle'); return g;
+}
+node('dlc', 20, 72, 'DLC OBD-II', 'chân 6 · 14');
+node('vsa', 104, 80, 'ABS / VSA', 'modulator');
+node('eps', 196, 68, 'EPS', 'trợ lực lái');
+node('srs', 276, 68, 'SRS', 'túi khí');
+node('cam', 356, 92, 'HONDA SENSING', 'camera kính lái');
+{ const g = C('gw', G.elex); box(g, 650, 34, 120, 78, 8, 'body node gwb');
+  T(710, 58, 'CỤM ĐỒNG HỒ', 'nt', g, 'middle'); T(710, 73, 'Gauge control', 'ns', g, 'middle');
+  T(710, 92, 'GATEWAY F ↔ B', 'nt gwt', g, 'middle'); }
+node('micu', 782, 84, 'MICU (BCM)', 'hộp cầu chì táp-lô');
+node('key', 876, 96, 'KEYLESS / IMMO', 'anten LF · bộ thu RF');
+node('hvac', 982, 64, 'HVAC', 'điều hòa');
+node('audio', 1056, 78, 'MÀN HÌNH', 'audio · CarPlay');
+node('park', 1144, 118, 'CAMERA LÙI', 'cảm biến đỗ');
+{ const g = C('door', G.elex); box(g, 1060, 119, 90, 18, 4, 'body node'); T(1105, 132, 'Cửa ×4 · kính (LIN)', 'ns2', g, 'middle'); }
+{ const g = C('lamp', G.elex); box(g, 1160, 119, 96, 18, 4, 'body node'); T(1208, 132, 'Đèn · gạt mưa (LIN)', 'ns2', g, 'middle'); }
+
+/* ---------- LỚP 2: NGUỒN ---------- */
+{ const g = C('battery', G.elec); box(g, 30, 176, 92, 58, 6);
+  E('rect', { x: 42, y: 170, width: 14, height: 7, class: 'term p' }, g); E('rect', { x: 96, y: 170, width: 14, height: 7, class: 'term' }, g);
+  T(76, 196, 'ẮC QUY 12 V', 'nt', g, 'middle'); const v = T(76, 222, '12,6 V', 'val', g, 'middle'); v.id = 'batV'; }
+{ const g = C('mainfuse', G.elec); box(g, 140, 186, 100, 36, 6); T(190, 201, 'CẦU CHÌ CHÍNH', 'nt', g, 'middle'); T(190, 214, 'FL / MAIN', 'ns', g, 'middle'); }
+{ const g = C('uhbox', G.elec); box(g, 26, 252, 214, 168, 8, 'body boxc'); T(34, 266, 'HỘP CẦU CHÌ / RƠ-LE KHOANG MÁY', 'ns hb', g); }
+relay('r-main1', 34, 274, 'PGM-FI Main 1', G.elec);
+relay('r-main2', 34, 306, 'PGM-FI Main 2', G.elec);
+relay('r-st', 34, 338, 'Starter cut', G.elec);
+relay('r-fan', 138, 274, 'Quạt két nước', G.elec);
+relay('r-ac', 138, 306, 'Ly hợp A/C', G.elec);
+{ const g = C('fbig', G.elec); box(g, 138, 338, 96, 26, 4); T(145, 355, 'Cầu chì ABS · EPS', 'lbl rl', g); }
+{ const g = E('g', {}, G.elec); ['FI', 'ST', 'IG', 'FAN', 'A/C', 'HORN'].forEach((n, i) => {
+  E('rect', { x: 36 + i * 33, y: 378, width: 24, height: 12, rx: 2, class: 'fuse' }, g); T(48 + i * 33, 404, n, 'ns', g, 'middle'); }); }
+{ const g = C('udbox', G.elec); box(g, 26, 440, 214, 108, 8, 'body boxc'); T(34, 454, 'HỘP CẦU CHÌ DƯỚI TÁP-LÔ', 'ns hb', g);
+  T(186, 510, 'Chế độ nguồn', 'ns', g, 'middle'); const pm = T(186, 530, 'OFF', 'val', g, 'middle'); pm.id = 'pmTxt'; }
+relay('r-acc', 34, 462, 'ACC', G.elec);
+relay('r-ig1', 34, 494, 'IG1', G.elec);
+relay('r-ig2', 138, 462, 'IG2', G.elec);
+{ const g = C('g1', G.elec); E('path', { d: 'M52,566 V578 M42,578 H62 M45,583 H59 M49,588 H55', class: 'gnd' }, g); T(68, 584, 'G1 mass động cơ', 'ns', g); }
+
+/* dây nguồn */
+W('w-bat', 'M122,204 H140', 'bp');
+W('w-main', 'M190,222 V252', 'bp');
+W('w-ud', 'M132,420 V440', 'bp');
+W('w-alt', 'M190,610 H104 V234', 'bp');
+W('w-m1', 'M82,287 H252 V150 H486 V165', 'bp');
+W('w-ig1', 'M82,507 H256 V154 H470 V165', 'ig');
+W('w-pump', 'M82,319 H248 V138 H1052 V404 H1112', 'bp');
+W('w-fan', 'M186,287 H260 V142 H984 V452 H970', 'bp');
+W('w-ac', 'M186,319 H266 V700 H252', 'bp');
+W('w-st', 'M82,351 H244 V752 H834 V728', 'bp');
+W('w-stb', 'M30,214 H18 V760 H846 V728', 'big');
+
+/* ---------- LỚP 3: PCM & dây tín hiệu ---------- */
+W('s-iat', 'M301,232 H346 V176 H450', 'ana');
+W('s-tp', 'M312,272 H334 V186 H450', 'ana');
+W('a-dbw', 'M450,196 H340 V286 H312', 'pwm');
+W('a-altc', 'M450,206 H318 V560 H200 V580', 'pwm');
+W('a-vtc', 'M450,216 H322 V409 H330', 'pwm');
+W('s-cmp', 'M330,391 H326 V226 H450', 'dig');
+W('s-ckp', 'M310,695 H298 V238 H450', 'dig');
+W('s-map', 'M480,252 V245', 'ana');
+W('a-purge', 'M458,245 V258 H440', 'pwm');
+W('a-inj', 'M520,245 V250 M388,250 H688 M388,250 V298 M488,250 V298 M588,250 V298 M688,250 V298', 'pwm');
+W('a-ign', 'M590,245 V256 M410,256 H710 M410,256 V356 M510,256 V356 M610,256 V356 M710,256 V356', 'pwm');
+W('s-o2', 'M934,310 V176 H650', 'ana');
+W('s-af', 'M830,310 V188 H650', 'ana');
+W('s-knock', 'M774,519 H802 V200 H650', 'ana');
+W('a-vtec', 'M650,212 H796 V400 H774', 'dig');
+W('s-ect', 'M774,362 H790 V224 H650', 'ana');
+W('a-cvt', 'M650,234 H1034 V748 H938 V734', 'pwm');
+W('s-cvt', 'M930,606 V584 H1028 V242 H650 M1020,646 V584', 'dig');
+W('s-brake', 'M1102,230 H1076 V156 H615 V165', 'dig');
+W('s-app', 'M1102,266 H1069 V161 H630 V165', 'ana');
+W('s-range', 'M1102,302 H1062 V151 H600 V165', 'dig');
+W('s-btn', 'M1100,198 H948 V112', 'dig');
+W('s-wss', 'M1224,678 H1272 V116 H144 V112', 'dig');
+
+{ const g = C('pcm', G.elex); box(g, 450, 165, 200, 80, 8, 'body pcmb');
+  T(550, 190, 'PCM', 'pcmt', g, 'middle'); T(550, 206, 'ECU động cơ + điều khiển CVT', 'ns', g, 'middle');
+  const m = T(550, 226, 'Chờ', 'val sm', g, 'middle'); m.id = 'pcmMode';
+  for (let i = 0; i < 9; i++) { E('rect', { x: 466 + i * 20, y: 241, width: 8, height: 4, class: 'pin' }, g); } }
+
+/* ---------- LỚP 1: CƠ KHÍ ---------- */
+/* dòng chảy */
+F('fAir', 'M299,186 V279 H744', 'air');
+F('fExh', 'M426,340 V330 H1024', 'exh');
+F('fFuel', 'M1112,404 H1040 V296 H704', 'fuel');
+F('fCool1', 'M774,382 H864 V388', 'cool');
+F('fCool2', 'M864,516 V566 H760', 'cool');
+F('fChain', 'M342,380 L340,640 M354,380 L350,640', 'chain');
+
+{ const g = C('airf', G.meca); box(g, 270, 180, 58, 40, 6); T(299, 204, 'Lọc gió', 'ns', g, 'middle'); }
+E('rect', { x: 290, y: 220, width: 18, height: 46, class: 'duct' }, G.meca);
+{ const g = C('plenum', G.meca); box(g, 312, 266, 436, 24, 10, 'body plen'); T(620, 282, 'Cổ hút (plenum)', 'ns', g, 'middle'); }
+/* xả */
+E('rect', { x: 420, y: 324, width: 400, height: 12, rx: 5, class: 'exhp' }, G.meca);
+E('rect', { x: 820, y: 326, width: 24, height: 8, class: 'exhp' }, G.meca);
+E('rect', { x: 914, y: 326, width: 110, height: 8, class: 'exhp' }, G.meca);
+T(1024, 350, 'khí xả →', 'ns', G.meca, 'end');
+{ const g = C('cat', G.meca); box(g, 844, 316, 70, 28, 10, 'body catb'); T(879, 334, 'Xúc tác 3 chiều', 'ns2', g, 'middle'); }
+const CX = [410, 510, 610, 710];
+CX.forEach(c => {
+  E('rect', { x: c + 16, y: 330, width: 12, height: 22, class: 'exhp' }, G.meca);
+  E('rect', { x: c - 28, y: 288, width: 12, height: 64, rx: 2, class: 'runner' }, G.meca);
+});
+{ const g = C('rail', G.meca); box(g, 372, 294, 336, 7, 3, 'body railb'); T(712, 301, 'Ray xăng', 'ns', g); }
+{ const g = C('tb', G.elex); box(g, 274, 264, 38, 30, 5); const pl = E('line', { x1: 293, y1: 268, x2: 293, y2: 290, class: 'plate', id: 'tPlate' }, g); T(293, 308, 'Bướm ga DBW', 'ns', g, 'middle'); }
+{ const g = C('iat', G.elex); E('circle', { cx: 299, cy: 232, r: 5, class: 'body sens' }, g); T(286, 235, 'IAT', 'ns', g, 'end'); }
+{ const g = C('map', G.elex); box(g, 471, 252, 18, 12, 3, 'body sens'); T(480, 249, 'MAP', 'ns', g, 'middle'); }
+{ const g = C('purge', G.elex); box(g, 420, 252, 20, 12, 3, 'body sens'); T(412, 262, 'EVAP', 'ns', g, 'end'); }
+{ const g = C('af', G.elex); box(g, 826, 310, 8, 16, 2, 'body sens'); T(830, 306, 'A/F', 'ns', g, 'middle'); }
+{ const g = C('o2', G.elex); box(g, 930, 310, 8, 16, 2, 'body sens'); T(934, 306, 'O2', 'ns', g, 'middle'); }
+
+/* thân máy, nắp máy, hộp trục khuỷu */
+E('rect', { x: 350, y: 600, width: 420, height: 110, rx: 18, class: 'case' }, G.meca);
+E('rect', { x: 360, y: 432, width: 400, height: 168, class: 'blockm' }, G.meca);
+E('rect', { x: 360, y: 350, width: 400, height: 82, rx: 4, class: 'headm' }, G.meca);
+E('line', { x1: 300, y1: 655, x2: 796, y2: 655, class: 'shaft' }, G.meca);
+
+const cyl = [];
+const dyn = G.dyn;
+CX.forEach((c, i) => {
+  E('rect', { x: c - 34, y: 432, width: 68, height: 168, class: 'bore' }, dyn);
+  const o = {};
+  o.gas = E('rect', { x: c - 34, y: 432, width: 68, height: 10, class: 'gas' }, dyn);
+  o.stroke = T(c, 594, '', 'stk', dyn, 'middle');
+  o.cw = E('circle', { cx: c, cy: 655, r: 24, class: 'cw' }, dyn);
+  o.throw = E('line', { x1: c, y1: 655, x2: c, y2: 610, class: 'throw' }, dyn);
+  o.rod = E('line', { x1: c, y1: 460, x2: c, y2: 610, class: 'rod' }, dyn);
+  o.pin = E('circle', { cx: c, cy: 610, r: 8, class: 'cpin' }, dyn);
+  o.piston = E('g', {}, dyn);
+  E('rect', { x: c - 32, y: 0, width: 64, height: 30, rx: 3, class: 'piston' }, o.piston);
+  E('line', { x1: c - 32, y1: 6, x2: c + 32, y2: 6, class: 'ring' }, o.piston);
+  E('line', { x1: c - 32, y1: 11, x2: c + 32, y2: 11, class: 'ring' }, o.piston);
+  E('circle', { cx: c, cy: 18, r: 5, class: 'wpin' }, o.piston);
+  T(c, 27, '#' + (i + 1), 'pnum', o.piston, 'middle');
+  /* xu-páp */
+  o.iv = E('g', {}, dyn); E('line', { x1: c - 22, y1: 380, x2: c - 22, y2: 428, class: 'vstem' }, o.iv); E('rect', { x: c - 31, y: 427, width: 18, height: 5, rx: 2, class: 'vhead in' }, o.iv);
+  o.ev = E('g', {}, dyn); E('line', { x1: c + 22, y1: 380, x2: c + 22, y2: 428, class: 'vstem' }, o.ev); E('rect', { x: c + 13, y: 427, width: 18, height: 5, rx: 2, class: 'vhead ex' }, o.ev);
+  o.ic = E('path', { d: 'M-8,0 A8,8 0 1 1 8,0 L0,13 Z', class: 'cam', transform: `translate(${c - 22},368)` }, dyn);
+  o.ec = E('path', { d: 'M-8,0 A8,8 0 1 1 8,0 L0,13 Z', class: 'cam', transform: `translate(${c + 22},368)` }, dyn);
+  o.spark = E('g', { opacity: 0 }, dyn);
+  E('circle', { cx: c, cy: 440, r: 11, class: 'sparkG' }, o.spark);
+  E('path', { d: `M${c},430 L${c + 3},437 L${c + 9},438 L${c + 3},442 L${c + 5},449 L${c},444 L${c - 5},449 L${c - 3},442 L${c - 9},438 L${c - 3},437 Z`, class: 'sparkS' }, o.spark);
+  o.spray = E('path', { d: `M${c - 22},320 L${c - 29},347 L${c - 15},347 Z`, class: 'spray', opacity: 0 }, dyn);
+  cyl.push(o);
+});
+{ const g = C('coil', G.elex); CX.forEach(c => { box(g, c - 6, 356, 12, 40, 3, 'body coilb'); E('line', { x1: c, y1: 396, x2: c, y2: 430, class: 'plug' }, g); }); }
+{ const g = C('inj', G.elex); CX.forEach(c => { box(g, c - 27, 299, 10, 20, 3, 'body injb'); }); }
+
+/* đầu trục khuỷu / cam */
+{ const g = C('vtc', G.elex); E('circle', { cx: 348, cy: 368, r: 12, class: 'body sprk' }, g); T(348, 371, 'VTC', 'ns2', g, 'middle');
+  box(g, 330, 404, 16, 10, 2, 'body sens'); T(326, 412, 'OCV', 'ns', g, 'end'); }
+{ const g = C('cmp', G.elex); box(g, 330, 386, 16, 10, 2, 'body sens'); T(326, 394, 'CMP', 'ns', g, 'end'); }
+const reluct = E('g', { class: 'cmp', 'data-c': 'crank' }, G.meca);
+E('circle', { cx: 318, cy: 655, r: 22, class: 'body pulley' }, reluct);
+const relT = E('g', {}, reluct);
+for (let k = 0; k < 36; k++) { if (k >= 34) continue; const a = k * 10 * Math.PI / 180;
+  E('line', { x1: 318 + 25 * Math.cos(a), y1: 655 + 25 * Math.sin(a), x2: 318 + 30 * Math.cos(a), y2: 655 + 30 * Math.sin(a), class: 'tooth' }, relT); }
+E('line', { x1: 318, y1: 655, x2: 318, y2: 637, class: 'mark' }, relT);
+{ const g = C('ckp', G.elex); box(g, 310, 688, 16, 14, 2, 'body sens'); T(306, 698, 'CKP', 'ns', g, 'end'); }
+/* bánh đà & máy đề */
+const fly = E('g', { class: 'cmp', 'data-c': 'flywheel' }, G.meca);
+E('circle', { cx: 796, cy: 655, r: 44, class: 'body fly' }, fly);
+const flyT = E('g', {}, fly);
+for (let k = 0; k < 40; k++) { const a = k * 9 * Math.PI / 180;
+  E('line', { x1: 796 + 40 * Math.cos(a), y1: 655 + 40 * Math.sin(a), x2: 796 + 46 * Math.cos(a), y2: 655 + 46 * Math.sin(a), class: 'tooth' }, flyT); }
+E('line', { x1: 796, y1: 655, x2: 796, y2: 622, class: 'mark' }, flyT);
+T(796, 659, 'Bánh đà', 'ns2', fly, 'middle');
+{ const g = C('starter', G.elec); box(g, 804, 704, 58, 24, 6); T(833, 720, 'Máy đề', 'ns2', g, 'middle'); }
+const pinion = E('g', {}, G.dyn);
+E('circle', { cx: 796, cy: 711, r: 8, class: 'pinion' }, pinion);
+E('line', { x1: 796, y1: 703, x2: 796, y2: 719, class: 'mark' }, pinion);
+E('line', { x1: 788, y1: 711, x2: 804, y2: 711, class: 'mark' }, pinion);
+/* máy phát, máy nén, dây đai */
+E('path', { d: 'M318,633 L190,580 A30,30 0 0 0 168,630 L236,720 A22,22 0 0 0 270,712 L318,677 A22,22 0 0 0 318,633 Z', class: 'belt cmp', 'data-c': 'belt', id: 'beltP' }, G.flow);
+{ const g = C('alt', G.elec); E('circle', { cx: 190, cy: 610, r: 30, class: 'body altb' }, g); T(190, 655, 'Máy phát (B · C · FR)', 'ns', g, 'middle'); }
+const altR = E('g', {}, G.dyn); for (let k = 0; k < 3; k++) { const a = k * 120 * Math.PI / 180; E('line', { x1: 190, y1: 610, x2: 190 + 18 * Math.cos(a), y2: 610 + 18 * Math.sin(a), class: 'spoke' }, altR); }
+{ const g = C('comp', G.meca); E('circle', { cx: 250, cy: 700, r: 22, class: 'body compb' }, g); T(250, 736, 'Máy nén A/C', 'ns', g, 'middle'); }
+const compR = E('g', {}, G.dyn); for (let k = 0; k < 3; k++) { const a = k * 120 * Math.PI / 180; E('line', { x1: 250, y1: 700, x2: 250 + 12 * Math.cos(a), y2: 700 + 12 * Math.sin(a), class: 'spoke' }, compR); }
+
+/* cảm biến bên phải nắp máy */
+{ const g = C('ect', G.elex); box(g, 760, 356, 14, 12, 2, 'body sens'); T(778, 352, 'ECT', 'ns', g); }
+{ const g = C('vtec', G.elex); box(g, 760, 394, 14, 12, 2, 'body sens'); T(778, 414, 'VTEC', 'ns', g); }
+{ const g = C('knock', G.elex); box(g, 760, 512, 14, 14, 2, 'body sens'); T(778, 534, 'Kích nổ', 'ns', g); }
+/* làm mát */
+{ const g = C('thermo', G.meca); E('circle', { cx: 816, cy: 382, r: 6, class: 'body sens' }, g); T(816, 400, 'Hằng nhiệt', 'ns', g, 'middle'); }
+{ const g = C('radiator', G.meca); box(g, 850, 388, 28, 128, 4, 'body rad');
+  for (let y = 398; y < 512; y += 9) E('line', { x1: 852, y1: y, x2: 876, y2: y, class: 'fin' }, g); T(864, 530, 'Két nước', 'ns', g, 'middle'); }
+{ const g = C('fan', G.meca); E('circle', { cx: 930, cy: 452, r: 40, class: 'body shroud' }, g); T(930, 506, 'Quạt két nước', 'ns', g, 'middle'); }
+const fanR = E('g', {}, G.dyn);
+for (let k = 0; k < 5; k++) E('path', { d: 'M930,452 C940,436 952,424 962,428 C958,440 946,448 930,452 Z', class: 'blade', transform: `rotate(${k * 72} 930 452)` }, fanR);
+E('circle', { cx: 930, cy: 452, r: 7, class: 'hub' }, fanR);
+
+/* CVT & truyền lực */
+{ const g = C('tc', G.meca); box(g, 846, 628, 30, 54, 6); T(861, 659, 'TC', 'ns2', g, 'middle'); }
+E('line', { x1: 840, y1: 655, x2: 930, y2: 655, class: 'shaft' }, G.meca);
+{ const g = C('cvt', G.meca); box(g, 884, 592, 176, 148, 14, 'body cvtc'); T(892, 606, 'HỘP SỐ VÔ CẤP CVT', 'ns hb', g); }
+const cvtD = { inC: E('circle', { cx: 930, cy: 655, r: 24, class: 'pul' }, G.dyn), outC: E('circle', { cx: 1020, cy: 692, r: 24, class: 'pul' }, G.dyn),
+  b1: E('line', { class: 'cbelt' }, G.dyn), b2: E('line', { class: 'cbelt' }, G.dyn),
+  inM: E('line', { class: 'mark' }, G.dyn), outM: E('line', { class: 'mark' }, G.dyn) };
+{ const g = C('cvtsens', G.elex); box(g, 923, 606, 14, 10, 2, 'body sens'); box(g, 1013, 646, 14, 10, 2, 'body sens'); T(1028, 642, 'Cảm biến tốc độ', 'ns', g, 'end'); }
+{ const g = C('cvtsol', G.elex); box(g, 900, 718, 76, 16, 3, 'body sens'); T(938, 730, 'Van điện từ CVT', 'ns2', g, 'middle'); }
+E('path', { d: 'M1020,692 L1084,704 L1180,640', class: 'shaft' }, G.meca);
+E('circle', { cx: 1084, cy: 704, r: 11, class: 'gear' }, G.meca);
+{ const g = C('wheel', G.meca); E('circle', { cx: 1180, cy: 640, r: 58, class: 'body tire' }, g); E('circle', { cx: 1180, cy: 640, r: 38, class: 'rim' }, g);
+  E('circle', { cx: 1180, cy: 640, r: 26, class: 'disc' }, g); E('rect', { x: 1146, y: 600, width: 18, height: 28, rx: 4, class: 'caliper' }, g); }
+const wheelR = E('g', {}, G.dyn); for (let k = 0; k < 5; k++) { const a = k * 72 * Math.PI / 180; E('line', { x1: 1180 + 8 * Math.cos(a), y1: 640 + 8 * Math.sin(a), x2: 1180 + 36 * Math.cos(a), y2: 640 + 36 * Math.sin(a), class: 'spokeW' }, wheelR); }
+{ const g = C('wss', G.elex); box(g, 1218, 672, 12, 12, 2, 'body sens'); T(1236, 698, 'WSS', 'ns', g, 'middle'); }
+
+/* nhiên liệu */
+{ const g = C('pump', G.meca); box(g, 1100, 362, 150, 86, 14, 'body tank');
+  E('rect', { x: 1112, y: 374, width: 24, height: 62, rx: 4, class: 'pumpb' }, g); T(1124, 409, 'Bơm', 'ns2', g, 'middle');
+  T(1192, 390, 'Bình xăng 40 L', 'nt', g, 'middle'); T(1192, 405, 'bơm + lọc + điều áp', 'ns', g, 'middle'); T(1192, 418, '(hệ không hồi)', 'ns', g, 'middle'); }
+
+/* đầu vào tài xế */
+{ const g = E('g', {}, G.elex); E('rect', { x: 1090, y: 166, width: 172, height: 170, rx: 8, class: 'panelbox' }, g); T(1098, 182, 'ĐẦU VÀO TÀI XẾ', 'ns hb', g); }
+{ const g = C('btn', G.elex); E('circle', { cx: 1110, cy: 200, r: 10, class: 'body btnc' }, g); T(1126, 204, 'Nút ENGINE START/STOP', 'ns', g); }
+{ const g = C('brake', G.elex); box(g, 1102, 224, 16, 16, 3, 'body sens'); T(1126, 236, 'Bàn đạp phanh (công tắc)', 'ns', g); }
+{ const g = C('app', G.elex); box(g, 1102, 260, 16, 16, 3, 'body sens'); T(1126, 272, 'Bàn đạp ga APP (2 kênh)', 'ns', g); }
+{ const g = C('range', G.elex); box(g, 1102, 296, 16, 16, 3, 'body sens'); T(1126, 308, 'Cần số', 'ns', g); const r = T(1166, 309, 'P', 'val sm', g); r.id = 'gearTxt'; }
+
+/* lớp phủ gói tin */
+const pkLayer = G.pk;
+
+
+/* ===== MÔ PHỎNG VẬN HÀNH ===== */
+const mod = (a, n) => ((a % n) + n) % n;
+const RCR = 45, LROD = 150;
+const OFF = [0, 540, 180, 360];          // #1 #2 #3 #4 – thứ tự nổ 1-3-4-2
+const ALL_LAMPS = ['MIL', 'SẠC', 'DẦU', 'NHIỆT', 'IMMO', 'SRS', 'ABS', 'VSA', 'EPS', 'PHANH'];
+const LAMP_SEV = { MIL: 'warn', 'SẠC': 'crit', 'DẦU': 'crit', 'NHIỆT': 'crit', IMMO: 'warn', SRS: 'crit', ABS: 'warn', VSA: 'warn', EPS: 'warn', PHANH: 'crit' };
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let stepIdx = 0, playing = !reduceMotion, stepElapsed = 0;
+const STEP_MS = 7000;
+let SLOW = 0.08;
+let cur = Object.assign({}, STEPS[0].v, { spd: 0, lam: 0 });
+let tgt = STEPS[0].v;
+let flags = {};
+let theta = 0, fanA = 0, compA = 0, wheelA = 0, inA = 0, outA = 0;
+
+function flagsFor(i) {
+  const r = (a, b) => i >= a && i <= b;
+  return { start: r(12, 15), sync: r(13, 24), inj: r(14, 24), ign: r(15, 24), combust: r(15, 24),
+    pump: i === 9 || r(12, 24), alt: r(16, 24), thermo: r(20, 25), fan: i === 20, ac: [20, 21, 23, 24].includes(i),
+    vtc: r(21, 24), vtec: i === 22, purge: r(23, 24), cvt: r(21, 24), loadshed: r(12, 15), ig: r(6, 24),
+    pcm: r(7, 25), net: r(2, 25), run: r(16, 24) };
+}
+function lampsFor(i) {
+  if (i <= 4) return []; if (i === 5) return ['IMMO']; if (i <= 8) return ALL_LAMPS;
+  if (i <= 15) return ['MIL', 'SẠC', 'DẦU']; return [];
+}
+function onSet(i, f) {
+  const s = new Set(['battery', 'w-bat', 'mainfuse', 'w-main', 'uhbox', 'w-ud', 'udbox']);
+  const add = a => a.forEach(x => s.add(x));
+  if (f.net) add(['fcan', 'bcan', 'gw', 'micu', 'key']);
+  if (f.ig) { add(['r-ig1', 'w-ig1', 'r-ig2', 'vsa', 'eps', 'srs', 'cam', 'dlc']); if (!f.loadshed) add(['r-acc', 'audio', 'hvac']); }
+  if (f.pcm) add(['r-main1', 'w-m1', 'pcm']);
+  if (f.ig && i >= 7) add(['s-ect', 's-iat', 's-map', 's-tp', 's-app', 's-range', 's-brake', 'ect', 'iat', 'map', 'tb', 'app', 'range']);
+  if (f.start) add(['r-st', 'w-st', 'w-stb', 'starter', 'flywheel', 'crank', 's-ckp', 'ckp']);
+  if (f.sync) add(['s-ckp', 's-cmp', 'ckp', 'cmp']);
+  if (f.pump) add(['r-main2', 'w-pump', 'pump', 'rail']);
+  if (f.inj) add(['a-inj', 'inj']);
+  if (f.ign) add(['a-ign', 'coil']);
+  if (f.run) add(['a-dbw', 'tb', 'alt', 'w-alt', 'a-altc', 'belt', 'crank', 'flywheel', 'plenum', 'airf']);
+  if (i >= 19 && i <= 24) add(['s-af', 's-o2', 'af', 'o2', 'cat']);
+  if (f.fan) add(['r-fan', 'w-fan', 'fan']);
+  if (f.ac) add(['r-ac', 'w-ac', 'comp', 'hvac']);
+  if (f.vtc) add(['a-vtc', 'vtc']);
+  if (f.vtec) add(['a-vtec', 'vtec']);
+  if (f.purge) add(['a-purge', 'purge']);
+  if (f.cvt) add(['s-cvt', 'a-cvt', 'cvt', 'cvtsens', 'cvtsol', 'tc', 'wheel', 's-wss', 'wss']);
+  if (i >= 21 && i <= 24) add(['s-knock', 'knock']);
+  if (f.thermo) add(['thermo', 'radiator']);
+  if (i === 1) add(['lin', 'door']);
+  if (i === 2) add(['lin', 'lamp']);
+  return s;
+}
+
+const allC = () => [...svg.querySelectorAll('[data-c]')];
+function applyClasses() {
+  const st = STEPS[stepIdx]; const on = onSet(stepIdx, flags); const hot = new Set(st.act);
+  allC().forEach(el => { const id = el.getAttribute('data-c'); el.classList.toggle('on', on.has(id) || hot.has(id)); el.classList.toggle('hot', hot.has(id)); });
+}
+
+/* ---------- gói tin mạng ---------- */
+const NP = { dlc: [56, 72], vsa: [144, 72], eps: [230, 72], srs: [310, 72], cam: [402, 72], pcm: [560, 165], gw: [710, 56],
+  micu: [824, 72], key: [924, 72], hvac: [1014, 72], audio: [1095, 72], park: [1203, 72], door: [1105, 128], lamp: [1208, 128] };
+const LINN = new Set(['door', 'lamp']);
+const SIDE = id => id === 'gw' ? 'G' : (id === 'pcm' || NP[id][0] < 650 ? 'F' : 'B');
+function pathPts(a, b) {
+  if (LINN.has(b)) return [[824, 112], [824, 128], [NP[b][0], 128]];
+  const P = [];
+  if (a === 'gw') P.push([710, 56]); else { P.push(NP[a]); P.push([NP[a][0], 56]); }
+  if (b === 'gw') P.push([710, 56]); else { P.push([NP[b][0], 56]); P.push(NP[b]); }
+  return P;
+}
+function busOf(a, b) {
+  if (LINN.has(b)) return 'LIN';
+  const sa = SIDE(a), sb = SIDE(b);
+  if (sa === 'G') return sb + '-CAN'; if (sb === 'G') return sa + '-CAN';
+  return sa === sb ? sa + '-CAN' : 'F↔B qua GW';
+}
+const packets = [];
+let pkTimer = 0, pkIdx = 0, logT0 = performance.now();
+function spawn(m) {
+  const [a, b, txt] = m; const P = pathPts(a, b);
+  const seg = []; let tot = 0;
+  for (let k = 1; k < P.length; k++) { const l = Math.hypot(P[k][0] - P[k - 1][0], P[k][1] - P[k - 1][1]); seg.push(l); tot += l; }
+  const bus = busOf(a, b);
+  const g = E('g', { class: 'pk ' + (bus === 'LIN' ? 'pk-lin' : bus.startsWith('B') ? 'pk-b' : bus.startsWith('F↔') ? 'pk-x' : 'pk-f') }, pkLayer);
+  E('circle', { r: 5 }, g); const t = T(0, -9, txt, 'pkt', g, 'middle');
+  packets.push({ P, seg, tot, d: 0, g });
+  logCan(bus, a, b, txt);
+}
+function updPackets(dt) {
+  for (let i = packets.length - 1; i >= 0; i--) {
+    const p = packets[i]; p.d += dt * 260;
+    if (p.d >= p.tot + 30) { p.g.remove(); packets.splice(i, 1); continue; }
+    let d = Math.min(p.d, p.tot), k = 0;
+    while (k < p.seg.length - 1 && d > p.seg[k]) { d -= p.seg[k]; k++; }
+    const A = p.P[k], B = p.P[k + 1], f = p.seg[k] ? d / p.seg[k] : 0;
+    p.g.setAttribute('transform', `translate(${A[0] + (B[0] - A[0]) * f},${A[1] + (B[1] - A[1]) * f})`);
+  }
+}
+const BG = [['pcm', 'gw', 'RPM · ECT · tải'], ['vsa', 'pcm', 'Tốc độ 4 bánh'], ['pcm', 'eps', 'Tốc độ xe']];
+function tickPackets(dt) {
+  if (!flags.net) return;
+  pkTimer -= dt;
+  if (pkTimer <= 0) {
+    const list = STEPS[stepIdx].can.length ? STEPS[stepIdx].can : (flags.run ? BG : []);
+    if (list.length) { spawn(list[pkIdx % list.length]); pkIdx++; }
+    pkTimer = 1.25;
+  }
+}
+const logEl = document.getElementById('canlog');
+function logCan(bus, a, b, txt) {
+  const li = document.createElement('li');
+  const s = ((performance.now() - logT0) / 1000).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  li.innerHTML = `<span class="lt">${s} s</span><span class="lb b-${bus.startsWith('LIN') ? 'lin' : bus.startsWith('B') ? 'b' : bus.startsWith('F↔') ? 'x' : 'f'}">${bus}</span><span class="lm"><b>${NAME[a] || a}</b> → <b>${NAME[b] || b}</b>: ${txt}</span>`;
+  logEl.prepend(li); while (logEl.children.length > 8) logEl.lastChild.remove();
+}
+
+/* ---------- vẽ động cơ ---------- */
+const COL = { air: '#2a5f86', mix: '#2f7c8f', comp: '#2c5a9e', fire: '#ff7a2f', exh: '#4b5563', idle: '#1d2b3e' };
+const tPlate = document.getElementById('tPlate');
+const beltP = document.getElementById('beltP');
+const fl = { air: document.getElementById('fAir'), exh: document.getElementById('fExh'), fuel: document.getElementById('fFuel'),
+  c1: document.getElementById('fCool1'), c2: document.getElementById('fCool2'), ch: document.getElementById('fChain') };
+function lift(phi, o, c, Lm) { const span = mod(c - o, 720), d = mod(phi - o, 720); return d > span ? 0 : Lm * Math.sin(Math.PI * d / span); }
+
+function drawEngine() {
+  const vtcAdv = flags.vtc ? Math.min(25, cur.thr * 0.35) : 0;
+  const io = 345 - vtcAdv, ic = 585 - vtcAdv, iL = flags.vtec ? 9 : 6.5;
+  const pwDeg = Math.max(40, cur.pw * Math.max(cur.rpm, 1) * 6 / 1000);
+  CX.forEach((c, i) => {
+    const o = cyl[i]; const phi = mod(theta - OFF[i], 720); const a = (phi % 360) * Math.PI / 180;
+    const px = c + RCR * Math.sin(a), py = 655 - RCR * Math.cos(a);
+    const dx = RCR * Math.sin(a); const wy = py - Math.sqrt(LROD * LROD - dx * dx); const top = wy - 18;
+    o.piston.setAttribute('transform', `translate(0,${top.toFixed(1)})`);
+    o.rod.setAttribute('x1', c); o.rod.setAttribute('y1', wy.toFixed(1)); o.rod.setAttribute('x2', px.toFixed(1)); o.rod.setAttribute('y2', py.toFixed(1));
+    o.pin.setAttribute('cx', px.toFixed(1)); o.pin.setAttribute('cy', py.toFixed(1));
+    o.throw.setAttribute('x2', px.toFixed(1)); o.throw.setAttribute('y2', py.toFixed(1));
+    o.gas.setAttribute('height', Math.max(0, top - 432).toFixed(1));
+    let fill, lab;
+    const moving = cur.rpm > 5;
+    if (phi < 180) { lab = flags.combust ? 'NỔ' : 'GIÃN'; fill = flags.combust && moving ? COL.fire : COL.comp; o.gas.setAttribute('fill-opacity', flags.combust && moving ? (0.95 - phi / 260).toFixed(2) : 0.55); }
+    else if (phi < 360) { lab = 'XẢ'; fill = COL.exh; o.gas.setAttribute('fill-opacity', 0.6); }
+    else if (phi < 540) { lab = 'NẠP'; fill = flags.inj ? COL.mix : COL.air; o.gas.setAttribute('fill-opacity', 0.55); }
+    else { lab = 'NÉN'; fill = flags.inj ? COL.mix : COL.comp; o.gas.setAttribute('fill-opacity', (0.45 + (phi - 540) / 400).toFixed(2)); }
+    if (!moving && !flags.combust) { fill = COL.idle; o.gas.setAttribute('fill-opacity', 0.6); }
+    o.gas.setAttribute('fill', fill); o.stroke.textContent = lab;
+    o.iv.setAttribute('transform', `translate(0,${lift(phi, io, ic, iL).toFixed(1)})`);
+    o.ev.setAttribute('transform', `translate(0,${lift(phi, 140, 375, 6.5).toFixed(1)})`);
+    o.ic.setAttribute('transform', `translate(${c - 22},368) rotate(${((phi - (io + ic) / 2) / 2 + 90).toFixed(1)})`);
+    o.ec.setAttribute('transform', `translate(${c + 22},368) rotate(${((phi - 257.5) / 2 + 90).toFixed(1)})`);
+    let sp = 0;
+    if (flags.ign && moving) { const d = mod(phi - (720 - cur.adv), 720); if (d < 30) sp = 1 - d / 30; }
+    o.spark.setAttribute('opacity', sp.toFixed(2));
+    let sy = 0;
+    if (flags.inj && moving) { const d = mod(phi - 300, 720); if (d < pwDeg) sy = 0.9; }
+    o.spray.setAttribute('opacity', sy);
+  });
+  relT.setAttribute('transform', `rotate(${theta % 360} 318 655)`);
+  flyT.setAttribute('transform', `rotate(${theta % 360} 796 655)`);
+  altR.setAttribute('transform', `rotate(${(theta * 2.6) % 360} 190 610)`);
+  pinion.setAttribute('transform', flags.start ? `rotate(${(-theta * 5) % 360} 796 711)` : 'translate(0,9)');
+  compR.setAttribute('transform', `rotate(${compA % 360} 250 700)`);
+  fanR.setAttribute('transform', `rotate(${fanA % 360} 930 452)`);
+  wheelR.setAttribute('transform', `rotate(${wheelA % 360} 1180 640)`);
+  tPlate.setAttribute('transform', `rotate(${(-(cur.thr) * 0.85).toFixed(1)} 293 279)`);
+  beltP.style.strokeDashoffset = (-theta * 0.35).toFixed(1);
+  fl.ch.style.strokeDashoffset = (-theta * 0.2).toFixed(1);
+  /* CVT */
+  const ratio = Math.max(0.4, Math.min(2.5, cur.ratio));
+  const rin = 48 / (1 + ratio), rout = 48 * ratio / (1 + ratio);
+  cvtD.inC.setAttribute('r', rin.toFixed(1)); cvtD.outC.setAttribute('r', rout.toFixed(1));
+  const set = (l, x1, y1, x2, y2) => { l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2); };
+  set(cvtD.b1, 930, (655 - rin).toFixed(1), 1020, (692 - rout).toFixed(1));
+  set(cvtD.b2, 930, (655 + rin).toFixed(1), 1020, (692 + rout).toFixed(1));
+  set(cvtD.inM, 930, 655, (930 + rin * Math.cos(inA)).toFixed(1), (655 + rin * Math.sin(inA)).toFixed(1));
+  set(cvtD.outM, 1020, 692, (1020 + rout * Math.cos(outA)).toFixed(1), (692 + rout * Math.sin(outA)).toFixed(1));
+}
+function setFlows() {
+  const turning = cur.rpm > 5;
+  fl.air.classList.toggle('run', turning); fl.exh.classList.toggle('run', flags.combust && turning);
+  fl.fuel.classList.toggle('run', !!flags.pump); fl.c1.classList.toggle('run', !!flags.thermo && turning); fl.c2.classList.toggle('run', !!flags.thermo && turning);
+  fl.ch.classList.toggle('run', turning); beltP.classList.toggle('run', turning);
+}
+
+/* ---------- oscilloscope ---------- */
+const scope = document.getElementById('scope'); const sctx = scope.getContext('2d');
+function fitScope() { const r = scope.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; scope.width = Math.max(300, r.width) * dpr; scope.height = 230 * dpr; sctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+function drawScope() {
+  const w = scope.width / (window.devicePixelRatio || 1), h = 230; const x0 = 56, x1 = w - 8, xw = x1 - x0;
+  sctx.clearRect(0, 0, w, h);
+  const rows = [['CKP', '#4c9dff'], ['CMP', '#2ed3b7'], ['KIM #1', '#c77dff'], ['IGN #1', '#ffb020']];
+  const rh = 46, yTop = 10;
+  sctx.font = '600 11px "Barlow Condensed", sans-serif';
+  sctx.strokeStyle = 'rgba(142,162,186,.12)'; sctx.lineWidth = 1;
+  for (let g = 0; g <= 8; g++) { const x = x0 + xw * g / 8; sctx.beginPath(); sctx.moveTo(x, yTop); sctx.lineTo(x, yTop + rh * 4); sctx.stroke(); }
+  sctx.fillStyle = '#8ea2ba'; ['0°', '180°', '360°', '540°', '720°'].forEach((t, k) => sctx.fillText(t, x0 + xw * k / 4 - (k === 4 ? 22 : 4), yTop + rh * 4 + 14));
+  const moving = cur.rpm > 5; const pwDeg = Math.max(8, cur.pw * Math.max(cur.rpm, 1) * 6 / 1000); const dwDeg = Math.max(16, 2.5 * Math.max(cur.rpm, 1) * 6 / 1000);
+  rows.forEach(([n, col], r) => {
+    const yb = yTop + rh * r + rh - 8, yh = yTop + rh * r + 10;
+    sctx.fillStyle = col; sctx.fillText(n, 6, yTop + rh * r + 28);
+    sctx.strokeStyle = col; sctx.lineWidth = 1.6; sctx.beginPath();
+    for (let a = 0; a <= 720; a += 1) {
+      let v = 0;
+      if (r === 0) { const tooth = Math.floor((a % 360) / 10); v = moving && tooth < 34 && (a % 10) < 5 ? 1 : 0; }
+      else if (r === 1) { v = moving && flags.sync && ((a >= 70 && a < 100) || (a >= 430 && a < 445) || (a >= 470 && a < 485)) ? 1 : 0; }
+      else if (r === 2) { v = 0.62; if (flags.inj && moving) { const d = mod(a - 300, 720); if (d < pwDeg) v = 0; else if (d < pwDeg + 4) v = 1; } }
+      else { v = 0; if (flags.ign && moving) { const sa = 720 - cur.adv; const d = mod(sa - a, 720); if (d > 0 && d < dwDeg) v = 0.8; } }
+      const x = x0 + xw * a / 720, y = yb - (yb - yh) * v;
+      if (a === 0) sctx.moveTo(x, y); else sctx.lineTo(x, y);
+    }
+    sctx.stroke();
+  });
+  /* điểm đánh lửa & con trỏ */
+  if (moving) {
+    const cx = x0 + xw * mod(theta, 720) / 720;
+    sctx.strokeStyle = 'rgba(255,255,255,.75)'; sctx.lineWidth = 1; sctx.setLineDash([3, 3]); sctx.beginPath(); sctx.moveTo(cx, yTop); sctx.lineTo(cx, yTop + rh * 4); sctx.stroke(); sctx.setLineDash([]);
+  }
+  sctx.fillStyle = '#8ea2ba'; sctx.fillText('ĐCT nén #1', x0 + 2, yTop + rh * 4 + 28);
+  sctx.fillText(moving ? `${Math.round(cur.rpm)} vòng/phút · khung 720° = 1 chu trình` : 'Động cơ đứng yên – không có tín hiệu', x0 + 80, yTop + rh * 4 + 28);
+}
+
+/* ---------- bảng dữ liệu ---------- */
+const nf = (v, d) => Number(v).toLocaleString('vi-VN', { minimumFractionDigits: d, maximumFractionDigits: d });
+const TILES = [
+  ['rpm', 'Vòng tua', 'vòng/phút', 0, 6600], ['vb', 'Điện áp hệ thống', 'V', 1, 16], ['ist', 'Dòng máy đề', 'A', 0, 250],
+  ['ect', 'Nhiệt độ nước ECT', '°C', 0, 120], ['fp', 'Áp suất nhiên liệu', 'kPa', 0, 450], ['map', 'Áp suất cổ hút MAP', 'kPa', 0, 105],
+  ['thr', 'Độ mở bướm ga', '%', 0, 100], ['pw', 'Xung phun', 'ms', 1, 15], ['adv', 'Góc đánh lửa', '° trước ĐCT', 0, 40],
+  ['lam', 'Lambda λ', '', 2, 1.2], ['ratio', 'Tỉ số CVT', '', 2, 2.6], ['spd', 'Tốc độ xe (minh họa)', 'km/h', 0, 140],
+  ['loop', 'Điều khiển nhiên liệu', '', -1, 0], ['pm', 'Chế độ nguồn', '', -1, 0]
+];
+const tilesEl = document.getElementById('tiles');
+TILES.forEach(([k, l, u]) => { const d = document.createElement('div'); d.className = 'tile'; d.innerHTML = `<div class="tl">${l}</div><div class="tv"><span id="tv-${k}">—</span><small>${u}</small></div><div class="tb"><i id="tb-${k}"></i></div>`; tilesEl.appendChild(d); });
+function updTiles() {
+  TILES.forEach(([k, , , d, mx]) => {
+    const el = document.getElementById('tv-' + k), bar = document.getElementById('tb-' + k);
+    if (d < 0) { el.textContent = tgt[k]; bar.style.width = '0'; return; }
+    let v = cur[k], show;
+    if (k === 'lam' && tgt.lam == null) show = '—';
+    else if (k === 'ratio' && tgt.gear !== 'D') show = tgt.gear;
+    else show = nf(v, d);
+    el.textContent = show;
+    bar.style.width = (show === '—' || (k === 'ratio' && tgt.gear !== 'D')) ? '0' : Math.max(0, Math.min(100, v / mx * 100)) + '%';
+  });
+  document.getElementById('batV').textContent = nf(cur.vb, 1) + ' V';
+  document.getElementById('pmTxt').textContent = tgt.pm;
+  document.getElementById('gearTxt').textContent = tgt.gear;
+}
+const lampsEl = document.getElementById('lamps');
+ALL_LAMPS.forEach(n => { const s = document.createElement('span'); s.className = 'lamp ' + LAMP_SEV[n]; s.id = 'lp-' + n; s.textContent = n; lampsEl.appendChild(s); });
+function updLamps() { const on = new Set(lampsFor(stepIdx)); ALL_LAMPS.forEach(n => document.getElementById('lp-' + n).classList.toggle('lit', on.has(n))); }
+
+/* ---------- dòng thời gian & thẻ bước ---------- */
+const tl = document.getElementById('timeline');
+PHASES.forEach((p, pi) => {
+  const grp = document.createElement('div'); grp.className = 'tg';
+  grp.innerHTML = `<div class="tgh">${p.n} <span>${p.r}</span></div><div class="tgc"></div>`;
+  STEPS.forEach((s, i) => { if (s.ph !== pi) return; const b = document.createElement('button'); b.className = 'chip-step'; b.id = 'cs-' + i; b.type = 'button';
+    b.title = s.t; b.innerHTML = `<b>${s.k}</b><i></i>`; b.addEventListener('click', () => { goStep(i); }); grp.querySelector('.tgc').appendChild(b); });
+  tl.appendChild(grp);
+});
+const card = document.getElementById('stepCard');
+function renderCard() {
+  const s = STEPS[stepIdx];
+  const comps = s.act.filter(id => !/^(w|s|a)-/.test(id));
+  const sym = SYMPTOMS.find(x => x.id === s.dx);
+  card.innerHTML = `
+    <div class="sc-head"><div class="sc-k">${s.k}</div><div><div class="sc-ph">${PHASES[s.ph].n} · Bước ${stepIdx + 1}/26</div><h2>${s.t}</h2></div></div>
+    <p class="sc-d">${s.d}</p>
+    <div class="sc-row"><span class="sc-lab">Lớp tham gia</span>${s.L.map(l => `<span class="lchip l-${l}">${LAYER_NAME[l]}</span>`).join('')}</div>
+    <div class="sc-row"><span class="sc-lab">Thành phần kích hoạt</span>${comps.map(id => `<span class="cchip l-${LAYER_OF(id)}">${NAME[id] || id}</span>`).join('')}</div>
+    <div class="sc-cols">
+      <div><h4>Tín hiệu & giá trị tham khảo</h4><ul>${s.sig.map(x => `<li>${x}</li>`).join('')}</ul></div>
+      <div><h4>Nếu bước này lỗi → kiểm tra</h4><ul>${s.chk.map(x => `<li>${x}</li>`).join('')}</ul>
+      ${sym ? `<button class="btn ghost sm" type="button" id="toDiag">Mở cây chẩn đoán: ${sym.t} →</button>` : ''}</div>
+    </div>`;
+  const b = document.getElementById('toDiag'); if (b) b.addEventListener('click', () => { selectSymptom(s.dx); showTab('chan-doan'); });
+  document.querySelectorAll('.chip-step').forEach((el, i) => { el.classList.toggle('act', el.id === 'cs-' + stepIdx); el.classList.toggle('done', +el.id.slice(3) < stepIdx); });
+  document.getElementById('pcmMode').textContent = stepIdx < 7 ? 'Chưa cấp nguồn chính' : stepIdx <= 11 ? 'Tự kiểm tra · chờ đề' : stepIdx <= 15 ? 'Khởi động' : stepIdx === 25 ? 'Post-run · lưu học' : ('Vòng ' + (tgt.loop === '—' ? 'hở' : tgt.loop.toLowerCase()));
+}
+function goStep(i) {
+  stepIdx = mod(i, STEPS.length); stepElapsed = 0; tgt = STEPS[stepIdx].v; flags = flagsFor(stepIdx); pkIdx = 0; pkTimer = 0.2;
+  applyClasses(); setFlows(); renderCard(); updLamps();
+}
+
+/* ---------- vòng lặp ---------- */
+let last = performance.now(), uiT = 0, scT = 0;
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  ['rpm', 'vb', 'ist', 'fp', 'map', 'thr', 'pw', 'adv', 'ratio'].forEach(k => { cur[k] += (tgt[k] - cur[k]) * (1 - Math.exp(-dt * (k === 'rpm' ? 1.8 : 2.4))); });
+  cur.ect += (tgt.ect - cur.ect) * (1 - Math.exp(-dt * 0.9));
+  if (tgt.lam != null) cur.lam += (tgt.lam - cur.lam) * (1 - Math.exp(-dt * 2));
+  cur.spd = tgt.gear === 'D' ? cur.rpm / (Math.max(0.4, cur.ratio) * 4.6) * 1.94 * 0.06 : cur.spd * Math.exp(-dt * 2);
+  const vis = cur.rpm * SLOW * 6 * dt;
+  theta += vis;
+  if (flags.fan) fanA += dt * 900 * Math.max(0.3, SLOW * 6);
+  if (flags.ac && cur.rpm > 5) compA += vis * 1.2;
+  if (flags.cvt) { inA += vis * Math.PI / 180; outA += vis * Math.PI / 180 / Math.max(0.4, cur.ratio); }
+  wheelA += (cur.spd / 3.6 / 1.94) * 360 * dt * SLOW * 10;
+  drawEngine(); updPackets(dt); tickPackets(dt);
+  uiT += dt; if (uiT > 0.1) { uiT = 0; updTiles(); setFlows(); }
+  scT += dt; if (scT > 0.05) { scT = 0; drawScope(); }
+  if (playing) {
+    stepElapsed += dt * 1000;
+    const chip = document.querySelector('#cs-' + stepIdx + ' i'); if (chip) chip.style.width = Math.min(100, stepElapsed / STEP_MS * 100) + '%';
+    if (stepElapsed >= STEP_MS) goStep(stepIdx + 1);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ---------- điều khiển ---------- */
+const bPlay = document.getElementById('bPlay');
+function setPlay(p) { playing = p; bPlay.textContent = p ? '❚❚ Tạm dừng' : '▶ Tự chạy A→Z'; bPlay.setAttribute('aria-pressed', p); document.querySelectorAll('.chip-step i').forEach(i => i.style.width = '0'); }
+bPlay.addEventListener('click', () => setPlay(!playing));
+document.getElementById('bPrev').addEventListener('click', () => { setPlay(false); goStep(stepIdx - 1); });
+document.getElementById('bNext').addEventListener('click', () => { setPlay(false); goStep(stepIdx + 1); });
+const slowEl = document.getElementById('slow');
+slowEl.addEventListener('input', () => { SLOW = slowEl.value / 100; document.getElementById('slowv').textContent = '×' + nf(SLOW, 2); });
+document.querySelectorAll('.layer-t').forEach(b => b.addEventListener('click', () => {
+  const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', on);
+  svg.querySelectorAll(`[data-layer="${b.dataset.l}"]`).forEach(g => g.classList.toggle('off', !on));
+}));
+document.addEventListener('keydown', e => {
+  if (currentTab !== 'van-hanh' || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if (e.key === 'ArrowRight') { setPlay(false); goStep(stepIdx + 1); }
+  else if (e.key === 'ArrowLeft') { setPlay(false); goStep(stepIdx - 1); }
+});
+
+/* ===== TAB, CHẨN ĐOÁN, DANH MỤC, BẢO DƯỠNG ===== */
+let currentTab = 'van-hanh';
+const TABS = ['van-hanh', 'chan-doan', 'danh-muc', 'bao-duong'];
+function showTab(id) {
+  if (!TABS.includes(id)) id = 'van-hanh';
+  currentTab = id;
+  TABS.forEach(t => { document.getElementById('tab-' + t).hidden = t !== id; const b = document.querySelector(`[data-tab="${t}"]`); b.setAttribute('aria-selected', t === id); });
+  const host = document.getElementById(id === 'chan-doan' ? 'stageDiag' : 'stageRun');
+  if (svg.parentNode !== host) host.appendChild(svg);
+  svg.classList.toggle('diag', id === 'chan-doan');
+  if (id === 'chan-doan') applySuspects();
+  if (id === 'van-hanh') fitScope();
+  try { if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id); } catch (e) { }
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+window.addEventListener('hashchange', () => showTab(location.hash.slice(1)));
+
+/* ---------- quy trình 8 bước ---------- */
+document.getElementById('workflow').innerHTML = WORKFLOW.map((w, i) => `<li><span class="wn">${i + 1}</span><div><b>${w[0]}</b><small>${w[1]}</small></div></li>`).join('');
+
+/* ---------- danh sách triệu chứng ---------- */
+let curSym = 'nocrank';
+const treeState = {};
+const symList = document.getElementById('symList');
+const symSearch = document.getElementById('symSearch');
+function renderSymList() {
+  const q = (symSearch.value || '').trim().toLowerCase();
+  const groups = [...new Set(SYMPTOMS.map(s => s.grp))];
+  symList.innerHTML = groups.map(g => {
+    const items = SYMPTOMS.filter(s => s.grp === g && (!q || (s.t + ' ' + s.sym + ' ' + s.parts.map(p => p[0]).join(' ') + ' ' + s.codes.map(c => c[0]).join(' ')).toLowerCase().includes(q)));
+    if (!items.length) return '';
+    return `<div class="sg"><div class="sgh">${g}</div>${items.map(s => `<button type="button" class="symb${s.id === curSym ? ' act' : ''}" data-s="${s.id}"><span>${s.t}</span><small>${s.checks.length} bước · ${s.parts.length} chi tiết</small></button>`).join('')}</div>`;
+  }).join('') || '<p class="muted">Không có triệu chứng khớp từ khóa.</p>';
+  symList.querySelectorAll('.symb').forEach(b => b.addEventListener('click', () => selectSymptom(b.dataset.s)));
+}
+symSearch.addEventListener('input', renderSymList);
+function selectSymptom(id) { curSym = id; renderSymList(); renderDiag(); applySuspects(); }
+function applySuspects() { const s = SYMPTOMS.find(x => x.id === curSym); const set = new Set(s.sus); allC().forEach(el => el.classList.toggle('sus', set.has(el.getAttribute('data-c')))); }
+
+/* ---------- cây kiểm tra ---------- */
+const dxEl = document.getElementById('dxMain');
+function activeIdx(st) { for (let i = 0; i < st.length; i++) { if (st[i] === 'fail') return -1; if (st[i] === 'todo') return i; } return st.length; }
+function renderDiag() {
+  const s = SYMPTOMS.find(x => x.id === curSym);
+  const st = treeState[s.id] || (treeState[s.id] = s.checks.map(() => 'todo'));
+  const ai = activeIdx(st);
+  const items = s.checks.map((c, i) => {
+    const state = st[i]; const isAct = i === ai; const waiting = state === 'todo' && !isAct;
+    let body = `<div class="ck-t">${c.t}</div><div class="ck-how">${c.how}</div>`;
+    if (!c.info) body += `<div class="ck-spec"><span>Chuẩn</span>${c.spec}</div>`;
+    if (isAct) body += c.info
+      ? `<div class="ck-btns"><button type="button" class="btn sm" data-a="done" data-i="${i}">Đã thực hiện → tiếp</button></div>`
+      : `<div class="ck-btns"><button type="button" class="btn sm ok" data-a="pass" data-i="${i}">✓ Đạt</button><button type="button" class="btn sm bad" data-a="fail" data-i="${i}">✗ Không đạt</button></div>`;
+    if (state === 'fail' || state === 'fixed') {
+      body += `<div class="ck-res ${state}"><div class="cr-h">${state === 'fail' ? 'Kết luận' : 'Đã khắc phục'}</div><p>${c.fail.c}</p>
+        ${c.fail.parts.length ? `<div class="cr-p"><span>Chi tiết cần thay/sửa:</span>${c.fail.parts.map(p => `<span class="pchip">${p}</span>`).join('')}</div>` : ''}
+        ${c.fail.fix ? `<p class="cr-fix">${c.fail.fix}</p>` : ''}
+        ${state === 'fail' ? `<div class="ck-btns"><button type="button" class="btn sm" data-a="fixed" data-i="${i}">Đã khắc phục → kiểm tra tiếp</button></div>` : ''}</div>`;
+    }
+    const mark = state === 'pass' ? '✓' : state === 'fail' ? '✗' : state === 'fixed' ? '↻' : state === 'done' ? '✓' : (i + 1);
+    return `<li class="ck ${state}${isAct ? ' active' : ''}${waiting ? ' wait' : ''}${c.info ? ' info' : ''}"><span class="ck-n">${mark}</span><div class="ck-b">${body}</div></li>`;
+  }).join('');
+  const fixedParts = s.checks.filter((c, i) => st[i] === 'fixed').flatMap(c => c.fail.parts);
+  const done = ai === s.checks.length;
+  dxEl.innerHTML = `
+  <div class="dx-head">
+    <div class="sc-ph">${s.grp}</div><h2>${s.t}</h2><p>${s.sym}</p>
+    <div class="sc-row"><span class="sc-lab">Hệ thống</span>${s.sys.map(x => `<span class="lchip">${x}</span>`).join('')}</div>
+    <div class="sc-row"><span class="sc-lab">Bước liên quan trong luồng A→Z</span>${s.steps.map(k => `<button type="button" class="kbtn" data-k="${k}" title="${STEPS[k.charCodeAt(0) - 65].t}">${k}</button>`).join('')}</div>
+    <div class="sc-row"><span class="sc-lab">Trên sơ đồ</span><span class="muted">Các chi tiết nghi vấn đang được tô viền vàng nhấp nháy.</span></div>
+  </div>
+  <div class="dx-cols">
+    <section class="tree"><div class="tree-h"><h3>Cây kiểm tra – làm theo thứ tự</h3><button type="button" class="btn ghost sm" id="treeReset">Làm lại</button></div>
+      <ol class="cklist">${items}</ol>
+      ${done ? `<div class="ck-res fixed end"><div class="cr-h">Hoàn tất cây kiểm tra</div>
+        <p>${fixedParts.length ? 'Đã khắc phục: ' + fixedParts.join(', ') + '.' : 'Không phát hiện lỗi ở các bước cơ bản – chuyển sang đo kiểm chuyên sâu bằng i-HDS/oscilloscope hoặc đại lý Honda.'}</p>
+        <p class="cr-fix">Tiếp theo: thực hiện cài đặt sau khi thay (tab Bảo dưỡng), xóa mã, chạy chu trình lái và xác nhận không tái lập lỗi.</p></div>` : ''}
+    </section>
+    <aside class="dx-side">
+      <h3>Chi tiết có thể phải thay</h3>
+      <table class="tbl"><thead><tr><th>Chi tiết</th><th>Mức độ</th><th>Ghi chú</th></tr></thead><tbody>
+        ${s.parts.map(p => `<tr><td>${p[0]}</td><td><span class="lv lv${p[1]}">${LV[p[1]]}</span></td><td class="muted">${p[2] || ''}</td></tr>`).join('')}</tbody></table>
+      <h3>Mã lỗi liên quan</h3>
+      <table class="tbl"><thead><tr><th>Mã</th><th>Ý nghĩa</th></tr></thead><tbody>
+        ${s.codes.map(c => `<tr><td class="mono">${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</tbody></table>
+      <p class="note">Mã P/U/C là mã chuẩn SAE dùng chung OBD-II; mã riêng của Honda (SRS, VSA, EPS, Keyless…) đọc bằng Honda i-HDS.</p>
+    </aside>
+  </div>`;
+  dxEl.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => {
+    const i = +b.dataset.i, a = b.dataset.a; st[i] = a; renderDiag();
+    const nx = dxEl.querySelector('.ck.active, .ck.fail'); if (nx) nx.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+  }));
+  document.getElementById('treeReset').addEventListener('click', () => { treeState[s.id] = s.checks.map(() => 'todo'); renderDiag(); });
+  dxEl.querySelectorAll('.kbtn').forEach(b => b.addEventListener('click', () => { setPlay(false); goStep(b.dataset.k.charCodeAt(0) - 65); showTab('van-hanh'); window.scrollTo({ top: 0 }); }));
+}
+
+/* ---------- danh mục chi tiết ---------- */
+const catSys = [...new Set(CATALOG.map(r => r[0]))];
+let catFilter = 'all';
+const catChips = document.getElementById('catChips');
+catChips.innerHTML = `<button type="button" class="fchip act" data-f="all">Tất cả <b>${CATALOG.length}</b></button>` + catSys.map(s => `<button type="button" class="fchip" data-f="${s}">${s} <b>${CATALOG.filter(r => r[0] === s).length}</b></button>`).join('');
+catChips.querySelectorAll('.fchip').forEach(b => b.addEventListener('click', () => { catFilter = b.dataset.f; catChips.querySelectorAll('.fchip').forEach(x => x.classList.toggle('act', x === b)); renderCatalog(); }));
+const catSearch = document.getElementById('catSearch');
+catSearch.addEventListener('input', renderCatalog);
+function renderCatalog() {
+  const q = catSearch.value.trim().toLowerCase();
+  const rows = CATALOG.filter(r => (catFilter === 'all' || r[0] === catFilter) && (!q || r.join(' ').toLowerCase().includes(q)));
+  document.getElementById('catCount').textContent = `${rows.length} chi tiết`;
+  document.getElementById('catBody').innerHTML = rows.map(r => `<tr>
+    <td><span class="sys">${r[0]}</span><b>${r[1]}</b><small>${r[2]}</small></td>
+    <td>${r[3]}</td><td>${r[4]}</td><td class="spec">${r[5]}</td><td class="mono">${r[6]}</td><td>${r[7]}</td><td class="muted">${r[8] || '—'}</td></tr>`).join('')
+    || '<tr><td colspan="7" class="muted">Không có chi tiết khớp. Thử từ khóa khác, ví dụ “CKP”, “P0420”, “quạt”.</td></tr>';
+}
+
+/* ---------- bảo dưỡng & thông số ---------- */
+document.getElementById('maintBody').innerHTML = MAINT.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="muted">${r[2]}</td></tr>`).join('');
+document.getElementById('specBody').innerHTML = SPECS.map(r => `<tr><td>${r[0]}</td><td class="spec">${r[1]}</td></tr>`).join('');
+document.getElementById('procBody').innerHTML = PROCS.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join('');
+document.getElementById('toolBody').innerHTML = TOOLS.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join('');
+
+/* ---------- khởi động ---------- */
+renderSymList(); renderDiag(); renderCatalog();
+goStep(0); setPlay(playing);
+showTab(location.hash.slice(1) || 'van-hanh');
+fitScope(); window.addEventListener('resize', fitScope);
+requestAnimationFrame(t => { last = t; requestAnimationFrame(frame); });
+
+})();
+</script>
+</body>
+</html>
