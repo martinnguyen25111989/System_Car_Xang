@@ -10,7 +10,7 @@ Xe ví dụ xuyên suốt là **Honda City 1.5**: máy xăng hút khí tự nhi�
 
 ## Đang có gì
 
-Lộ trình có **8 level, 32 bài**, và cả 32 bài đều mở trong app. Mỗi bài có bài đọc 10 mục, sơ đồ 2D bật tắt luồng, khối 3D và quiz 5 câu cộng 3 câu tự luận.
+Lộ trình có **9 level, 33 bài**, và cả 33 bài đều mở trong app. Mỗi bài có bài đọc 10 mục, sơ đồ 2D bật tắt luồng, khối 3D và quiz 5 câu cộng 3 câu tự luận.
 
 | Level | Tên | Bài |
 | --- | --- | --- |
@@ -22,8 +22,9 @@ Lộ trình có **8 level, 32 bài**, và cả 32 bài đều mở trong app. M�
 | 6 | An toàn và ADAS | L25–L27 |
 | 7 | Nội thất | L28–L29 |
 | 8 | Ghép thành một hệ thống | L30–L32 |
+| 9 | Điện nâng cao | L33 |
 
-Bài cuối mỗi level có một đoạn ôn. L32 có bản đồ cả khóa và sáu ca chẩn đoán. Cuối mỗi bài đọc còn có câu hỏi phỏng vấn để tự kể lại.
+Bài cuối mỗi level có một đoạn ôn. L32 có bản đồ cả khóa và sáu ca chẩn đoán. L33 là kiến trúc điện City 2024: thân trong suốt, nguồn, mass, CAN/LIN. Cuối mỗi bài đọc còn có câu hỏi phỏng vấn để tự kể lại.
 
 ## Phạm vi
 
@@ -105,7 +106,7 @@ npm install
 npm run dev
 ```
 
-Mở http://127.0.0.1:5173 . Dev server đọc markdown ở `curriculum/` ngoài thư mục `web/`, nên phải chạy từ repo đầy đủ, không chỉ copy thư mục `web/`. Bản đồ mở L01 đến L32.
+Mở http://127.0.0.1:5173 . Dev server đọc markdown ở `curriculum/` ngoài thư mục `web/`, nên phải chạy từ repo đầy đủ, không chỉ copy thư mục `web/`. Bản đồ mở L01 đến L33.
 
 Các lệnh khác, vẫn trong `web/`:
 
@@ -121,12 +122,13 @@ npm run preview
 
 ```text
 curriculum/level-0N/lesson-NN.md   bài đọc của từng lesson
-web/src/content/curriculum.ts      8 level, 32 bài
+web/src/content/curriculum.ts      9 level, 33 bài
 web/src/content/packs/             sơ đồ, quiz và mô hình từng bài
 web/src/pages/LearningMap.tsx      trang chủ
 web/src/pages/LessonPage.tsx       một bài: đọc + sân khấu + quiz
 web/src/components/FlowDiagram.tsx sơ đồ 2D
 web/src/scenes/GhostCar.tsx        xe 3D trong suốt
+web/src/scenes/ElectricalCar.tsx   cắt ngang điện City 2024, bài L33
 web/src/lib/progress.ts            tiến độ localStorage
 web/public/404.html                fallback cho đường dẫn sâu trên GitHub Pages
 .github/workflows/pages.yml        build và deploy

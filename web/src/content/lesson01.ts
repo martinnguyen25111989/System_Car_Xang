@@ -47,6 +47,9 @@ export const FLOW_COLOR = {
   thermal: '#f07a3a',
   intake: '#3ec6d6',
   exhaust: '#8b939e',
+  ground: '#c5ccd6',
+  can: '#b388ff',
+  lin: '#7fd1c8',
 } as const
 
 export type FlowId = keyof typeof FLOW_COLOR

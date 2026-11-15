@@ -13,10 +13,10 @@ export function LearningMap() {
   return (
     <div className="shell">
       <SiteHeader meta={`${done} / ${lessonCount} bài đã học`} />
-      <p className="kicker">Level 1 → Level 8</p>
+      <p className="kicker">Level 1 → Level 9</p>
       <h1>Các bước để đọc một chiếc xe xăng</h1>
       <p className="lede">
-        Ba mươi hai bài đều mở, từ cách xe biến xăng thành chuyển động đến lúc ghép cả xe để chẩn đoán.
+        Ba mươi hai bài nền mở từ cách xe biến xăng thành chuyển động đến lúc chẩn đoán. Level 9 là bài điện nâng cao của City 2024.
         Màu dưới đây là ngôn ngữ của mọi sơ đồ: mỗi màu là một luồng, không phải một bước thời gian.
         Khí nạp và khí xả xuất hiện khi bài nói về máy.
       </p>

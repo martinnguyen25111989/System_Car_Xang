@@ -6,15 +6,22 @@ export function pickFlows(...ids: FlowId[]) {
   return ALL_FLOWS.filter((flow) => ids.includes(flow.id))
 }
 
+export type DiagramView = {
+  id: string
+  label: string
+  diagram: DiagramRow[]
+}
+
 export type LessonPack = {
   id: string
-  scene: 'ghost' | 'blocks' | 'engine'
+  scene: 'ghost' | 'blocks' | 'engine' | 'electrical'
   sceneNote: string
   defaultNode: string
   flows: readonly { id: FlowId; label: string; hint: string }[]
   details: Record<string, PartDetail>
   partFlows: Record<string, FlowId[]>
   diagram: DiagramRow[]
+  views?: DiagramView[]
   quiz: Mcq[]
   essays: Essay[]
 }

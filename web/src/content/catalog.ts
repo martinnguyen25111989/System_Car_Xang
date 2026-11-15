@@ -8,6 +8,7 @@ import { LEVEL5 } from './packs/level5.ts'
 import { LEVEL6 } from './packs/level6.ts'
 import { LEVEL7 } from './packs/level7.ts'
 import { LEVEL8 } from './packs/level8.ts'
+import { LEVEL9 } from './packs/level9.ts'
 
 const L01: LessonPack = {
   id: 'L01',
@@ -33,6 +34,7 @@ const PACKS: Record<string, LessonPack> = {
   ...LEVEL6,
   ...LEVEL7,
   ...LEVEL8,
+  ...LEVEL9,
 }
 
 export function getPack(id: string): LessonPack | null {

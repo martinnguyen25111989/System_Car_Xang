@@ -329,6 +329,8 @@ a { color: var(--energy); }
 .stage-bar > button.is-on { background: var(--energy); }
 .tabs button.is-on { background: #d5deea; }
 
+.view-tabs { flex-wrap: wrap; margin-bottom: 8px; }
+
 .toggles { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 
 .flow-hints { margin: 0 0 10px; color: var(--muted); font-size: 0.86rem; min-height: 1.4em; }

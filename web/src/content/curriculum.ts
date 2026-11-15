@@ -261,6 +261,19 @@ export const levels: LevelMeta[] = [
       },
     ],
   },
+  {
+    id: 9,
+    title: 'Điện nâng cao',
+    blurb: 'City 2024: nguồn, mass, hộp điều khiển, CAN/LIN. Vị trí là sơ đồ điển hình, chưa phải bản vẽ service.',
+    lessons: [
+      {
+        id: 'L33',
+        title: 'Kiến trúc điện City 2024',
+        question: 'Từ electron đến hành vi xe, nguồn và tín hiệu đi qua những hộp nào?',
+        available: true,
+      },
+    ],
+  },
 ]
 
 export function findLesson(id: string): { level: LevelMeta; lesson: LessonMeta } | null {

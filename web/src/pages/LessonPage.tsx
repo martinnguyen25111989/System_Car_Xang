@@ -19,6 +19,9 @@ const BlockScene = lazy(() =>
 const EngineScene = lazy(() =>
   import('../scenes/EngineScene.tsx').then((module) => ({ default: module.EngineScene })),
 )
+const ElectricalCar = lazy(() =>
+  import('../scenes/ElectricalCar.tsx').then((module) => ({ default: module.ElectricalCar })),
+)
 
 export function LessonPage() {
   const { id = '' } = useParams()
@@ -35,7 +38,9 @@ function LessonView({ id }: { id: string }) {
   const [selected, setSelected] = useState(pack?.defaultNode ?? '')
   const [playing, setPlaying] = useState(false)
   const [yaw, setYaw] = useState(0.15)
+  const [viewId, setViewId] = useState(pack?.views?.[0]?.id ?? '')
   const active = useMemo(() => new Set(flows), [flows])
+  const diagram = pack?.views?.find((item) => item.id === viewId)?.diagram ?? pack?.diagram ?? []
 
   useEffect(() => {
     if (found?.lesson.available && pack) markCurrent(found.lesson.id)
@@ -128,13 +133,27 @@ function LessonView({ id }: { id: string }) {
               })}
             </div>
             <p className="flow-hints">{hints || 'Hãy bật ít nhất một luồng để thấy đường đi.'}</p>
+            {tab === 'diagram' && pack.views ? (
+              <div className="tabs view-tabs">
+                {pack.views.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={viewId === item.id ? 'is-on' : ''}
+                    onClick={() => setViewId(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
             {tab === 'diagram' ? (
               <FlowDiagram
                 active={active}
                 playing={playing}
                 selected={selected}
                 onSelect={setSelected}
-                diagram={pack.diagram}
+                diagram={diagram}
                 details={pack.details}
                 partFlows={pack.partFlows}
               />
@@ -152,6 +171,14 @@ function LessonView({ id }: { id: string }) {
                   <div className="canvas-wrap">
                     {pack.scene === 'ghost' ? (
                       <GhostCar
+                        active={active}
+                        playing={playing}
+                        selected={selected}
+                        onSelect={setSelected}
+                        yaw={yaw}
+                      />
+                    ) : pack.scene === 'electrical' ? (
+                      <ElectricalCar
                         active={active}
                         playing={playing}
                         selected={selected}
