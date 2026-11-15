@@ -301,6 +301,74 @@ footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color
 [data-layer].off{opacity:.05}
 [data-layer]{transition:opacity .3s}
 
+
+/* cấu tạo động cơ */
+.eng-specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.es{background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:8px 10px}
+.es span{display:block;font:700 10.5px var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.es b{font-weight:600;font-size:14px}
+.eng-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:start}
+.eng-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.eng-tools h3{margin:0}
+#engX{display:block;width:100%;min-width:600px;height:auto}
+.eng-side{display:flex;flex-direction:column;gap:14px;position:sticky;top:10px}
+.pc-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.pc-n{flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font:700 22px var(--fd);color:#fff}
+.pc-head h2{font-size:24px;line-height:1.15}
+.pc-en{font-size:13px;color:var(--muted);font-style:italic}
+.pc-dl{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;margin:0;font-size:14px}
+.pc-dl dt{font:700 11px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.pc-dl dd{margin:0}
+.pc-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.plegend{max-height:430px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.plg{margin-bottom:8px}
+.plb{display:flex;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:6px;padding:3px 6px;font-size:13px;line-height:1.3}
+.plb:hover{background:var(--panel-2)}
+.plb.act{background:rgba(255,176,32,.14)}
+.pln{flex:none;width:22px;height:22px;border-radius:50%;background:#22324a;display:grid;place-items:center;font:700 12px var(--fd)}
+.plb.act .pln{background:var(--warn);color:#1a1205}
+.pln.x{background:transparent;border:1px dashed #3a4d6b;color:var(--muted)}
+.ptbl tr.grp td{font:700 12px var(--fd);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:#0f1824}
+.ptbl td.num{font:700 15px var(--fd);text-align:center;width:36px}
+.ptbl tr[data-row]{cursor:pointer}
+.ptbl tr[data-row]:hover td{background:#132033}
+.ptbl small{display:block;color:var(--muted);font-size:12px}
+.spec.d{display:block;margin-top:4px}
+#engX .pb{stroke:#4a6385;stroke-width:1.2;transition:stroke .2s}
+#engX .st{fill:#7d8ea6}#engX .st2{fill:#a3b2c6}#engX .al{fill:#55677f}#engX .dk{fill:#26354b}#engX .pl{fill:#2a3445}
+#engX .hs{fill:#1d2b3e;fill-opacity:.85}#engX .vc{fill:#2a2f3a}#engX .gk{fill:#8a95a6}#engX .pis{fill:#b8c4d3}
+#engX .vin{fill:var(--air)}#engX .vex{fill:#d1925c}#engX .lobe{fill:#9aa9bd}#engX .vtcx{fill:#4b5f7c}#engX .cwx{fill:#56677f}
+#engX .fu{fill:#6b5a2b}#engX .injx{fill:#8a7330}#engX .catx{fill:#4a3a32}#engX .sen{fill:#20314a;stroke:#4a6a92}
+#engX .cer{fill:#e7ecf2}#engX .thr{fill:#9aa9bd}#engX .fltx{fill:#2f5f96}#engX .coilx{fill:#3b2d55}#engX .cap{fill:#d6a648}
+.chainx{fill:none;stroke:#9aa9bd;stroke-width:3;stroke-dasharray:4 2}
+.shoe{fill:none;stroke:#c9a35a;stroke-width:6;stroke-linecap:round}
+.beltx{fill:none;stroke:#46505f;stroke-width:5;stroke-linejoin:round}
+.armx{stroke:#7d8ea6;stroke-width:4}.grvc{fill:none;stroke:#4a5568}.markx{stroke:var(--accent);stroke-width:2}
+.fin2{stroke:#9aa9bd;stroke-width:2}.hosex{fill:none;stroke:var(--cool);stroke-width:5;opacity:.7}
+.rib{stroke:rgba(255,255,255,.12);stroke-width:1.5}.platex{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.runx{fill:none;stroke:#2b5677;stroke-width:9;stroke-linecap:round}
+.exhx{fill:none;stroke:#59616f;stroke-width:8;stroke-linecap:round}.exhx.thin{stroke-width:6}
+.teeth{fill:none;stroke:#9aa9bd;stroke-width:4;stroke-dasharray:2 2}
+.ringx{fill:none;stroke:#c6d1df;stroke-width:3}.ringo{fill:none;stroke:#e9b949;stroke-width:3}.gap{stroke:#0a1119;stroke-width:4}
+.elec{fill:none;stroke:#c9d2de;stroke-width:2}.oilln{stroke:#e9b949;stroke-width:2;stroke-dasharray:3 3}
+.shaftx{stroke:#7d8ea6;stroke-width:6;stroke-linecap:round}.shaftx.thick{stroke-width:8}
+.vane{stroke:#c6d1df;stroke-width:2}.ret{stroke:#a3b2c6;stroke-width:2.5}.spr{fill:none;stroke:#c6d1df;stroke-width:1.6}
+.stem{stroke:#a3b2c6;stroke-width:2.5}.grv2{stroke:#6b7a8f;stroke-width:1.2}.rodr{fill:none;stroke:#7d8ea6;stroke-width:5}
+.split{stroke:#0a1119;stroke-width:1.5}.brg{fill:none;stroke:#d1925c;stroke-width:3.5}.tooth2{stroke:#c6d1df;stroke-width:2}
+.pipex{fill:none;stroke:#7d8ea6;stroke-width:5}.mesh{fill:#26354b;stroke:#9aa9bd;stroke-dasharray:2 2}
+.chm,.hole{fill:#0a1119;stroke:#4a6385}.wj{fill:none;stroke:var(--cool);stroke-dasharray:3 2;opacity:.6}
+.wj2{fill:none;stroke:var(--cool);stroke-dasharray:3 3;opacity:.45}.bore2{fill:#0d1520}.liner{stroke:#8a95a6;stroke-width:2.5}
+.xin{font:700 10px var(--fd);letter-spacing:.14em;fill:#7d93b1}.xtag{font:600 11px var(--fd);fill:var(--muted)}
+.xb{cursor:pointer;transition:opacity .4s}.xbc{fill:#0a1018;stroke:var(--accent);stroke-width:1.6}
+.xbt{font:700 11px var(--fd);fill:var(--ink);pointer-events:none}.xb:hover .xbc{fill:#3a1820}.xb.sel .xbc{fill:var(--warn);stroke:var(--warn)}.xb.sel .xbt{fill:#1a1205}
+.xp{cursor:pointer;transition:transform .9s cubic-bezier(.4,0,.2,1),opacity .5s}
+.xp:hover .pb{stroke:var(--sig)}.xp:focus{outline:none}.xp:focus-visible .pb{stroke:var(--sig);stroke-width:2.2}
+.xp.sel .pb{stroke:var(--warn);stroke-width:2.4}.xp.sel{filter:drop-shadow(0 0 6px rgba(255,176,32,.75))}
+#engX.asm .xp:not(.core){opacity:.12;pointer-events:none}#engX.asm .hs{fill-opacity:.45}#engX.asm .bore2{fill-opacity:.3}#engX.asm .xtag,#engX.asm .xin{opacity:0}#engX.asm .xb{opacity:0;pointer-events:none}
+@media (max-width:1000px){.eng-grid{grid-template-columns:1fr}.eng-side{position:static}}
+@media (max-width:600px){.pc-dl{grid-template-columns:1fr}.plegend{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.xp{transition:none}}
+
 @media (max-width:1180px){.run-grid{grid-template-columns:1fr 1fr}.run-grid>.panel:first-child{grid-column:1/-1}.wf{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.diag-grid{grid-template-columns:1fr}.sym-side{position:static;max-height:none}.dx-cols{grid-template-columns:1fr}.maint-grid{grid-template-columns:1fr}.layers{margin-left:0}}
 @media (max-width:700px){.run-grid{grid-template-columns:1fr}.sc-cols{grid-template-columns:1fr}.wf{grid-template-columns:1fr}main,.top-in{padding-left:14px;padding-right:14px}}
@@ -314,9 +382,10 @@ footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color
   <div class="specline"><span><b>1.5L DOHC i-VTEC</b> · 1.498 cc · 16 xu-páp</span><span><b>119 hp</b>/6.600 · <b>145 Nm</b>/4.300 vòng/phút</span><span>PGM-FI · CVT</span><span>F-CAN ~500 kbps · B-CAN ~125 kbps · LIN</span></div>
   <nav class="tabs" role="tablist" aria-label="Nội dung">
     <button type="button" role="tab" data-tab="van-hanh" aria-selected="true"><span class="tn">01</span>VẬN HÀNH A→Z</button>
-    <button type="button" role="tab" data-tab="chan-doan" aria-selected="false"><span class="tn">02</span>MÔ HÌNH CHẨN ĐOÁN</button>
-    <button type="button" role="tab" data-tab="danh-muc" aria-selected="false"><span class="tn">03</span>DANH MỤC CHI TIẾT &amp; MÃ LỖI</button>
-    <button type="button" role="tab" data-tab="bao-duong" aria-selected="false"><span class="tn">04</span>BẢO DƯỠNG · THÔNG SỐ · CÀI ĐẶT</button>
+    <button type="button" role="tab" data-tab="cau-tao" aria-selected="false"><span class="tn">02</span>CẤU TẠO ĐỘNG CƠ</button>
+    <button type="button" role="tab" data-tab="chan-doan" aria-selected="false"><span class="tn">03</span>MÔ HÌNH CHẨN ĐOÁN</button>
+    <button type="button" role="tab" data-tab="danh-muc" aria-selected="false"><span class="tn">04</span>DANH MỤC CHI TIẾT &amp; MÃ LỖI</button>
+    <button type="button" role="tab" data-tab="bao-duong" aria-selected="false"><span class="tn">05</span>BẢO DƯỠNG · THÔNG SỐ · CÀI ĐẶT</button>
   </nav>
 </div></header>
 
@@ -372,6 +441,30 @@ footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color
       <ol class="canlog" id="canlog"></ol>
     </div>
   </div>
+</section>
+
+<!-- ============ TAB CẤU TẠO ============ -->
+<section class="tab" id="tab-cau-tao" role="tabpanel" hidden>
+  <div class="panel">
+    <h3>Động cơ 1.5L DOHC i-VTEC (L15ZF) – thông số cấu tạo</h3>
+    <div class="eng-specs" id="engSpecs"></div>
+  </div>
+  <div class="eng-grid">
+    <div class="panel">
+      <div class="eng-tools"><h3>Sơ đồ tách rời – bấm vào từng bộ phận</h3><button type="button" class="btn sm" id="bAsm" aria-pressed="false">Lắp ghép lại</button></div>
+      <div class="stage" id="engStage"><svg id="engX" viewBox="0 0 860 920" role="img" aria-label="Sơ đồ tách rời động cơ 1.5L DOHC i-VTEC: nắp đậy giàn cò, trục cam, VTC, cò mổ VTEC, xu-páp, nắp máy, gioăng, thân máy, piston, thanh truyền, trục khuỷu, bơm dầu, các-te, xích cam và các bộ phận phụ trợ"></svg></div>
+      <p class="note">Số trên sơ đồ khớp với danh sách bên phải. Hình minh họa nguyên lý, không theo tỉ lệ thật. Nút “Lắp ghép lại” ghép khối lõi động cơ, làm mờ các bộ phận phụ trợ.</p>
+    </div>
+    <div class="eng-side">
+      <article class="panel" id="partCard" aria-live="polite"></article>
+      <div class="panel"><h3>Danh sách bộ phận</h3><div id="partLegend" class="plegend"></div></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="cat-search"><h3 style="margin:0">Bảng chi tiết từng bộ phận</h3><input class="search" id="partSearch" type="search" placeholder="Tìm: piston, xích cam, VTC, P0011…" aria-label="Tìm bộ phận"><span class="muted" id="partCount"></span></div>
+  </div>
+  <div class="tblwrap"><table class="tbl cat ptbl"><thead><tr><th>#</th><th>Bộ phận</th><th>Chức năng</th><th>Cấu tạo &amp; thông số</th><th>Hư hỏng → triệu chứng</th><th>Kiểm tra &amp; bảo dưỡng</th></tr></thead><tbody id="partBody"></tbody></table></div>
+  <p class="disclaimer">Thông số cấu tạo (mã máy, đường kính × hành trình, tỉ số nén, xích cam, phun đa điểm) theo dữ liệu công bố cho Honda City thế hệ GN; chi tiết lắp ráp, lực siết và dung sai luôn đối chiếu Honda Service Manual theo số VIN.</p>
 </section>
 
 <!-- ============ TAB 2 ============ -->
@@ -1251,6 +1344,397 @@ const TOOLS = [
 ['Kim back-probe / hộp chia giắc','Đo tín hiệu không làm hỏng giắc']
 ];
 
+/* ===== CẤU TẠO ĐỘNG CƠ 1.5L DOHC i-VTEC – TỪNG BỘ PHẬN ===== */
+const ENG_SPECS = [
+  ['Mã động cơ', 'L15ZF / L15ZE (dòng L15Z, Earth Dreams)'],
+  ['Kiểu', '4 xi-lanh thẳng hàng, đặt ngang, hút khí tự nhiên'],
+  ['Dung tích', '1.498 cc'],
+  ['Đường kính × hành trình', '73,0 × 89,5 mm'],
+  ['Tỉ số nén', '10,6 : 1'],
+  ['Phân phối khí', 'DOHC 16 xu-páp · i-VTEC + VTC'],
+  ['Dẫn động cam', 'Xích cam'],
+  ['Phun nhiên liệu', 'PGM-FI phun đa điểm vào cửa nạp'],
+  ['Thứ tự nổ', '1-3-4-2'],
+  ['Khe hở xu-páp', 'Chỉnh bằng vít – không có con đội thủy lực'],
+  ['Công suất / mô-men', '119 hp @ 6.600 · 145 Nm @ 4.300 vòng/phút'],
+  ['Dầu động cơ', '0W-20']
+];
+
+const PGROUPS = ['Đánh lửa', 'Thân máy & nắp máy', 'Phân phối khí DOHC i-VTEC', 'Dẫn động cam', 'Trục khuỷu – thanh truyền',
+  'Bôi trơn', 'Làm mát', 'Nạp khí', 'Nhiên liệu', 'Xả & khí thải', 'Khởi động, sạc & dẫn động phụ', 'Gắn máy & truyền lực'];
+
+/* n: số trên sơ đồ (null = chỉ có trong danh mục) */
+const PARTS = [
+{ n:1, id:'coil', g:'Đánh lửa', vn:'Bô-bin đánh lửa ×4', en:'Direct ignition coil (COP)',
+  loc:'Cắm thẳng lên bugi qua lỗ trên nắp đậy giàn cò, mỗi xi-lanh một bô-bin.',
+  fn:'Biến 12 V thành điện áp cao hàng chục kV để bugi phóng tia lửa. IC đánh lửa tích hợp nhận lệnh từ PCM: ngậm điện (dwell) rồi ngắt.',
+  build:'Cuộn sơ cấp và thứ cấp quấn quanh lõi thép, vỏ nhựa đổ epoxy, chụp cao su có lò xo tiếp xúc bugi, giắc 3–4 chân (nguồn IG1, mass, tín hiệu).',
+  spec:'Dwell ~2–3 ms (tham khảo); thứ tự nổ 1-3-4-2.',
+  fail:'Nứt vỏ, rò cao áp ra mass khi ẩm, IC hỏng → bỏ máy một xi-lanh, rung, MIL nháy (P0301–P0304, P0351–P0354). Xăng kém làm bugi mòn nhanh rồi kéo theo hỏng bô-bin.',
+  maint:'Đảo bô-bin giữa hai máy để xác nhận; kiểm tra dầu/nước đọng trong giếng bugi; bugi đã mòn thì thay cùng lúc.', dx:'rough', st:'P' },
+{ n:2, id:'plug', g:'Đánh lửa', vn:'Bugi iridium ×4', en:'Iridium spark plug',
+  loc:'Vặn vào nắp máy, điện cực nằm giữa nóc buồng đốt.',
+  fn:'Phóng tia lửa đốt hỗn hợp ở cuối kỳ nén.',
+  build:'Điện cực giữa iridium đường kính nhỏ, điện cực mát, sứ cách điện, thân thép có ren và lục giác.',
+  spec:'Khe hở ~1,0–1,1 mm (tham khảo – theo mã bugi Honda chỉ định).',
+  fail:'Mòn điện cực, muội than, nứt sứ → khó nổ, rung, hao xăng, bỏ máy.',
+  maint:'Thay theo lịch (~100.000 km, tham khảo); siết đúng lực khi máy nguội; không bẻ điện cực để chỉnh khe hở bugi iridium.', dx:'rough', st:'P' },
+
+{ n:3, id:'vcover', g:'Thân máy & nắp máy', vn:'Nắp đậy giàn cò', en:'Cylinder head cover',
+  loc:'Trên cùng của nắp máy.',
+  fn:'Bao kín trục cam và cò mổ, giữ dầu; có nắp đổ dầu, đường thông hơi PCV và lỗ lắp bô-bin.',
+  build:'Nhựa composite hoặc nhôm đúc; gioăng cao su chạy viền và gioăng quanh lỗ bugi.',
+  spec:'Siết theo thứ tự & lực trong Service Manual.',
+  fail:'Rỉ dầu ở gioăng → dầu chảy xuống cổ xả (mùi khét, khói), dầu vào giếng bugi gây bỏ máy.',
+  maint:'Thay gioăng khi rỉ; mỗi lần tháo để chỉnh khe hở xu-páp nên dùng gioăng mới.' },
+{ n:10, id:'head', g:'Thân máy & nắp máy', vn:'Nắp máy', en:'Cylinder head',
+  loc:'Trên thân máy, kẹp gioăng nắp máy ở giữa.',
+  fn:'Tạo nóc buồng đốt; chứa cửa nạp/xả, 16 xu-páp, hai trục cam, lỗ bugi, áo nước và đường dầu.',
+  build:'Hợp kim nhôm đúc; đế xu-páp và ống dẫn hướng ép vào; ổ đỡ trục cam gia công trên nắp máy.',
+  spec:'Bu-lông nắp máy siết theo thứ tự + góc, thường là loại dùng một lần (theo Service Manual).',
+  fail:'Cong vênh hoặc nứt do quá nhiệt → thổi gioăng, mất nước, dầu lẫn nước.',
+  maint:'Đo độ phẳng mặt máy mỗi khi tháo; không để động cơ quá nhiệt.', dx:'overheat', st:'U' },
+{ n:11, id:'hgasket', g:'Thân máy & nắp máy', vn:'Gioăng nắp máy', en:'Head gasket (MLS)',
+  loc:'Giữa nắp máy và thân máy.',
+  fn:'Làm kín áp suất buồng đốt, đường dầu và đường nước giữa hai chi tiết.',
+  build:'Nhiều lớp thép mỏng (MLS) có gân làm kín và lớp phủ.',
+  spec:'Thay mới mỗi lần tháo nắp máy.',
+  fail:'Thổi gioăng → mất nước làm mát, khói trắng, bọt khí trong két, quá nhiệt, giảm nén ở hai máy kề nhau.',
+  maint:'Thử CO₂ trong két (block tester), đo nén hai máy kề nhau.', dx:'overheat', st:'U' },
+{ n:12, id:'block', g:'Thân máy & nắp máy', vn:'Thân máy', en:'Cylinder block',
+  loc:'Trung tâm động cơ.',
+  fn:'Khung chịu lực chính: chứa 4 xi-lanh, đỡ trục khuỷu, có áo nước và đường dầu chính.',
+  build:'Hợp kim nhôm đúc, ống lót xi-lanh bằng gang (dòng L); 4 xi-lanh thẳng hàng, đặt ngang.',
+  spec:'Đường kính xi-lanh 73 mm; hành trình 89,5 mm; 1.498 cc.',
+  fail:'Xước/mòn xi-lanh (hao dầu, giảm nén); nứt áo nước do quá nhiệt hoặc đóng cặn khi dùng nước thường.',
+  maint:'Đo độ côn, ô-van xi-lanh khi đại tu; chỉ dùng nước làm mát Honda.' },
+{ n:null, id:'tcover', g:'Thân máy & nắp máy', vn:'Nắp xích cam', en:'Timing chain cover',
+  loc:'Đầu trước động cơ, bao xích cam.',
+  fn:'Bao kín bộ xích cam trong dầu; lắp phớt đầu trục khuỷu.',
+  build:'Nhôm đúc, làm kín bằng keo (FIPG) với thân máy và nắp máy.',
+  spec:'Dùng đúng loại keo và thời gian chờ khô theo Service Manual.',
+  fail:'Rỉ dầu ở mép keo hoặc phớt đầu trục khuỷu.',
+  maint:'Vệ sinh sạch keo cũ trước khi lắp lại.' },
+
+{ n:4, id:'cams', g:'Phân phối khí DOHC i-VTEC', vn:'Trục cam nạp & trục cam xả', en:'Intake & exhaust camshafts (DOHC)',
+  loc:'Trên nắp máy, hai trục song song.',
+  fn:'Biên dạng cam mở/đóng 16 xu-páp đúng thời điểm; quay bằng 1/2 tốc độ trục khuỷu (1 vòng cam = 1 chu trình 720°).',
+  build:'Thép/gang đúc tôi bề mặt; các cổ trục quay trong ổ trên nắp máy; đầu trước lắp bánh răng xích (cam nạp lắp bộ VTC); có vấu tín hiệu cho cảm biến CMP.',
+  spec:'Tỉ số truyền khuỷu : cam = 2 : 1.',
+  fail:'Mòn vấu cam, xước cổ trục do thiếu dầu hoặc dầu bẩn → tiếng gõ đầu máy, yếu máy.',
+  maint:'Thay dầu đúng hạn; kiểm tra khi có tiếng gõ đầu máy hoặc mã CMP/VTC.', dx:'oil', st:'W' },
+{ n:5, id:'vtc', g:'Phân phối khí DOHC i-VTEC', vn:'Bộ chấp hành VTC & van OCV', en:'Variable Timing Control actuator & oil control valve',
+  loc:'Đầu trục cam nạp (bánh răng xích cam nạp); van OCV gắn trên nắp máy.',
+  fn:'Xoay pha trục cam nạp sớm/muộn liên tục theo lệnh PCM bằng áp suất dầu → tối ưu mô-men, tiêu hao và khí thải.',
+  build:'Bộ chấp hành kiểu cánh gạt trong vỏ bánh răng, chốt khóa khi khởi động; van OCV con trượt điều khiển PWM, có lưới lọc dầu.',
+  spec:'Góc VTC thực tế bám góc mục tiêu (data list HDS).',
+  fail:'Kêu lạch cạch vài giây khi nổ máy nguội; P0010–P0012; dầu bẩn làm kẹt van OCV hoặc tắc lưới lọc.',
+  maint:'Dầu 0W-20 đúng hạn; vệ sinh lưới lọc OCV; đo điện trở cuộn dây OCV.', dx:'oil', st:'W' },
+{ n:6, id:'rocker', g:'Phân phối khí DOHC i-VTEC', vn:'Cò mổ & cơ cấu VTEC', en:'Rocker arms with VTEC switching',
+  loc:'Giữa vấu cam và đuôi xu-páp, lắp trên trục cò mổ.',
+  fn:'Truyền chuyển động từ cam xuống xu-páp. Cơ cấu VTEC dùng chốt đồng bộ đẩy bằng áp suất dầu để khóa/nhả các cò mổ → thay đổi hành trình và thời gian mở xu-páp.',
+  build:'Thép, thường có con lăn tiếp xúc cam để giảm ma sát; vít + đai ốc chỉnh khe hở ở đầu tì xu-páp; chốt VTEC và lò xo hồi.',
+  spec:'Không có con đội thủy lực: khe hở xu-páp chỉnh bằng vít, đo khi máy nguội theo Service Manual.',
+  fail:'Khe hở lớn → tiếng lách cách; khe hở nhỏ → xu-páp đóng không kín, cháy xu-páp xả, giảm nén; chốt VTEC kẹt (P2646/P2647).',
+  maint:'Kiểm tra/chỉnh khe hở xu-páp định kỳ hoặc khi máy kêu lách cách.', dx:'oil', st:'W' },
+{ n:7, id:'vtecsol', g:'Phân phối khí DOHC i-VTEC', vn:'Van điện từ VTEC & công tắc áp suất dầu VTEC', en:'Rocker arm oil control solenoid & pressure switch',
+  loc:'Bên hông nắp máy, trên đường dầu cấp cho cò mổ.',
+  fn:'PCM cấp điện mở đường dầu áp lực tới chốt VTEC; công tắc áp suất dầu xác nhận cơ cấu đã chuyển.',
+  build:'Cuộn dây điện từ + van trượt, lưới lọc dầu, gioăng; công tắc áp suất dầu.',
+  spec:'Điện trở cuộn và áp suất đóng/mở theo Service Manual.',
+  fail:'Lưới lọc tắc hoặc van kẹt do dầu bẩn, rỉ dầu gioăng → P2646–P2649, yếu ở vòng tua cao.',
+  maint:'Thay dầu đúng hạn; vệ sinh lưới lọc; đo áp suất dầu.', dx:'oil', st:'W' },
+{ n:8, id:'springs', g:'Phân phối khí DOHC i-VTEC', vn:'Lò xo xu-páp, đĩa chặn & móng hãm', en:'Valve springs, retainers & keepers',
+  loc:'Quanh thân xu-páp, giữa nắp máy và cò mổ.',
+  fn:'Đóng xu-páp kín vào đế sau khi cam đi qua; giữ xu-páp bám biên dạng cam ở vòng tua cao.',
+  build:'Lò xo thép hợp kim; đĩa chặn và hai móng hãm khóa vào rãnh đuôi xu-páp.',
+  spec:'Chiều dài tự do và lực nén theo Service Manual.',
+  fail:'Lò xo yếu/gãy → xu-páp “nhảy” ở vòng tua cao, bỏ máy, có thể va piston.',
+  maint:'Kiểm tra khi đại tu nắp máy.' },
+{ n:9, id:'valves', g:'Phân phối khí DOHC i-VTEC', vn:'Xu-páp nạp ×8 & xu-páp xả ×8', en:'Intake & exhaust valves',
+  loc:'Trong nắp máy, mỗi xi-lanh 2 nạp + 2 xả.',
+  fn:'Mở cho hỗn hợp vào và khí xả ra; đóng kín buồng đốt khi nén và nổ.',
+  build:'Thép chịu nhiệt (xu-páp xả chịu nhiệt cao hơn); nấm xu-páp nạp lớn hơn xả; tì kín lên đế, trượt trong ống dẫn hướng.',
+  spec:'4 xu-páp/xi-lanh, tổng 16.',
+  fail:'Cháy/rỗ xu-páp xả (khe hở sai, hỗn hợp nghèo) → giảm nén một máy, bỏ máy; cong xu-páp khi xích nhảy răng.',
+  maint:'Đo nén, thử rò xi-lanh (leak-down); mài rà khi đại tu.', dx:'nostart', st:'P' },
+{ n:null, id:'stemseal', g:'Phân phối khí DOHC i-VTEC', vn:'Phớt gít xu-páp', en:'Valve stem seals',
+  loc:'Đầu ống dẫn hướng xu-páp.',
+  fn:'Chặn dầu chảy dọc thân xu-páp vào buồng đốt.',
+  build:'Cao su chịu nhiệt có lò xo kẹp, khung thép.',
+  spec:'Thay khi đại tu nắp máy.',
+  fail:'Chai cứng → khói xanh khi mới nổ máy hoặc khi xuống dốc nhả ga, hao dầu.',
+  maint:'Phân biệt với hao dầu do xéc-măng bằng thử nén ướt/khô.' },
+{ n:null, id:'vguide', g:'Phân phối khí DOHC i-VTEC', vn:'Ống dẫn hướng & đế xu-páp', en:'Valve guides & seats',
+  loc:'Ép trong nắp máy.',
+  fn:'Dẫn hướng thân xu-páp, tạo bề mặt làm kín và tản nhiệt cho nấm xu-páp.',
+  build:'Hợp kim chịu mòn, ép nóng vào nắp máy nhôm.',
+  spec:'Khe hở thân xu-páp – ống dẫn hướng, độ rộng tiếp xúc đế theo Service Manual.',
+  fail:'Mòn → xu-páp lắc, hao dầu, đóng không kín.',
+  maint:'Đo khi đại tu nắp máy.' },
+
+{ n:24, id:'chain', g:'Dẫn động cam', vn:'Xích cam & bánh răng xích', en:'Timing chain & sprockets',
+  loc:'Đầu trước động cơ (phía puli), sau nắp xích cam.',
+  fn:'Đồng bộ trục khuỷu với hai trục cam (tỉ số 2 : 1) để xu-páp mở đúng thời điểm.',
+  build:'Xích thép chạy trong dầu; bánh răng trên trục khuỷu, cam xả và bộ VTC cam nạp; có dấu cân cam.',
+  spec:'Thiết kế bền theo tuổi thọ động cơ, không thay định kỳ như dây đai.',
+  fail:'Giãn xích do dầu bẩn/thay dầu trễ → tiếng rào rào khi khởi động, P0016, máy yếu; nhảy răng → xu-páp va piston.',
+  maint:'Thay dầu đúng hạn; kiểm tra tương quan CKP–CMP bằng HDS hoặc oscilloscope.', dx:'nostart', st:'N' },
+{ n:25, id:'tensioner', g:'Dẫn động cam', vn:'Bộ tăng xích & thanh dẫn hướng', en:'Chain tensioner & guides',
+  loc:'Hai bên đường chạy của xích cam.',
+  fn:'Giữ xích luôn căng, dập dao động và dẫn hướng xích.',
+  build:'Bộ tăng thủy lực có lò xo và cóc chống lùi; thanh tì, thanh dẫn hướng mặt nhựa chịu mài mòn.',
+  spec:'Thay cùng xích khi xích giãn.',
+  fail:'Tăng xích yếu → xích kêu vài giây khi nổ máy nguội; thanh dẫn hướng mòn/gãy.',
+  maint:'Nghe tiếng xích khi khởi động nguội; kiểm tra khi thay xích.' },
+
+{ n:14, id:'piston', g:'Trục khuỷu – thanh truyền', vn:'Piston ×4', en:'Pistons',
+  loc:'Trong xi-lanh, nối thanh truyền qua chốt piston.',
+  fn:'Nhận áp lực cháy và truyền lực qua thanh truyền; cùng nắp máy tạo buồng đốt.',
+  build:'Hợp kim nhôm đúc; đỉnh tạo hình buồng đốt và hốc tránh xu-páp; 3 rãnh xéc-măng; váy thường phủ lớp giảm ma sát; chốt piston thép.',
+  spec:'Ø 73 mm danh định; tỉ số nén 10,6 : 1.',
+  fail:'Cháy/thủng đỉnh do kích nổ; xước váy (gõ máy khi nguội); muội đỉnh piston làm tăng kích nổ.',
+  maint:'Đo khe hở piston – xi-lanh khi đại tu; dùng xăng đúng chỉ số octan khuyến cáo.', st:'P' },
+{ n:15, id:'rings', g:'Trục khuỷu – thanh truyền', vn:'Xéc-măng', en:'Piston rings',
+  loc:'Trong 3 rãnh trên piston.',
+  fn:'Xéc-măng hơi làm kín khí nén/khí cháy và truyền nhiệt ra thành xi-lanh; xéc-măng dầu gạt dầu về các-te.',
+  build:'2 xéc-măng hơi + 1 xéc-măng dầu kiểu 3 chi tiết (2 lá + vòng đệm).',
+  spec:'Khe hở miệng/khe hở cạnh theo Service Manual; miệng các xéc-măng lệch nhau khi lắp.',
+  fail:'Kẹt xéc-măng dầu do muội/thay dầu trễ → hao dầu, khói xanh, bugi bám dầu, về sau P0420; mòn → giảm nén, lọt khí các-te.',
+  maint:'Đo nén, thử rò xi-lanh, theo dõi mức hao dầu; thay dầu đúng hạn.', dx:'mil' },
+{ n:null, id:'wpin', g:'Trục khuỷu – thanh truyền', vn:'Chốt piston', en:'Piston pin',
+  loc:'Xuyên qua bệ chốt piston và đầu nhỏ thanh truyền.',
+  fn:'Nối piston với thanh truyền, cho phép thanh truyền lắc.',
+  build:'Thép ống tôi cứng, giữ bằng phanh hãm hoặc lắp ép (tùy thiết kế).',
+  spec:'Khe hở lắp ghép theo Service Manual.',
+  fail:'Mòn → tiếng gõ nhỏ, đanh.',
+  maint:'Kiểm tra khi đại tu.' },
+{ n:16, id:'rod', g:'Trục khuỷu – thanh truyền', vn:'Thanh truyền ×4', en:'Connecting rods',
+  loc:'Giữa chốt piston và cổ biên trục khuỷu.',
+  fn:'Biến chuyển động tịnh tiến của piston thành chuyển động quay của trục khuỷu.',
+  build:'Thép cường độ cao, tiết diện chữ I; đầu nhỏ lắp chốt piston; đầu to chia đôi lắp bạc biên và nắp biên bắt bu-lông.',
+  spec:'Bu-lông biên siết theo lực + góc (Service Manual).',
+  fail:'Cong do thủy kích (nước vào buồng đốt khi xe lội ngập); gãy khi bó bạc biên → vỡ thân máy.',
+  maint:'Không đề máy sau khi xe ngập; kiểm tra độ cong khi đại tu.' },
+{ n:17, id:'bearings', g:'Trục khuỷu – thanh truyền', vn:'Bạc biên & bạc trục chính', en:'Rod & main bearings',
+  loc:'Ở đầu to thanh truyền và 5 ổ trục chính.',
+  fn:'Giữ màng dầu giữa cổ trục và ổ, chịu tải quay.',
+  build:'Bạc lót hai nửa: nền thép + lớp hợp kim chịu mòn, có lỗ/rãnh dầu; chọn theo mã kích thước của thân máy và trục khuỷu.',
+  spec:'Khe hở dầu đo bằng plastigage theo Service Manual.',
+  fail:'Thiếu dầu/dầu bẩn → mòn, bó bạc: tiếng gõ trầm theo vòng tua, đèn áp suất dầu, có thể gãy thanh truyền.',
+  maint:'Thay dầu đúng hạn, đúng loại; dừng máy ngay khi đèn dầu sáng.', dx:'oil' },
+{ n:18, id:'crank', g:'Trục khuỷu – thanh truyền', vn:'Trục khuỷu', en:'Crankshaft',
+  loc:'Đáy thân máy, đỡ trên 5 ổ trục chính.',
+  fn:'Nhận lực từ 4 thanh truyền, tạo mô-men quay đưa ra đĩa dẫn động/hộp số; dẫn động xích cam, bơm dầu và dây cu-roa phụ.',
+  build:'Thép; 5 cổ trục chính, 4 cổ biên (cặp 1-4 và 2-3 lệch 180°), đối trọng cân bằng; bánh răng tín hiệu cho cảm biến CKP.',
+  spec:'Hành trình 89,5 mm; thứ tự nổ 1-3-4-2.',
+  fail:'Mòn/xước cổ trục do dầu bẩn; rơ dọc trục khi mòn bạc chặn; hỏng bánh răng tín hiệu → mất tín hiệu CKP, không nổ.',
+  maint:'Đo độ rơ dọc trục, độ côn/ô-van cổ trục khi đại tu.', dx:'nostart', st:'N' },
+{ n:19, id:'lowblock', g:'Trục khuỷu – thanh truyền', vn:'Nắp ổ trục chính / khung đỡ', en:'Main bearing caps / lower block',
+  loc:'Bắt từ dưới vào thân máy, kẹp trục khuỷu.',
+  fn:'Giữ trục khuỷu, tăng độ cứng vững thân máy, giảm rung.',
+  build:'Nắp ổ trục rời hoặc khung đỡ liền (tùy thiết kế), bu-lông siết theo thứ tự.',
+  spec:'Lực siết, thứ tự theo Service Manual; không lắp lẫn vị trí.',
+  fail:'Hiếm hỏng; lắp sai vị trí hoặc sai lực → bó trục.',
+  maint:'Đánh dấu vị trí khi tháo.' },
+{ n:null, id:'thrust', g:'Trục khuỷu – thanh truyền', vn:'Bạc chặn dọc trục', en:'Crankshaft thrust washers',
+  loc:'Hai bên một ổ trục chính.',
+  fn:'Giới hạn độ rơ dọc trục khuỷu.',
+  build:'Bán nguyệt thép có lớp chịu mòn và rãnh dầu.',
+  spec:'Độ rơ dọc trục theo Service Manual.',
+  fail:'Mòn → rơ dọc, tiếng gõ khi nhả/đạp ga, ảnh hưởng tín hiệu CKP.',
+  maint:'Đo bằng đồng hồ so khi đại tu.' },
+{ n:null, id:'cseal', g:'Trục khuỷu – thanh truyền', vn:'Phớt đầu & đuôi trục khuỷu', en:'Crankshaft oil seals',
+  loc:'Đầu trước (sau puli) và đuôi trục khuỷu (phía hộp số).',
+  fn:'Chặn dầu rò ra ngoài dọc trục khuỷu.',
+  build:'Phớt cao su/PTFE có lò xo, khung thép.',
+  spec:'Lắp bằng dụng cụ đóng phớt, không làm xước cổ trục.',
+  fail:'Rỉ dầu sau puli hoặc nhỏ dầu giữa động cơ và hộp số.',
+  maint:'Phớt đuôi nên thay khi tháo hộp số.' },
+
+{ n:20, id:'oilpump', g:'Bôi trơn', vn:'Bơm dầu & van an toàn', en:'Oil pump & relief valve',
+  loc:'Dưới thân máy, dẫn động từ trục khuỷu.',
+  fn:'Hút dầu từ các-te, tạo áp suất bôi trơn bạc, trục cam, xích cam và cấp dầu điều khiển VTC/VTEC; van an toàn giới hạn áp suất tối đa.',
+  build:'Cặp rô-to/bánh răng trong vỏ, van an toàn lò xo.',
+  spec:'Áp suất dầu đo bằng đồng hồ cơ ở không tải và vòng tua quy định (Service Manual).',
+  fail:'Mòn hoặc van kẹt → áp suất thấp: đèn dầu, lỗi VTC/VTEC, mòn bạc.',
+  maint:'Đo áp suất dầu khi có đèn dầu hoặc mã VTC/VTEC.', dx:'oil' },
+{ n:21, id:'strainer', g:'Bôi trơn', vn:'Lưới lọc hút dầu', en:'Oil strainer',
+  loc:'Đầu ống hút của bơm dầu, ngâm trong đáy các-te.',
+  fn:'Chặn cặn lớn trước khi dầu vào bơm.',
+  build:'Ống dẫn + lưới lọc, gioăng O-ring.',
+  spec:'Kiểm tra khi tháo các-te.',
+  fail:'Tắc do cặn bùn dầu (thay dầu trễ) → áp suất dầu thấp, nhất là ở vòng tua cao.',
+  maint:'Thay dầu đúng hạn; vệ sinh khi tháo các-te.', dx:'oil' },
+{ n:22, id:'oilpan', g:'Bôi trơn', vn:'Các-te dầu', en:'Oil pan',
+  loc:'Dưới cùng động cơ.',
+  fn:'Chứa dầu bôi trơn và giúp dầu tỏa nhiệt.',
+  build:'Thép dập hoặc nhôm; làm kín bằng keo/gioăng; ốc xả dầu có long-đen.',
+  spec:'Dầu khuyến cáo 0W-20; dung tích theo sổ hướng dẫn.',
+  fail:'Móp/thủng do va gầm; rỉ dầu ở ốc xả hoặc mép keo.',
+  maint:'Thay long-đen ốc xả mỗi lần thay dầu; siết đúng lực.' },
+{ n:23, id:'oilfilter', g:'Bôi trơn', vn:'Lọc dầu', en:'Oil filter',
+  loc:'Bên hông thân máy.',
+  fn:'Lọc mạt kim loại và cặn trước khi dầu đi bôi trơn.',
+  build:'Vỏ thép, lõi giấy lọc, van chống xả ngược, van bypass.',
+  spec:'Thay cùng dầu theo lịch bảo dưỡng.',
+  fail:'Tắc → van bypass mở, dầu chưa lọc đi bôi trơn; gioăng lắp lệch → rò dầu nhanh.',
+  maint:'Bôi dầu lên gioăng mới, siết tay theo hướng dẫn trên lọc.' },
+{ n:null, id:'oilsw', g:'Bôi trơn', vn:'Công tắc áp suất dầu', en:'Engine oil pressure switch',
+  loc:'Trên thân máy, đường dầu chính.',
+  fn:'Báo đèn áp suất dầu khi áp suất dưới ngưỡng.',
+  build:'Màng + tiếp điểm, một chân nối đèn báo.',
+  spec:'Mở khi có áp suất dầu.',
+  fail:'Rỉ dầu, báo sai (P0520–P0523).',
+  maint:'Đối chiếu bằng đồng hồ áp suất dầu cơ.', dx:'oil' },
+{ n:null, id:'dipstick', g:'Bôi trơn', vn:'Que thăm dầu & nắp đổ dầu', en:'Dipstick & oil filler cap',
+  loc:'Thân máy / nắp đậy giàn cò.',
+  fn:'Kiểm tra mức dầu; châm dầu.',
+  build:'Que thép có vạch MIN–MAX; nắp nhựa có gioăng.',
+  spec:'Đọc mức khi xe đỗ phẳng, chờ dầu chảy về các-te.',
+  fail:'Nắp đổ dầu hở gioăng → rò chân không qua PCV, rỉ dầu.',
+  maint:'Kiểm tra mức dầu định kỳ.' },
+
+{ n:29, id:'wpump', g:'Làm mát', vn:'Bơm nước', en:'Water pump',
+  loc:'Phía trước thân máy.',
+  fn:'Tuần hoàn nước làm mát qua áo nước, két nước và két sưởi.',
+  build:'Cánh bơm, trục + vòng bi, phớt làm kín, lỗ thoát kiểm tra rò; puli dẫn động.',
+  spec:'Không rỉ ở lỗ thoát, không ồn.',
+  fail:'Rỉ ở lỗ thoát (phớt hỏng), ồn vòng bi, cánh bơm mòn → quá nhiệt.',
+  maint:'Kiểm tra vết rò khô màu xanh quanh bơm; thay khi rỉ.', dx:'overheat', st:'U' },
+{ n:30, id:'thermo', g:'Làm mát', vn:'Van hằng nhiệt', en:'Thermostat',
+  loc:'Trong hộp van trên đường nước của động cơ.',
+  fn:'Đóng khi máy nguội để máy nhanh nóng; mở dần cho nước qua két khi đạt nhiệt độ làm việc.',
+  build:'Viên sáp giãn nở đẩy van, lò xo hồi, van xả khí, gioăng.',
+  spec:'Bắt đầu mở ~76–80 °C (tham khảo).',
+  fail:'Kẹt mở → máy lâu nóng, hao xăng, P0128; kẹt đóng → quá nhiệt nhanh.',
+  maint:'Thay kèm gioăng; xả khí hệ thống làm mát sau khi thay.', dx:'overheat', st:'U' },
+{ n:null, id:'radiator', g:'Làm mát', vn:'Két nước, quạt, nắp két & bình phụ', en:'Radiator, fan, cap & reservoir',
+  loc:'Đầu xe, trước động cơ.',
+  fn:'Tản nhiệt nước làm mát; nắp két giữ áp suất nâng điểm sôi; quạt do PCM điều khiển qua rơ-le.',
+  build:'Lõi nhôm, két nhựa, nắp két có van áp suất/chân không, quạt điện.',
+  spec:'Nước làm mát Honda Type 2 (pha sẵn).',
+  fail:'Tắc lõi, rò két, nắp két hỏng, quạt không chạy → quá nhiệt.',
+  maint:'Thử áp két và nắp két; vệ sinh mặt két.', dx:'overheat', st:'U' },
+
+{ n:32, id:'airbox', g:'Nạp khí', vn:'Hộp lọc gió & lõi lọc', en:'Air cleaner',
+  loc:'Khoang máy, trước cụm bướm ga.',
+  fn:'Lọc bụi khí nạp, giảm tiếng ồn hút.',
+  build:'Hộp nhựa hai nửa, lõi giấy lọc, ống dẫn tới bướm ga; cảm biến IAT (và MAF nếu có) trên đường ống.',
+  spec:'Thay ~20.000–30.000 km (tham khảo; đường bụi sớm hơn).',
+  fail:'Lõi lọc tắc → ì máy, hao xăng; ống dẫn nứt → lọt khí chưa đo, bụi vào máy.',
+  maint:'Kiểm tra mỗi lần bảo dưỡng.', dx:'fuel' },
+{ n:33, id:'throttle', g:'Nạp khí', vn:'Cụm bướm ga điện tử (DBW)', en:'Electronic throttle body',
+  loc:'Giữa ống dẫn khí và cổ hút.',
+  fn:'Điều chỉnh lượng khí nạp theo lệnh PCM, kể cả khi không tải; không có dây ga cơ khí.',
+  build:'Thân nhôm, cánh bướm, mô-tơ DC + bánh răng, lò xo hồi về vị trí mặc định, 2 cảm biến vị trí TP-A/TP-B.',
+  spec:'Phải học lại vị trí/không tải sau khi vệ sinh hoặc thay.',
+  fail:'Bám muội → không tải thấp/dao động, chết máy khi dừng; lỗi mô-tơ/cảm biến → chế độ an toàn giới hạn ga (P2101, P2135).',
+  maint:'Vệ sinh đúng cách (không ép cánh bướm khi đang bật ON), học lại bằng HDS.', dx:'rough', st:'K' },
+{ n:34, id:'intake', g:'Nạp khí', vn:'Cổ hút', en:'Intake manifold',
+  loc:'Phía nạp của nắp máy.',
+  fn:'Phân phối khí từ bướm ga tới 4 cửa nạp; giá đỡ ống phân phối và kim phun; gắn cảm biến MAP, van EVAP, đường PCV.',
+  build:'Nhựa composite, buồng ổn áp (plenum) + 4 đường ống; gioăng cao su với nắp máy.',
+  spec:'Kín hoàn toàn sau bướm ga.',
+  fail:'Gioăng/ống chân không rò → hỗn hợp nghèo P0171, không tải không ổn định; nứt nhựa.',
+  maint:'Tìm rò bằng máy tạo khói.', dx:'rough', st:'V' },
+{ n:null, id:'pcv', g:'Nạp khí', vn:'Van PCV & ống thông hơi các-te', en:'PCV valve & breather hoses',
+  loc:'Giữa nắp đậy giàn cò/thân máy và cổ hút.',
+  fn:'Hút hơi lọt các-te về cổ hút để đốt lại, giữ áp suất các-te thấp.',
+  build:'Van một chiều lò xo, ống cao su.',
+  spec:'Van kêu lách cách khi lắc là còn hoạt động.',
+  fail:'Tắc → áp suất các-te cao, rỉ phớt; kẹt mở/ống nứt → rò chân không, không tải không ổn định.',
+  maint:'Kiểm tra khi có mã nghèo hoặc rỉ dầu nhiều chỗ.', dx:'rough' },
+
+{ n:35, id:'inj', g:'Nhiên liệu', vn:'Ống phân phối & kim phun ×4', en:'Fuel rail & injectors',
+  loc:'Trên cổ hút, phun vào cửa nạp trước xu-páp nạp (phun đa điểm).',
+  fn:'Phun xăng tuần tự từng xi-lanh theo lệnh PCM; lượng phun tỉ lệ thời gian mở kim.',
+  build:'Ống phân phối thép; kim phun điện từ trở kháng cao, đầu phun nhiều lỗ; O-ring trên/dưới.',
+  spec:'Điện trở cuộn ~10–14 Ω; áp suất xăng ~320–370 kPa (tham khảo).',
+  fail:'Tắc/nhỏ giọt → bỏ máy, khó nổ khi máy nóng, hao xăng; rách O-ring → rò xăng (nguy cơ cháy).',
+  maint:'Cân bằng xi-lanh bằng HDS; vệ sinh siêu âm; luôn thay O-ring mới.', dx:'rough', st:'O' },
+
+{ n:36, id:'exman', g:'Xả & khí thải', vn:'Cổ xả', en:'Exhaust manifold',
+  loc:'Phía xả của nắp máy (một số động cơ Honda đời mới đúc cổ xả liền nắp máy – tùy đời).',
+  fn:'Gom khí xả 4 xi-lanh dẫn tới bầu xúc tác; vị trí gắn cảm biến A/F.',
+  build:'Gang hoặc thép không gỉ, tấm che nhiệt, gioăng chịu nhiệt.',
+  spec:'Kín hoàn toàn trước cảm biến A/F.',
+  fail:'Nứt, hở gioăng → tiếng lụp bụp khi máy nguội, lọt khí làm sai tín hiệu A/F.',
+  maint:'Kiểm tra rò khí khi máy nguội.', dx:'fuel', st:'T' },
+{ n:37, id:'cat', g:'Xả & khí thải', vn:'Bầu xúc tác 3 chiều + cảm biến A/F & O2', en:'Three-way catalyst',
+  loc:'Ngay sau cổ xả.',
+  fn:'Chuyển CO, HC, NOx thành CO₂, H₂O, N₂ khi λ ≈ 1; cảm biến A/F trước để điều khiển, O2 sau để giám sát.',
+  build:'Lõi gốm tổ ong phủ kim loại quý trong vỏ thép; cảm biến A/F dải rộng có sấy; cảm biến O2 sau.',
+  spec:'Làm việc hiệu quả khi đủ nóng (vài trăm °C).',
+  fail:'Tắc/vỡ lõi do bỏ máy lâu ngày, hao dầu → P0420, nghẹt xả, mùi trứng thối.',
+  maint:'Xử lý bỏ máy/hao dầu trước khi thay xúc tác.', dx:'mil', st:'T' },
+{ n:null, id:'muffler', g:'Xả & khí thải', vn:'Ống xả, bô giảm thanh & cao su treo', en:'Exhaust pipe, muffler & hangers',
+  loc:'Gầm xe, từ sau xúc tác tới đuôi xe.',
+  fn:'Dẫn khí xả ra sau, giảm tiếng ồn.',
+  build:'Ống thép mạ/inox, bô có vách tiêu âm, cao su treo.',
+  spec:'Không rò, không chạm gầm.',
+  fail:'Thủng, rỉ sét, cao su treo đứt → ồn, rung, khí xả vào cabin.',
+  maint:'Kiểm tra khi nâng xe.' },
+
+{ n:26, id:'damper', g:'Khởi động, sạc & dẫn động phụ', vn:'Puli trục khuỷu', en:'Crankshaft pulley',
+  loc:'Đầu trước trục khuỷu.',
+  fn:'Dẫn động dây cu-roa phụ; có dấu điểm chết trên dùng khi cân cam, chỉnh xu-páp.',
+  build:'Puli nhiều rãnh, bắt bằng bu-lông tâm lực siết lớn; phớt đầu trục khuỷu phía sau.',
+  spec:'Lực siết bu-lông tâm theo Service Manual.',
+  fail:'Bong lớp giảm chấn (nếu có) → rung, dây đai lệch; rỉ phớt đầu trục khuỷu.',
+  maint:'Kiểm tra độ đảo và vết dầu phía sau puli.' },
+{ n:27, id:'belt', g:'Khởi động, sạc & dẫn động phụ', vn:'Dây cu-roa phụ & bộ tăng đai tự động', en:'Accessory drive belt & auto-tensioner',
+  loc:'Đầu trước động cơ.',
+  fn:'Truyền động từ puli trục khuỷu tới máy phát, máy nén A/C và bơm nước (tùy bố trí).',
+  build:'Đai nhiều gân (poly-V) cao su EPDM; bộ tăng đai tự động dùng lò xo giữ lực căng.',
+  spec:'Không nứt chân gân, không trượt.',
+  fail:'Nứt, chai, trượt → tiếng rít khi mới nổ máy/bật A/C, đèn sạc, A/C yếu.',
+  maint:'Kiểm tra mỗi lần bảo dưỡng; thay khi nứt hoặc mòn.', dx:'charge', st:'S' },
+{ n:28, id:'alt', g:'Khởi động, sạc & dẫn động phụ', vn:'Máy phát điện', en:'Alternator',
+  loc:'Phía trước động cơ, dẫn động bằng dây cu-roa.',
+  fn:'Phát điện xoay chiều, chỉnh lưu thành DC nạp ắc quy và cấp tải; PCM điều khiển dòng kích từ.',
+  build:'Rô-to kích từ, stato 3 pha, bộ chỉnh lưu diode, IC tiết chế; các chân B, C, FR.',
+  spec:'13,5–14,8 V; gợn AC < ~0,5 V.',
+  fail:'Mòn chổi than/vòng trượt, hỏng diode, kẹt vòng bi (tiếng ù) → đèn sạc, ắc quy yếu.',
+  maint:'Đo điện áp nạp, gợn sóng; kiểm tra dây đai.', dx:'charge', st:'S' },
+{ n:31, id:'accomp', g:'Khởi động, sạc & dẫn động phụ', vn:'Máy nén điều hòa', en:'A/C compressor',
+  loc:'Phía trước, dưới động cơ, dẫn động bằng dây cu-roa.',
+  fn:'Nén ga lạnh tuần hoàn; ly hợp từ đóng/ngắt theo lệnh PCM qua rơ-le.',
+  build:'Thân máy nén, ly hợp từ, cuộn hút, van an toàn.',
+  spec:'Khe hở ly hợp theo Service Manual.',
+  fail:'Ly hợp mòn/khe hở lớn, cuộn hút hỏng, rò ga phớt trục → A/C không lạnh, ồn khi bật.',
+  maint:'Kiểm tra khe hở ly hợp, áp suất ga.', dx:'ac', st:'U' },
+{ n:39, id:'starter', g:'Khởi động, sạc & dẫn động phụ', vn:'Máy đề', en:'Starter motor',
+  loc:'Bắt vào vỏ hộp số, ăn khớp vành răng đĩa dẫn động.',
+  fn:'Quay trục khuỷu khi khởi động (~200–300 vòng/phút).',
+  build:'Mô-tơ DC có giảm tốc, công-tắc từ (chân S, chân B), bendix ly hợp một chiều.',
+  spec:'Dòng đề ~100–200 A (tham khảo); điện áp khi đề ≥ 9,6 V.',
+  fail:'Mòn chổi than, cháy tiếp điểm công-tắc từ (tiếng “tạch”), bendix trượt.',
+  maint:'Đo sụt áp cáp và dòng đề.', dx:'nocrank', st:'M' },
+
+{ n:38, id:'flywheel', g:'Gắn máy & truyền lực', vn:'Đĩa dẫn động & vành răng', en:'Drive plate with ring gear',
+  loc:'Đuôi trục khuỷu, nối với biến mô của hộp số CVT.',
+  fn:'Truyền mô-men sang biến mô; vành răng để máy đề ăn khớp khi khởi động.',
+  build:'Đĩa thép mỏng có vành răng (xe CVT dùng đĩa dẫn động, nhẹ hơn bánh đà xe số sàn).',
+  spec:'Bu-lông siết theo Service Manual.',
+  fail:'Gãy/mòn răng vành răng → máy đề rít, đề không ăn; nứt đĩa → tiếng gõ.',
+  maint:'Kiểm tra khi tháo máy đề hoặc hộp số.', dx:'nocrank', st:'M' },
+{ n:13, id:'knock', g:'Đánh lửa', vn:'Cảm biến kích nổ', en:'Knock sensor',
+  loc:'Bắt vào thân máy.',
+  fn:'Cảm nhận rung động tần số kích nổ → PCM trễ góc đánh lửa để bảo vệ động cơ.',
+  build:'Phần tử áp điện trong vỏ kim loại, bắt bằng bu-lông, giắc 2 chân.',
+  spec:'Siết đúng lực (ảnh hưởng độ nhạy).',
+  fail:'P0325–P0328; hỏng → PCM đặt góc đánh lửa an toàn: xe yếu, hao xăng.',
+  maint:'Kiểm tra giắc, lực siết, dạng sóng.', dx:'rough', st:'V' },
+{ n:null, id:'mounts', g:'Gắn máy & truyền lực', vn:'Chân máy & chân hộp số', en:'Engine & transmission mounts',
+  loc:'Giữa cụm động cơ – hộp số và thân xe.',
+  fn:'Đỡ cụm máy, cách ly rung động vào khoang xe.',
+  build:'Cao su lưu hóa trên khung thép; một số vị trí dùng chân thủy lực.',
+  spec:'Không nứt, không chảy dầu.',
+  fail:'Nứt/rách → rung vô-lăng, sàn xe khi dừng ở D/R; tiếng cộc khi vào số, tăng tốc.',
+  maint:'Quan sát khi đạp phanh, vào D/R và nhấn ga nhẹ (có người phụ).', dx:'rough' }
+];
+
 /* ===== XÂY DỰNG SƠ ĐỒ KIẾN TRÚC E/E (SVG) ===== */
 const NS = 'http://www.w3.org/2000/svg';
 const svg = document.getElementById('arch');
@@ -1845,9 +2329,173 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'ArrowLeft') { setPlay(false); goStep(stepIdx - 1); }
 });
 
+/* ===== CẤU TẠO ĐỘNG CƠ – SƠ ĐỒ TÁCH RỜI (EXPLODED VIEW) ===== */
+const svgX = document.getElementById('engX');
+const PX = {};
+const CCX = [355, 425, 495, 565];
+const VX = []; CCX.forEach(c => { VX.push([c - 12, 'in']); VX.push([c + 12, 'ex']); });
+const MAINS = [320, 390, 460, 530, 600];
+const PBYID = Object.fromEntries(PARTS.map(p => [p.id, p]));
+const XL = { side: E('g', {}, svgX), inner: E('g', {}, svgX), house: E('g', {}, svgX), top: E('g', {}, svgX), badge: E('g', {}, svgX) };
+function XP(id, layer, core) {
+  const p = PBYID[id];
+  const g = E('g', { class: 'xp' + (core ? ' core' : ''), 'data-p': id, tabindex: 0, role: 'button', 'aria-label': (p.n ? p.n + '. ' : '') + p.vn }, XL[layer]);
+  E('title', {}, g).textContent = (p.n ? p.n + '. ' : '') + p.vn + ' – ' + p.en;
+  PX[id] = g; return g;
+}
+const R = (g, x, y, w, h, rx, c) => E('rect', { x, y, width: w, height: h, rx, class: c }, g);
+const Ci = (g, cx, cy, r, c) => E('circle', { cx, cy, r, class: c }, g);
+const Pa = (g, d, c) => E('path', { d, class: c }, g);
+const Li = (g, x1, y1, x2, y2, c) => E('line', { x1, y1, x2, y2, class: c }, g);
+const El = (g, cx, cy, rx, ry, c) => E('ellipse', { cx, cy, rx, ry, class: c }, g);
+
+/* ---------- chi tiết bên cạnh ---------- */
+{ const g = XP('chain', 'side'); Pa(g, 'M279,690 L279,134 A17,17 0 0 1 313,134 L313,690 A17,17 0 0 1 279,690 Z', 'chainx'); Ci(g, 296, 690, 10, 'pb st'); Ci(g, 296, 134, 13, 'pb st'); }
+{ const g = XP('tensioner', 'side'); Pa(g, 'M272,300 Q264,450 272,600', 'shoe'); R(g, 244, 420, 24, 30, 4, 'pb al'); Li(g, 268, 435, 272, 435, 'shoe'); Li(g, 318, 240, 318, 620, 'shoe'); }
+{ const g = XP('damper', 'side'); Ci(g, 210, 690, 24, 'pb st'); Ci(g, 210, 690, 18, 'grvc'); Ci(g, 210, 690, 12, 'grvc'); Ci(g, 210, 690, 5, 'pb dk'); Li(g, 210, 666, 210, 672, 'markx'); }
+{ const g = XP('belt', 'side'); Pa(g, 'M191,455 L234,690 A24,24 0 0 1 210,714 L121,820 A22,22 0 0 1 83,805 L82,560 A28,28 0 0 1 110,532 L175,439 A16,16 0 0 1 191,455 Z', 'beltx');
+  Li(g, 170, 762, 192, 790, 'armx'); Ci(g, 170, 762, 9, 'pb st'); Ci(g, 192, 790, 5, 'pb dk'); }
+{ const g = XP('alt', 'side'); Ci(g, 110, 560, 28, 'pb al'); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; Li(g, 110 + 14 * Math.cos(a), 560 + 14 * Math.sin(a), 110 + 25 * Math.cos(a), 560 + 25 * Math.sin(a), 'fin2'); } Ci(g, 110, 560, 9, 'pb st'); }
+{ const g = XP('wpump', 'side'); R(g, 152, 448, 46, 36, 8, 'pb al'); Ci(g, 175, 455, 16, 'pb st'); Ci(g, 175, 455, 5, 'pb dk'); }
+{ const g = XP('thermo', 'side'); Pa(g, 'M136,383 C160,383 170,405 172,439', 'hosex'); R(g, 104, 372, 32, 22, 5, 'pb al'); Ci(g, 120, 383, 6, 'pb dk'); }
+{ const g = XP('accomp', 'side'); Ci(g, 105, 805, 22, 'pb al'); Ci(g, 105, 805, 14, 'pb st'); Ci(g, 105, 805, 4, 'pb dk'); }
+{ const g = XP('airbox', 'side'); R(g, 712, 172, 16, 18, 0, 'pb pl'); R(g, 650, 130, 140, 44, 8, 'pb pl'); for (let k = 0; k < 6; k++) Li(g, 664 + k * 22, 138, 664 + k * 22, 166, 'rib'); }
+{ const g = XP('throttle', 'side'); Ci(g, 720, 206, 18, 'pb al'); Li(g, 708, 196, 732, 216, 'platex'); R(g, 742, 198, 18, 16, 3, 'pb dk'); }
+{ const g = XP('intake', 'side'); for (let i = 0; i < 4; i++) Pa(g, `M${668 + i * 36},258 C${668 + i * 36},300 650,${300 + i * 12} 604,${300 + i * 12}`, 'runx');
+  R(g, 640, 232, 160, 26, 10, 'pb pl'); }
+{ const g = XP('inj', 'side'); R(g, 640, 350, 150, 8, 3, 'pb fu'); for (let i = 0; i < 4; i++) { R(g, 654 + i * 36, 358, 8, 20, 2, 'pb injx'); Pa(g, `M${655 + i * 36},378 L${658 + i * 36},386 L${661 + i * 36},378 Z`, 'pb dk'); } }
+{ const g = XP('exman', 'side'); for (let i = 0; i < 4; i++) Pa(g, `M604,${404 + i * 12} C650,${404 + i * 12} 690,430 722,440`, 'exhx'); Ci(g, 722, 440, 9, 'pb st'); }
+{ const g = XP('cat', 'side'); Pa(g, 'M762,500 V522 H806', 'exhx thin'); R(g, 740, 428, 44, 72, 16, 'pb catx'); R(g, 726, 434, 14, 8, 2, 'pb sen'); R(g, 784, 474, 14, 8, 2, 'pb sen');
+  for (let k = 0; k < 4; k++) Li(g, 748, 446 + k * 12, 776, 446 + k * 12, 'rib'); }
+{ const g = XP('flywheel', 'side'); Ci(g, 660, 690, 44, 'teeth'); Ci(g, 660, 690, 40, 'pb st'); Ci(g, 660, 690, 26, 'grvc'); Ci(g, 660, 690, 9, 'pb dk');
+  for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3; Ci(g, 660 + 17 * Math.cos(a), 690 + 17 * Math.sin(a), 2.5, 'pb dk'); } }
+{ const g = XP('starter', 'side'); R(g, 714, 704, 80, 30, 10, 'pb al'); R(g, 758, 694, 28, 11, 3, 'pb dk'); Ci(g, 706, 718, 8, 'pb st'); for (let k = 0; k < 4; k++) Li(g, 728 + k * 14, 708, 728 + k * 14, 730, 'rib'); }
+{ const g = XP('oilfilter', 'side'); R(g, 696, 766, 54, 8, 3, 'pb dk'); R(g, 700, 774, 46, 56, 8, 'pb fltx'); for (let k = 0; k < 6; k++) Li(g, 708 + k * 6, 780, 708 + k * 6, 824, 'rib'); }
+{ const g = XP('rings', 'side'); [524, 538, 552].forEach((y, k) => { El(g, 690, y, 26, 6, k === 2 ? 'ringo' : 'ringx'); Li(g, 712, y - 3, 716, y + 2, 'gap'); }); }
+{ const g = XP('plug', 'side'); R(g, 684, 8, 12, 10, 2, 'pb st'); R(g, 681, 18, 18, 28, 5, 'pb cer'); R(g, 677, 46, 26, 10, 2, 'pb st'); R(g, 682, 56, 16, 16, 1, 'pb thr');
+  for (let k = 0; k < 4; k++) Li(g, 682, 59 + k * 4, 698, 60 + k * 4, 'rib'); Li(g, 690, 72, 690, 79, 'elec'); Pa(g, 'M684,79 H694 V76', 'elec'); T(708, 48, '×4', 'xtag', g); }
+{ const g = XP('vtecsol', 'side'); Li(g, 590, 197, 632, 197, 'oilln'); R(g, 632, 188, 26, 18, 4, 'pb dk'); R(g, 658, 192, 9, 10, 2, 'pb pl'); }
+{ const g = XP('knock', 'side'); R(g, 600, 460, 14, 14, 3, 'pb sen'); Ci(g, 607, 467, 3, 'pb st'); }
+
+/* ---------- chi tiết bên trong (lõi) ---------- */
+{ const g = XP('cams', 'inner', true); Li(g, 300, 134, 600, 134, 'shaftx'); Li(g, 300, 172, 600, 172, 'shaftx');
+  VX.forEach(([x]) => { El(g, x, 134, 6, 10, 'pb lobe'); El(g, x, 172, 6, 10, 'pb lobe'); });
+  MAINS.forEach(x => { R(g, x - 4, 129, 8, 10, 2, 'pb st'); R(g, x - 4, 167, 8, 10, 2, 'pb st'); });
+  T(604, 137, 'xả', 'xtag', g); T(604, 175, 'nạp', 'xtag', g); }
+{ const g = XP('vtc', 'inner', true); Li(g, 260, 171, 279, 171, 'oilln'); R(g, 246, 160, 14, 22, 3, 'pb dk'); Ci(g, 296, 172, 17, 'pb vtcx');
+  for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2 + 0.4; Li(g, 296, 172, 296 + 12 * Math.cos(a), 172 + 12 * Math.sin(a), 'vane'); } Ci(g, 296, 172, 4, 'pb dk'); }
+{ const g = XP('rocker', 'inner', true); VX.forEach(([x]) => { R(g, x - 9, 192, 18, 10, 4, 'pb st'); Ci(g, x, 197, 3.5, 'pb dk'); }); }
+{ const g = XP('springs', 'inner', true); VX.forEach(([x]) => { Li(g, x - 7, 212, x + 7, 212, 'ret');
+  Pa(g, `M${x - 6},214 L${x + 6},218 L${x - 6},222 L${x + 6},226 L${x - 6},230 L${x + 6},234 L${x - 6},238`, 'spr'); }); }
+{ const g = XP('valves', 'inner', true); VX.forEach(([x, t]) => { const w = t === 'in' ? 9 : 7; Li(g, x, 244, x, 268, 'stem');
+  Pa(g, `M${x - 2},266 L${x - w},274 L${x + w},274 L${x + 2},266 Z`, 'pb ' + (t === 'in' ? 'vin' : 'vex')); }); }
+{ const g = XP('piston', 'inner', true); CCX.forEach(c => { R(g, c - 25, 520, 50, 34, 4, 'pb pis'); [526, 531, 536].forEach(y => Li(g, c - 25, y, c + 25, y, 'grv2')); Ci(g, c, 545, 5, 'pb dk'); }); }
+{ const g = XP('rod', 'inner', true); CCX.forEach(c => { Ci(g, c, 570, 7, 'rodr'); R(g, c - 5, 577, 10, 32, 3, 'pb st'); Ci(g, c, 622, 13, 'rodr'); Li(g, c - 16, 622, c + 16, 622, 'split'); }); }
+{ const g = XP('bearings', 'inner', true); MAINS.forEach(x => Pa(g, `M${x - 12},642 A12,8 0 0 0 ${x + 12},642`, 'brg')); CCX.forEach(c => Pa(g, `M${c - 10},654 A10,6 0 0 1 ${c + 10},654`, 'brg')); }
+{ const g = XP('crank', 'inner', true); Li(g, 210, 690, 660, 690, 'shaftx thick');
+  CCX.forEach((c, i) => { const up = i === 0 || i === 3, py = up ? 668 : 712;
+    Pa(g, up ? `M${c - 30},698 A30,20 0 0 0 ${c + 30},698 Z` : `M${c - 30},682 A30,20 0 0 1 ${c + 30},682 Z`, 'pb cwx');
+    R(g, c - 28, Math.min(690, py) - (up ? 0 : 0), 8, Math.abs(690 - py), 2, 'pb st'); R(g, c + 20, Math.min(690, py), 8, Math.abs(690 - py), 2, 'pb st');
+    R(g, c - 22, py - 6, 44, 12, 3, 'pb st2'); });
+  MAINS.forEach(x => R(g, x - 8, 682, 16, 16, 3, 'pb st2'));
+  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; if (k === 0) continue; Li(g, 336 + 14 * Math.cos(a), 690 + 14 * Math.sin(a), 336 + 17 * Math.cos(a), 690 + 17 * Math.sin(a), 'tooth2'); } }
+{ const g = XP('oilpump', 'inner', true); R(g, 330, 762, 70, 26, 6, 'pb al'); Ci(g, 352, 775, 8, 'pb st'); Ci(g, 376, 775, 8, 'pb st'); }
+{ const g = XP('strainer', 'inner', true); Pa(g, 'M365,788 C365,812 400,822 424,822', 'pipex'); El(g, 450, 822, 26, 7, 'mesh'); }
+
+/* ---------- vỏ (thân máy, nắp máy…) ---------- */
+{ const g = XP('head', 'house', true); R(g, 320, 286, 280, 60, 4, 'pb hs');
+  CCX.forEach(c => { Pa(g, `M${c - 26},346 A26,12 0 0 1 ${c + 26},346`, 'chm'); Ci(g, c, 300, 4, 'hole'); R(g, c - 33, 306, 8, 26, 3, 'wj'); });
+  T(332, 300, 'NẮP MÁY', 'xin', g); }
+{ const g = XP('hgasket', 'house', true); R(g, 320, 360, 280, 8, 2, 'pb gk'); CCX.forEach(c => El(g, c, 364, 27, 2.4, 'hole')); }
+{ const g = XP('block', 'house', true); R(g, 320, 384, 280, 120, 4, 'pb hs');
+  CCX.forEach(c => { R(g, c - 35, 392, 70, 100, 8, 'wj2'); R(g, c - 30, 384, 60, 120, 0, 'bore2'); Li(g, c - 30, 384, c - 30, 504, 'liner'); Li(g, c + 30, 384, c + 30, 504, 'liner'); });
+  T(332, 500, 'THÂN MÁY', 'xin', g); }
+{ const g = XP('lowblock', 'house', true); R(g, 320, 728, 280, 22, 3, 'pb hs'); MAINS.forEach(x => Pa(g, `M${x - 12},728 A12,9 0 0 0 ${x + 12},728 Z`, 'pb dk')); }
+{ const g = XP('oilpan', 'house', true); Pa(g, 'M320,842 H600 L585,900 H335 Z', 'pb hs'); Ci(g, 560, 893, 5, 'pb st'); T(332, 862, 'CÁC-TE', 'xin', g); }
+{ const g = XP('vcover', 'house', true); R(g, 320, 74, 280, 40, 10, 'pb vc'); for (let k = 0; k < 13; k++) Li(g, 332 + k * 20, 84, 332 + k * 20, 106, 'rib');
+  CCX.forEach(c => El(g, c, 78, 10, 3, 'hole')); Ci(g, 586, 96, 8, 'pb cap'); }
+{ const g = XP('coil', 'top', true); CCX.forEach(c => { R(g, c - 11, 8, 22, 10, 3, 'pb dk'); R(g, c - 8, 18, 16, 40, 4, 'pb coilx'); }); }
+
+/* ---------- số hiệu ---------- */
+const BPOS = { coil: [326, 30], plug: [664, 24], vcover: [336, 94], cams: [336, 153], vtc: [240, 198], rocker: [612, 199], vtecsol: [674, 197],
+  springs: [612, 226], valves: [612, 262], head: [612, 352], hgasket: [612, 372], block: [612, 392], knock: [628, 490], piston: [612, 537],
+  rings: [650, 524], rod: [612, 595], bearings: [612, 640], crank: [460, 664], lowblock: [612, 739], oilpump: [420, 775], strainer: [494, 822],
+  oilpan: [612, 870], oilfilter: [684, 800], chain: [262, 262], tensioner: [236, 470], damper: [196, 650], belt: [60, 690], alt: [146, 594],
+  wpump: [208, 440], thermo: [90, 383], accomp: [140, 836], airbox: [636, 152], throttle: [690, 206], intake: [816, 245], inj: [806, 366],
+  exman: [676, 470], cat: [806, 452], flywheel: [700, 652], starter: [812, 719] };
+PARTS.filter(p => p.n).forEach(p => {
+  const [x, y] = BPOS[p.id]; const g = E('g', { class: 'xb', 'data-p': p.id }, XL.badge);
+  Ci(g, x, y, 10, 'xbc'); T(x, y + 4, String(p.n), 'xbt', g, 'middle'); E('title', {}, g).textContent = p.vn;
+});
+
+/* ---------- tương tác ---------- */
+let selPart = 'block';
+const partCard = document.getElementById('partCard');
+function selectPart(id, scroll) {
+  selPart = id; const p = PBYID[id];
+  svgX.querySelectorAll('.xp,.xb').forEach(el => el.classList.toggle('sel', el.dataset.p === id));
+  document.querySelectorAll('[data-pl]').forEach(el => el.classList.toggle('act', el.dataset.pl === id));
+  const sym = p.dx ? SYMPTOMS.find(s => s.id === p.dx) : null; const st = p.st ? STEPS[p.st.charCodeAt(0) - 65] : null;
+  partCard.innerHTML = `
+    <div class="pc-head"><span class="pc-n">${p.n || '+'}</span><div><div class="sc-ph">${p.g}</div><h2>${p.vn}</h2><div class="pc-en">${p.en}</div></div></div>
+    <dl class="pc-dl">
+      <dt>Vị trí</dt><dd>${p.loc}</dd>
+      <dt>Chức năng</dt><dd>${p.fn}</dd>
+      <dt>Cấu tạo & vật liệu</dt><dd>${p.build}</dd>
+      <dt>Thông số</dt><dd class="spec">${p.spec}</dd>
+      <dt>Hư hỏng → triệu chứng</dt><dd>${p.fail}</dd>
+      <dt>Kiểm tra & bảo dưỡng</dt><dd>${p.maint}</dd>
+    </dl>
+    <div class="pc-btns">${sym ? `<button type="button" class="btn sm" data-go="dx">Cây chẩn đoán: ${sym.t} →</button>` : ''}${st ? `<button type="button" class="btn ghost sm" data-go="st">Xem bước ${st.k} trong luồng vận hành →</button>` : ''}</div>
+    ${p.n ? '' : '<p class="note">Chi tiết này không vẽ riêng trên sơ đồ.</p>'}`;
+  const bd = partCard.querySelector('[data-go="dx"]'); if (bd) bd.addEventListener('click', () => { selectSymptom(p.dx); showTab('chan-doan'); window.scrollTo({ top: 0 }); });
+  const bs = partCard.querySelector('[data-go="st"]'); if (bs) bs.addEventListener('click', () => { setPlay(false); goStep(p.st.charCodeAt(0) - 65); showTab('van-hanh'); window.scrollTo({ top: 0 }); });
+  if (scroll) document.getElementById('engStage').scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+svgX.addEventListener('click', e => { const t = e.target.closest('[data-p]'); if (t) selectPart(t.dataset.p); });
+svgX.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.dataset && e.target.dataset.p) { e.preventDefault(); selectPart(e.target.dataset.p); } });
+
+/* chú giải đánh số */
+const legendEl = document.getElementById('partLegend');
+legendEl.innerHTML = PGROUPS.map(gn => {
+  const items = PARTS.filter(p => p.g === gn).sort((a, b) => (a.n || 99) - (b.n || 99));
+  return `<div class="plg"><div class="sgh">${gn}</div>${items.map(p => `<button type="button" class="plb" data-pl="${p.id}"><span class="pln${p.n ? '' : ' x'}">${p.n || '+'}</span>${p.vn}</button>`).join('')}</div>`;
+}).join('');
+legendEl.querySelectorAll('[data-pl]').forEach(b => b.addEventListener('click', () => selectPart(b.dataset.pl)));
+
+/* lắp ghép / tách rời */
+const DY = { coil: 242, vcover: 202, cams: 150, vtc: 150, rocker: 110, springs: 102, valves: 102, head: 30, hgasket: 16, block: 0,
+  piston: -120, rod: -135, bearings: -138, crank: -167, lowblock: -181, oilpump: -189, strainer: -189, oilpan: -271 };
+const bAsm = document.getElementById('bAsm');
+bAsm.addEventListener('click', () => {
+  const on = !svgX.classList.contains('asm'); svgX.classList.toggle('asm', on);
+  Object.entries(DY).forEach(([id, dy]) => { PX[id].style.transform = on ? `translate(0px,${dy}px)` : ''; });
+  bAsm.textContent = on ? 'Tách rời từng bộ phận' : 'Lắp ghép lại'; bAsm.setAttribute('aria-pressed', on);
+});
+
+/* bảng đầy đủ */
+const pSearch = document.getElementById('partSearch');
+function renderPartTable() {
+  const q = pSearch.value.trim().toLowerCase();
+  let html = '';
+  PGROUPS.forEach(gn => {
+    const rows = PARTS.filter(p => p.g === gn && (!q || Object.values(p).join(' ').toLowerCase().includes(q))).sort((a, b) => (a.n || 99) - (b.n || 99));
+    if (!rows.length) return;
+    html += `<tr class="grp"><td colspan="6">${gn}</td></tr>` + rows.map(p => `<tr data-row="${p.id}">
+      <td class="num">${p.n || '+'}</td><td><b>${p.vn}</b><small>${p.en}</small><small>${p.loc}</small></td><td>${p.fn}</td>
+      <td>${p.build}<span class="spec d">${p.spec}</span></td><td>${p.fail}</td><td class="muted">${p.maint}</td></tr>`).join('');
+  });
+  document.getElementById('partBody').innerHTML = html || '<tr><td colspan="6" class="muted">Không có bộ phận khớp từ khóa.</td></tr>';
+  document.getElementById('partCount').textContent = `${PARTS.length} bộ phận · ${PARTS.filter(p => p.n).length} có trên sơ đồ`;
+  document.querySelectorAll('[data-row]').forEach(r => r.addEventListener('click', () => selectPart(r.dataset.row, true)));
+}
+pSearch.addEventListener('input', renderPartTable);
+document.getElementById('engSpecs').innerHTML = ENG_SPECS.map(s => `<div class="es"><span>${s[0]}</span><b>${s[1]}</b></div>`).join('');
+renderPartTable(); selectPart('block');
+
 /* ===== TAB, CHẨN ĐOÁN, DANH MỤC, BẢO DƯỠNG ===== */
 let currentTab = 'van-hanh';
-const TABS = ['van-hanh', 'chan-doan', 'danh-muc', 'bao-duong'];
+const TABS = ['van-hanh', 'cau-tao', 'chan-doan', 'danh-muc', 'bao-duong'];
 function showTab(id) {
   if (!TABS.includes(id)) id = 'van-hanh';
   currentTab = id;

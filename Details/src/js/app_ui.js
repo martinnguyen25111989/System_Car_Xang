@@ -1,6 +1,6 @@
 /* ===== TAB, CHẨN ĐOÁN, DANH MỤC, BẢO DƯỠNG ===== */
 let currentTab = 'van-hanh';
-const TABS = ['van-hanh', 'chan-doan', 'danh-muc', 'bao-duong'];
+const TABS = ['van-hanh', 'cau-tao', 'chan-doan', 'danh-muc', 'bao-duong'];
 function showTab(id) {
   if (!TABS.includes(id)) id = 'van-hanh';
   currentTab = id;

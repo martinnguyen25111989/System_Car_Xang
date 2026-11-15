@@ -301,6 +301,74 @@ footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color
 [data-layer].off{opacity:.05}
 [data-layer]{transition:opacity .3s}
 
+
+/* cấu tạo động cơ */
+.eng-specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.es{background:var(--panel-2);border:1px solid #1e2d43;border-radius:10px;padding:8px 10px}
+.es span{display:block;font:700 10.5px var(--fd);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.es b{font-weight:600;font-size:14px}
+.eng-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:start}
+.eng-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.eng-tools h3{margin:0}
+#engX{display:block;width:100%;min-width:600px;height:auto}
+.eng-side{display:flex;flex-direction:column;gap:14px;position:sticky;top:10px}
+.pc-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.pc-n{flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font:700 22px var(--fd);color:#fff}
+.pc-head h2{font-size:24px;line-height:1.15}
+.pc-en{font-size:13px;color:var(--muted);font-style:italic}
+.pc-dl{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;margin:0;font-size:14px}
+.pc-dl dt{font:700 11px var(--fd);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.pc-dl dd{margin:0}
+.pc-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.plegend{max-height:430px;overflow:auto;display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.plg{margin-bottom:8px}
+.plb{display:flex;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:6px;padding:3px 6px;font-size:13px;line-height:1.3}
+.plb:hover{background:var(--panel-2)}
+.plb.act{background:rgba(255,176,32,.14)}
+.pln{flex:none;width:22px;height:22px;border-radius:50%;background:#22324a;display:grid;place-items:center;font:700 12px var(--fd)}
+.plb.act .pln{background:var(--warn);color:#1a1205}
+.pln.x{background:transparent;border:1px dashed #3a4d6b;color:var(--muted)}
+.ptbl tr.grp td{font:700 12px var(--fd);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:#0f1824}
+.ptbl td.num{font:700 15px var(--fd);text-align:center;width:36px}
+.ptbl tr[data-row]{cursor:pointer}
+.ptbl tr[data-row]:hover td{background:#132033}
+.ptbl small{display:block;color:var(--muted);font-size:12px}
+.spec.d{display:block;margin-top:4px}
+#engX .pb{stroke:#4a6385;stroke-width:1.2;transition:stroke .2s}
+#engX .st{fill:#7d8ea6}#engX .st2{fill:#a3b2c6}#engX .al{fill:#55677f}#engX .dk{fill:#26354b}#engX .pl{fill:#2a3445}
+#engX .hs{fill:#1d2b3e;fill-opacity:.85}#engX .vc{fill:#2a2f3a}#engX .gk{fill:#8a95a6}#engX .pis{fill:#b8c4d3}
+#engX .vin{fill:var(--air)}#engX .vex{fill:#d1925c}#engX .lobe{fill:#9aa9bd}#engX .vtcx{fill:#4b5f7c}#engX .cwx{fill:#56677f}
+#engX .fu{fill:#6b5a2b}#engX .injx{fill:#8a7330}#engX .catx{fill:#4a3a32}#engX .sen{fill:#20314a;stroke:#4a6a92}
+#engX .cer{fill:#e7ecf2}#engX .thr{fill:#9aa9bd}#engX .fltx{fill:#2f5f96}#engX .coilx{fill:#3b2d55}#engX .cap{fill:#d6a648}
+.chainx{fill:none;stroke:#9aa9bd;stroke-width:3;stroke-dasharray:4 2}
+.shoe{fill:none;stroke:#c9a35a;stroke-width:6;stroke-linecap:round}
+.beltx{fill:none;stroke:#46505f;stroke-width:5;stroke-linejoin:round}
+.armx{stroke:#7d8ea6;stroke-width:4}.grvc{fill:none;stroke:#4a5568}.markx{stroke:var(--accent);stroke-width:2}
+.fin2{stroke:#9aa9bd;stroke-width:2}.hosex{fill:none;stroke:var(--cool);stroke-width:5;opacity:.7}
+.rib{stroke:rgba(255,255,255,.12);stroke-width:1.5}.platex{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.runx{fill:none;stroke:#2b5677;stroke-width:9;stroke-linecap:round}
+.exhx{fill:none;stroke:#59616f;stroke-width:8;stroke-linecap:round}.exhx.thin{stroke-width:6}
+.teeth{fill:none;stroke:#9aa9bd;stroke-width:4;stroke-dasharray:2 2}
+.ringx{fill:none;stroke:#c6d1df;stroke-width:3}.ringo{fill:none;stroke:#e9b949;stroke-width:3}.gap{stroke:#0a1119;stroke-width:4}
+.elec{fill:none;stroke:#c9d2de;stroke-width:2}.oilln{stroke:#e9b949;stroke-width:2;stroke-dasharray:3 3}
+.shaftx{stroke:#7d8ea6;stroke-width:6;stroke-linecap:round}.shaftx.thick{stroke-width:8}
+.vane{stroke:#c6d1df;stroke-width:2}.ret{stroke:#a3b2c6;stroke-width:2.5}.spr{fill:none;stroke:#c6d1df;stroke-width:1.6}
+.stem{stroke:#a3b2c6;stroke-width:2.5}.grv2{stroke:#6b7a8f;stroke-width:1.2}.rodr{fill:none;stroke:#7d8ea6;stroke-width:5}
+.split{stroke:#0a1119;stroke-width:1.5}.brg{fill:none;stroke:#d1925c;stroke-width:3.5}.tooth2{stroke:#c6d1df;stroke-width:2}
+.pipex{fill:none;stroke:#7d8ea6;stroke-width:5}.mesh{fill:#26354b;stroke:#9aa9bd;stroke-dasharray:2 2}
+.chm,.hole{fill:#0a1119;stroke:#4a6385}.wj{fill:none;stroke:var(--cool);stroke-dasharray:3 2;opacity:.6}
+.wj2{fill:none;stroke:var(--cool);stroke-dasharray:3 3;opacity:.45}.bore2{fill:#0d1520}.liner{stroke:#8a95a6;stroke-width:2.5}
+.xin{font:700 10px var(--fd);letter-spacing:.14em;fill:#7d93b1}.xtag{font:600 11px var(--fd);fill:var(--muted)}
+.xb{cursor:pointer;transition:opacity .4s}.xbc{fill:#0a1018;stroke:var(--accent);stroke-width:1.6}
+.xbt{font:700 11px var(--fd);fill:var(--ink);pointer-events:none}.xb:hover .xbc{fill:#3a1820}.xb.sel .xbc{fill:var(--warn);stroke:var(--warn)}.xb.sel .xbt{fill:#1a1205}
+.xp{cursor:pointer;transition:transform .9s cubic-bezier(.4,0,.2,1),opacity .5s}
+.xp:hover .pb{stroke:var(--sig)}.xp:focus{outline:none}.xp:focus-visible .pb{stroke:var(--sig);stroke-width:2.2}
+.xp.sel .pb{stroke:var(--warn);stroke-width:2.4}.xp.sel{filter:drop-shadow(0 0 6px rgba(255,176,32,.75))}
+#engX.asm .xp:not(.core){opacity:.12;pointer-events:none}#engX.asm .hs{fill-opacity:.45}#engX.asm .bore2{fill-opacity:.3}#engX.asm .xtag,#engX.asm .xin{opacity:0}#engX.asm .xb{opacity:0;pointer-events:none}
+@media (max-width:1000px){.eng-grid{grid-template-columns:1fr}.eng-side{position:static}}
+@media (max-width:600px){.pc-dl{grid-template-columns:1fr}.plegend{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.xp{transition:none}}
+
 @media (max-width:1180px){.run-grid{grid-template-columns:1fr 1fr}.run-grid>.panel:first-child{grid-column:1/-1}.wf{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.diag-grid{grid-template-columns:1fr}.sym-side{position:static;max-height:none}.dx-cols{grid-template-columns:1fr}.maint-grid{grid-template-columns:1fr}.layers{margin-left:0}}
 @media (max-width:700px){.run-grid{grid-template-columns:1fr}.sc-cols{grid-template-columns:1fr}.wf{grid-template-columns:1fr}main,.top-in{padding-left:14px;padding-right:14px}}
@@ -314,9 +382,10 @@ footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color
   <div class="specline"><span><b>1.5L DOHC i-VTEC</b> · 1.498 cc · 16 xu-páp</span><span><b>119 hp</b>/6.600 · <b>145 Nm</b>/4.300 vòng/phút</span><span>PGM-FI · CVT</span><span>F-CAN ~500 kbps · B-CAN ~125 kbps · LIN</span></div>
   <nav class="tabs" role="tablist" aria-label="Nội dung">
     <button type="button" role="tab" data-tab="van-hanh" aria-selected="true"><span class="tn">01</span>VẬN HÀNH A→Z</button>
-    <button type="button" role="tab" data-tab="chan-doan" aria-selected="false"><span class="tn">02</span>MÔ HÌNH CHẨN ĐOÁN</button>
-    <button type="button" role="tab" data-tab="danh-muc" aria-selected="false"><span class="tn">03</span>DANH MỤC CHI TIẾT &amp; MÃ LỖI</button>
-    <button type="button" role="tab" data-tab="bao-duong" aria-selected="false"><span class="tn">04</span>BẢO DƯỠNG · THÔNG SỐ · CÀI ĐẶT</button>
+    <button type="button" role="tab" data-tab="cau-tao" aria-selected="false"><span class="tn">02</span>CẤU TẠO ĐỘNG CƠ</button>
+    <button type="button" role="tab" data-tab="chan-doan" aria-selected="false"><span class="tn">03</span>MÔ HÌNH CHẨN ĐOÁN</button>
+    <button type="button" role="tab" data-tab="danh-muc" aria-selected="false"><span class="tn">04</span>DANH MỤC CHI TIẾT &amp; MÃ LỖI</button>
+    <button type="button" role="tab" data-tab="bao-duong" aria-selected="false"><span class="tn">05</span>BẢO DƯỠNG · THÔNG SỐ · CÀI ĐẶT</button>
   </nav>
 </div></header>
 
@@ -372,6 +441,30 @@ footer{max-width:1480px;margin:0 auto;padding:0 20px 30px;font-size:12.5px;color
       <ol class="canlog" id="canlog"></ol>
     </div>
   </div>
+</section>
+
+<!-- ============ TAB CẤU TẠO ============ -->
+<section class="tab" id="tab-cau-tao" role="tabpanel" hidden>
+  <div class="panel">
+    <h3>Động cơ 1.5L DOHC i-VTEC (L15ZF) – thông số cấu tạo</h3>
+    <div class="eng-specs" id="engSpecs"></div>
+  </div>
+  <div class="eng-grid">
+    <div class="panel">
+      <div class="eng-tools"><h3>Sơ đồ tách rời – bấm vào từng bộ phận</h3><button type="button" class="btn sm" id="bAsm" aria-pressed="false">Lắp ghép lại</button></div>
+      <div class="stage" id="engStage"><svg id="engX" viewBox="0 0 860 920" role="img" aria-label="Sơ đồ tách rời động cơ 1.5L DOHC i-VTEC: nắp đậy giàn cò, trục cam, VTC, cò mổ VTEC, xu-páp, nắp máy, gioăng, thân máy, piston, thanh truyền, trục khuỷu, bơm dầu, các-te, xích cam và các bộ phận phụ trợ"></svg></div>
+      <p class="note">Số trên sơ đồ khớp với danh sách bên phải. Hình minh họa nguyên lý, không theo tỉ lệ thật. Nút “Lắp ghép lại” ghép khối lõi động cơ, làm mờ các bộ phận phụ trợ.</p>
+    </div>
+    <div class="eng-side">
+      <article class="panel" id="partCard" aria-live="polite"></article>
+      <div class="panel"><h3>Danh sách bộ phận</h3><div id="partLegend" class="plegend"></div></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="cat-search"><h3 style="margin:0">Bảng chi tiết từng bộ phận</h3><input class="search" id="partSearch" type="search" placeholder="Tìm: piston, xích cam, VTC, P0011…" aria-label="Tìm bộ phận"><span class="muted" id="partCount"></span></div>
+  </div>
+  <div class="tblwrap"><table class="tbl cat ptbl"><thead><tr><th>#</th><th>Bộ phận</th><th>Chức năng</th><th>Cấu tạo &amp; thông số</th><th>Hư hỏng → triệu chứng</th><th>Kiểm tra &amp; bảo dưỡng</th></tr></thead><tbody id="partBody"></tbody></table></div>
+  <p class="disclaimer">Thông số cấu tạo (mã máy, đường kính × hành trình, tỉ số nén, xích cam, phun đa điểm) theo dữ liệu công bố cho Honda City thế hệ GN; chi tiết lắp ráp, lực siết và dung sai luôn đối chiếu Honda Service Manual theo số VIN.</p>
 </section>
 
 <!-- ============ TAB 2 ============ -->
