@@ -4,6 +4,8 @@
 
 Trang web tương tác (một file HTML, không cần server) mô phỏng toàn bộ kiến trúc điện – điện tử của Honda City 2024 (1.5L DOHC i-VTEC, PGM-FI, CVT) và mô hình chẩn đoán sự cố.
 
+Bản công khai: https://martinnguyen25111989.github.io/System_Car_Xang/details/
+
 ## Nội dung
 
 | Tab | Mô tả |
@@ -17,7 +19,7 @@ Trang web tương tác (một file HTML, không cần server) mô phỏng toàn 
 ## Cấu trúc
 
 ```
-System_Car_Xang/
+Details/
 ├── index.html          ← trang hoàn chỉnh, mở trực tiếp bằng trình duyệt
 ├── build.py            ← ghép src/ → index.html
 └── src/
@@ -36,6 +38,7 @@ System_Car_Xang/
 
 - Xem: mở `index.html` bằng Chrome/Edge.
 - Sửa nội dung: chỉnh file trong `src/`, rồi chạy `python build.py` để tạo lại `index.html`.
+- Đăng lên web: commit cả `src/` lẫn `index.html` đã build rồi đẩy lên `master`. Workflow Pages của repo gốc copy `index.html` vào `/details/`.
 
 ## Lưu ý
 

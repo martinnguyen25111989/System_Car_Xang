@@ -6,6 +6,8 @@ Bản công khai: https://martinnguyen25111989.github.io/System_Car_Xang/
 
 Mã nguồn: https://github.com/martinnguyen25111989/System_Car_Xang
 
+Trang mô phỏng Honda City 2024 (vận hành, cấu tạo động cơ, chẩn đoán E/E): https://martinnguyen25111989.github.io/System_Car_Xang/details/
+
 Xe ví dụ xuyên suốt là **Honda City 1.5**: máy xăng hút khí tự nhiên, dẫn động cầu trước, hộp số CVT hoặc số tự động tùy đời. Số liệu là mức điển hình và đổi theo năm sản xuất cũng như thị trường. Một đời City không phải bản vẽ của mọi ô tô xăng. Ví dụ tăng áp dùng một xe turbo phổ biến, không lấy City làm xe tăng áp.
 
 ## Đang có gì
@@ -25,6 +27,20 @@ Lộ trình có **9 level, 33 bài**, và cả 33 bài đều mở trong app. M�
 | 9 | Điện nâng cao | L33 |
 
 Bài cuối mỗi level có một đoạn ôn. L32 có bản đồ cả khóa và sáu ca chẩn đoán. L33 là kiến trúc điện City 2024: thân trong suốt, nguồn, mass, CAN/LIN. Cuối mỗi bài đọc còn có câu hỏi phỏng vấn để tự kể lại.
+
+## Trang chi tiết City 2024
+
+Thư mục `Details/` là một trang riêng, tách khỏi app React, đăng ở `/details/`. Đây là một file HTML tự chứa, mở thẳng bằng trình duyệt, không cần server. Trang có 5 tab:
+
+| Tab | Nội dung |
+| --- | --- |
+| 01 · Vận hành A→Z | 26 bước từ lúc xe ngủ tới tắt máy, động cơ chạy theo thứ tự nổ 1-3-4-2, gói tin CAN/LIN, oscilloscope CKP/CMP/kim phun/đánh lửa |
+| 02 · Cấu tạo động cơ | L15ZF 1.5L DOHC i-VTEC: sơ đồ tách rời 39 bộ phận, bảng 51 bộ phận theo 12 nhóm |
+| 03 · Mô hình chẩn đoán | Quy trình 8 bước, 20 nhóm triệu chứng có cây kiểm tra Đạt/Không đạt |
+| 04 · Danh mục chi tiết & mã lỗi | Khoảng 75 chi tiết, lọc theo hệ thống và tìm kiếm |
+| 05 · Bảo dưỡng · Thông số · Cài đặt | Chu kỳ thay, thông số đo nhanh, cài đặt sau khi thay (HDS) |
+
+Sửa nội dung trong `Details/src/`, rồi chạy `python build.py` trong `Details/` để ghép lại `Details/index.html`. Workflow chỉ copy `index.html` đã build, không chạy `build.py`, nên phải build và commit `index.html` trước khi đẩy. Chi tiết xem `Details/README.md`.
 
 ## Phạm vi
 
@@ -82,7 +98,7 @@ Người lái → Bàn đạp / vô-lăng → ECU → Máy xăng → Hộp số 
 
 ## Dùng app
 
-Trang chủ là bản đồ 8 level. Bấm một level để thấy các bài và câu hỏi bài đó trả lời. Bài chưa mở không phải link.
+Trang chủ là bản đồ 9 level. Bấm một level để thấy các bài và câu hỏi bài đó trả lời. Bài chưa mở không phải link.
 
 Lesson 01 chia hai cột:
 
@@ -131,6 +147,9 @@ web/src/scenes/GhostCar.tsx        xe 3D trong suốt
 web/src/scenes/ElectricalCar.tsx   cắt ngang điện City 2024, bài L33
 web/src/lib/progress.ts            tiến độ localStorage
 web/public/404.html                fallback cho đường dẫn sâu trên GitHub Pages
+Details/index.html                 trang City 2024 đã build, đăng ở /details/
+Details/src/                       nguồn HTML/CSS và JS của trang đó
+Details/build.py                   ghép Details/src/ thành Details/index.html
 .github/workflows/pages.yml        build và deploy
 ```
 
@@ -149,7 +168,7 @@ Import tương đối trong `web/src` phải có đuôi `.ts` hoặc `.tsx`, vì
 
 ## Trang public
 
-Đẩy lên nhánh `master` sẽ chạy workflow **Deploy GitHub Pages**. Workflow cài dependency trong `web/`, build với `GITHUB_PAGES=true`, rồi đăng thư mục `web/dist`.
+Đẩy lên nhánh `master` sẽ chạy workflow **Deploy GitHub Pages**. Workflow cài dependency trong `web/`, build với `GITHUB_PAGES=true`, copy `Details/index.html` vào `web/dist/details/`, rồi đăng thư mục `web/dist`.
 
 Khi biến đó bật, Vite đặt base `/System_Car_Xang/` cho đúng project site. React Router lấy `basename` từ `import.meta.env.BASE_URL`. Favicon dùng `%BASE_URL%`.
 
