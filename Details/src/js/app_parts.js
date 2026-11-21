@@ -117,8 +117,8 @@ function selectPart(id, scroll) {
     </dl>
     <div class="pc-btns">${sym ? `<button type="button" class="btn sm" data-go="dx">Cây chẩn đoán: ${sym.t} →</button>` : ''}${st ? `<button type="button" class="btn ghost sm" data-go="st">Xem bước ${st.k} trong luồng vận hành →</button>` : ''}</div>
     ${p.n ? '' : '<p class="note">Chi tiết này không vẽ riêng trên sơ đồ.</p>'}`;
-  const bd = partCard.querySelector('[data-go="dx"]'); if (bd) bd.addEventListener('click', () => { selectSymptom(p.dx); showTab('chan-doan'); window.scrollTo({ top: 0 }); });
-  const bs = partCard.querySelector('[data-go="st"]'); if (bs) bs.addEventListener('click', () => { setPlay(false); goStep(p.st.charCodeAt(0) - 65); showTab('van-hanh'); window.scrollTo({ top: 0 }); });
+  const bd = partCard.querySelector('[data-go="dx"]'); if (bd) bd.addEventListener('click', () => { selectSymptom(p.dx); location.hash = '#/lab/chan-doan'; });
+  const bs = partCard.querySelector('[data-go="st"]'); if (bs) bs.addEventListener('click', () => { setPlay(false); goStep(p.st.charCodeAt(0) - 65); location.hash = '#/lab/van-hanh'; });
   if (scroll) document.getElementById('engStage').scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
 }
 svgX.addEventListener('click', e => { const t = e.target.closest('[data-p]'); if (t) selectPart(t.dataset.p); });

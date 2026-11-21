@@ -5,6 +5,8 @@ const OFF = [0, 540, 180, 360];          // #1 #2 #3 #4 – thứ tự nổ 1-3-
 const ALL_LAMPS = ['MIL', 'SẠC', 'DẦU', 'NHIỆT', 'IMMO', 'SRS', 'ABS', 'VSA', 'EPS', 'PHANH'];
 const LAMP_SEV = { MIL: 'warn', 'SẠC': 'crit', 'DẦU': 'crit', 'NHIỆT': 'crit', IMMO: 'warn', SRS: 'crit', ABS: 'warn', VSA: 'warn', EPS: 'warn', PHANH: 'crit' };
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Phòng lab chỉ chạy vòng animation khi đang hiển thị (học viện bật/tắt qua window.LAB.visible) */
+const LABV = { on: false, running: false };
 
 let stepIdx = 0, playing = !reduceMotion, stepElapsed = 0;
 const STEP_MS = 7000;
@@ -274,7 +276,7 @@ function renderCard() {
       <div><h4>Nếu bước này lỗi → kiểm tra</h4><ul>${s.chk.map(x => `<li>${x}</li>`).join('')}</ul>
       ${sym ? `<button class="btn ghost sm" type="button" id="toDiag">Mở cây chẩn đoán: ${sym.t} →</button>` : ''}</div>
     </div>`;
-  const b = document.getElementById('toDiag'); if (b) b.addEventListener('click', () => { selectSymptom(s.dx); showTab('chan-doan'); });
+  const b = document.getElementById('toDiag'); if (b) b.addEventListener('click', () => { selectSymptom(s.dx); location.hash = '#/lab/chan-doan'; });
   document.querySelectorAll('.chip-step').forEach((el, i) => { el.classList.toggle('act', el.id === 'cs-' + stepIdx); el.classList.toggle('done', +el.id.slice(3) < stepIdx); });
   document.getElementById('pcmMode').textContent = stepIdx < 7 ? 'Chưa cấp nguồn chính' : stepIdx <= 11 ? 'Tự kiểm tra · chờ đề' : stepIdx <= 15 ? 'Khởi động' : stepIdx === 25 ? 'Post-run · lưu học' : ('Vòng ' + (tgt.loop === '—' ? 'hở' : tgt.loop.toLowerCase()));
 }
@@ -286,6 +288,7 @@ function goStep(i) {
 /* ---------- vòng lặp ---------- */
 let last = performance.now(), uiT = 0, scT = 0;
 function frame(now) {
+  if (!LABV.on) { LABV.running = false; return; }
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   ['rpm', 'vb', 'ist', 'fp', 'map', 'thr', 'pw', 'adv', 'ratio'].forEach(k => { cur[k] += (tgt[k] - cur[k]) * (1 - Math.exp(-dt * (k === 'rpm' ? 1.8 : 2.4))); });
   cur.ect += (tgt.ect - cur.ect) * (1 - Math.exp(-dt * 0.9));
@@ -321,7 +324,7 @@ document.querySelectorAll('.layer-t').forEach(b => b.addEventListener('click', (
   svg.querySelectorAll(`[data-layer="${b.dataset.l}"]`).forEach(g => g.classList.toggle('off', !on));
 }));
 document.addEventListener('keydown', e => {
-  if (currentTab !== 'van-hanh' || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if (!LABV.on || currentTab !== 'van-hanh' || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
   if (e.key === 'ArrowRight') { setPlay(false); goStep(stepIdx + 1); }
   else if (e.key === 'ArrowLeft') { setPlay(false); goStep(stepIdx - 1); }
 });

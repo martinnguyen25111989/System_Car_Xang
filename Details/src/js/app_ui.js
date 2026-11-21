@@ -10,10 +10,9 @@ function showTab(id) {
   svg.classList.toggle('diag', id === 'chan-doan');
   if (id === 'chan-doan') applySuspects();
   if (id === 'van-hanh') fitScope();
-  try { if (location.hash.slice(1) !== id) history.replaceState(null, '', '#' + id); } catch (e) { }
 }
-document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
-window.addEventListener('hashchange', () => showTab(location.hash.slice(1)));
+/* các tab của phòng lab đi qua router của học viện: #/lab/<tab> */
+document.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { location.hash = '#/lab/' + b.dataset.tab; }));
 
 /* ---------- quy trình 8 bước ---------- */
 document.getElementById('workflow').innerHTML = WORKFLOW.map((w, i) => `<li><span class="wn">${i + 1}</span><div><b>${w[0]}</b><small>${w[1]}</small></div></li>`).join('');
@@ -91,7 +90,7 @@ function renderDiag() {
     const nx = dxEl.querySelector('.ck.active, .ck.fail'); if (nx) nx.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
   }));
   document.getElementById('treeReset').addEventListener('click', () => { treeState[s.id] = s.checks.map(() => 'todo'); renderDiag(); });
-  dxEl.querySelectorAll('.kbtn').forEach(b => b.addEventListener('click', () => { setPlay(false); goStep(b.dataset.k.charCodeAt(0) - 65); showTab('van-hanh'); window.scrollTo({ top: 0 }); }));
+  dxEl.querySelectorAll('.kbtn').forEach(b => b.addEventListener('click', () => { setPlay(false); goStep(b.dataset.k.charCodeAt(0) - 65); location.hash = '#/lab/van-hanh'; }));
 }
 
 /* ---------- danh mục chi tiết ---------- */
@@ -121,6 +120,12 @@ document.getElementById('toolBody').innerHTML = TOOLS.map(r => `<tr><td><b>${r[0
 /* ---------- khởi động ---------- */
 renderSymList(); renderDiag(); renderCatalog();
 goStep(0); setPlay(playing);
-showTab(location.hash.slice(1) || 'van-hanh');
-fitScope(); window.addEventListener('resize', fitScope);
-requestAnimationFrame(t => { last = t; requestAnimationFrame(frame); });
+showTab('van-hanh');
+window.addEventListener('resize', () => { if (LABV.on) fitScope(); });
+/* cầu nối cho học viện (IIFE thứ hai) */
+window.LAB = {
+  showTab: id => showTab(TABS.includes(id) ? id : 'van-hanh'),
+  visible(on) { LABV.on = !!on; if (on && !LABV.running) { LABV.running = true; last = performance.now(); requestAnimationFrame(frame); } },
+  selectSymptom: id => { if (SYMPTOMS.some(s => s.id === id)) selectSymptom(id); },
+  data: { PARTS, CATALOG, SYMPTOMS, STEPS, WORKFLOW }
+};
